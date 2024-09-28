@@ -1,0 +1,84 @@
+# VassarEats - Vision document
+
+## 1. Introduction
+
+We envision a robust dining application, Vassar Eats, that will be easier to use and will be highly interactive. It will
+make students and staff at Vassar to make quick informed dining decisions with the flexibility to give feedback on the 
+dining services. For dining administrators, the app will be used to get more information about people's preferences on 
+dining options at Vassar. 
+
+## 2. Business case
+Our dining application addresses customer needs that the *https://vassar.cafebonappetit.com/* website does not:
+1. It can allow customers to like or dislike dining options.
+2. It recommends dining options to customers based on their preferences (both present day and future recommendations). 
+3. It provides a feedback section where customers can comment on dining options and give real time feedback to dining
+administrators.
+
+## 3. Key functionality
+- Browse dining options (with pictorial illustration of each menu).
+- Like or dislike dining options.
+- Filter dining options based on dietary preferences (e.g. vegetarian, halal etc.).
+- Read dining articles available on the vassar dining website.
+- Recommend dining options to customers based on their preferences.
+- Provide feedback section where users can voice out their honest opinions.
+
+## 4. Stakeholder goals summary
+- **Vassar students, staff**: browse dining options, like or dislike dining options, filter dining options, read dining 
+articles, give feedback, get recommended menu items.
+- **Visitors**: browse dining options, filter dining options, read dining articles.
+- **Dining administrators and chefs**: browse dining options, filter dining options, read dining articles, view feedback
+and give responses, view users' food preferences ('likes' or 'dislikes').
+
+## Use case diagram
+
+```plantuml
+skin rose
+
+' human actors
+actor "Administrator" as admin
+actor "User" as user
+actor "Visitor" as visitor
+
+' system actors
+actor "Cafe bon appetit system" <<system>> as cafebonappetit
+
+' list all use cases in package
+package VassarEats{
+    usecase "Authenticate" as authenticate
+    usecase "Authenticate Visitor" as authenticateVisitor
+    usecase "Start admin session" as administerSystem
+    usecase "Start user session" as startUserSession
+    usecase "Start visitor session" as startVisitorSession
+    
+    usecase "Browse menu" as browseMenu
+    usecase "Browse menu options" as browseMenuOptions
+    usecase "Like/dislike food" as preferenceType
+    usecase "Give Feedback" as giveFeedback
+    usecase "Get recommendations" as getRecommendations
+    usecase "View users' preferences" as viewUsersPreferences
+}
+
+' list relationships between actors and use cases
+admin --> administerSystem
+user --> startUserSession
+visitor --> startVisitorSession
+
+startUserSession --> authenticate : <<includes>>
+startUserSession <|-- browseMenu : <<extends>>
+startUserSession <|-- giveFeedback : <<extends>>
+
+administerSystem --> authenticate : <<includes>>
+administerSystem <|-- browseMenu : <<extends>>
+administerSystem <|-- giveFeedback : <<extends>>
+administerSystem <|-- viewUsersPreferences : <<extends>>
+
+startUserSession <|-- preferenceType : <<extends>>
+startUserSession <|-- getRecommendations : <<extends>>
+
+startVisitorSession --> authenticateVisitor : <<includes>>
+startVisitorSession <|-- browseMenuOptions : <<extends>>
+
+' system actors
+browseMenu --> cafebonappetit
+browseMenuOptions --> cafebonappetit
+```
