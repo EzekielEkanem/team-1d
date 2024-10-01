@@ -28,7 +28,6 @@
   * Submit button
 * Images and text should be easily visible from 1 meter if a screen with a diagonal of at least 20" is used.
 * Colors associated with common forms of color blindness should be avoided.
-* Sound should be provided with clicking like, dislike, or feedback form submission
 
 ## 3. Reliability
 * If scraping the dining website fails then the information saved from the most recent scrape should be used
