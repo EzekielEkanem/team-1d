@@ -24,8 +24,9 @@ administrators.
 
 ## 4. Stakeholder goals summary
 - **Vassar students, staff**: browse dining options, like or dislike dining options, filter dining options, read dining 
-articles, give feedback, get recommended menu items.
-- **Visitors**: browse dining options, filter dining options, read dining articles.
+articles, give feedback, get recommended menu items, view users' food preferences ('likes' or 'dislikes').
+- **Visitors**: browse dining options, filter dining options, read dining articles, view users' food preferences 
+('likes' or 'dislikes').
 - **Dining administrators and chefs**: browse dining options, filter dining options, read dining articles, view feedback
 and give responses, view users' food preferences ('likes' or 'dislikes').
 
@@ -35,8 +36,7 @@ and give responses, view users' food preferences ('likes' or 'dislikes').
 skin rose
 
 ' human actors
-actor "Administrator" as admin
-actor "User" as user
+actor "User/Admin" as user
 actor "Visitor" as visitor
 
 ' system actors
@@ -45,40 +45,31 @@ actor "Cafe bon appetit system" <<system>> as cafebonappetit
 ' list all use cases in package
 package VassarEats{
     usecase "Authenticate" as authenticate
-    usecase "Authenticate Visitor" as authenticateVisitor
-    usecase "Start admin session" as administerSystem
-    usecase "Start user session" as startUserSession
-    usecase "Start visitor session" as startVisitorSession
     
     usecase "Browse menu" as browseMenu
-    usecase "Browse menu options" as browseMenuOptions
     usecase "Like/dislike food" as preferenceType
     usecase "Give Feedback" as giveFeedback
     usecase "Get recommendations" as getRecommendations
     usecase "View users' preferences" as viewUsersPreferences
+    usecase "Filter dining menu" as filterOptions
+    usecase "Read articles" as readArticles
+    usecase "View feedback" as viewFeedback
 }
 
 ' list relationships between actors and use cases
-admin --> administerSystem
-user --> startUserSession
-visitor --> startVisitorSession
+user --> browseMenu
+user --> authenticate
+visitor --> browseMenu
 
-startUserSession --> authenticate : <<includes>>
-startUserSession <|-- browseMenu : <<extends>>
-startUserSession <|-- giveFeedback : <<extends>>
+browseMenu <|-- viewUsersPreferences : <<extends>>
+browseMenu <|-- filterOptions : <<extends>>
+browseMenu <|-- readArticles : <<extends>>
+browseMenu <|-- viewFeedback : <<extends>>
 
-administerSystem --> authenticate : <<includes>>
-administerSystem <|-- browseMenu : <<extends>>
-administerSystem <|-- giveFeedback : <<extends>>
-administerSystem <|-- viewUsersPreferences : <<extends>>
-
-startUserSession <|-- preferenceType : <<extends>>
-startUserSession <|-- getRecommendations : <<extends>>
-
-startVisitorSession --> authenticateVisitor : <<includes>>
-startVisitorSession <|-- browseMenuOptions : <<extends>>
+authenticate <|-- giveFeedback : <<extends>>
+authenticate <|-- preferenceType : <<extends>>
+authenticate <|-- getRecommendations : <<extends>>
 
 ' system actors
 browseMenu --> cafebonappetit
-browseMenuOptions --> cafebonappetit
 ```
