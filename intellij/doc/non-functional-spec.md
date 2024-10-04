@@ -32,16 +32,15 @@
 ## 3. Reliability
 * If scraping the dining website fails then the information saved from the most recent scrape should be used
 * If the external authentication server fails then users should be able to view the app in guest mode
-* If the external server fails to save information then information should be stored locally
 * If the external server fails to pull information then information saved should be used
 
 ## 4. Performance
 The app needs to be efficient because users are looking through multiple pieces of information quickly to make a decision and so the app will need to load and save information efficiently.
 * In order to do so:
   * Authentication process should time out after 10 seconds
-  * Information should be saved locally at all times for faster retrieval and backup
+  * Information should be saved in a database for faster retrieval and backup
   * Information should only be requested from external servers the first time users login for the day
-  * User changes should be saved locally at first and randomly saved to external servers throughout the day
+  * User changes should be saved automatically saved to external servers throughout the day
   * User should have the option to download all information for faster retrieval
 
 ## 5. Supportability
