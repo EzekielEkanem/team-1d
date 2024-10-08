@@ -36,40 +36,42 @@ and give responses, view users' food preferences ('likes' or 'dislikes').
 skin rose
 
 ' human actors
-actor "User/Admin" as user
-actor "Visitor" as visitor
+actor "User" as user
 
 ' system actors
 actor "Cafe bon appetit system" <<system>> as cafebonappetit
 
 ' list all use cases in package
 package VassarEats{
-    usecase "Authenticate" as authenticate
     
-    usecase "Browse menu" as browseMenu
-    usecase "Like/dislike food" as preferenceType
+    usecase "Browse" as browseMenu
+    usecase "Like/dislike" as preferenceType
     usecase "Give Feedback" as giveFeedback
     usecase "Get recommendations" as getRecommendations
-    usecase "View users' preferences" as viewUsersPreferences
-    usecase "Filter dining menu" as filterOptions
     usecase "Read articles" as readArticles
     usecase "View feedback" as viewFeedback
+    usecase "Comment" as comment
+    
+    usecase "Authenticate" as authenticate
 }
 
 ' list relationships between actors and use cases
 user --> browseMenu
-user --> authenticate
-visitor --> browseMenu
 
-browseMenu <|-- viewUsersPreferences : <<extends>>
-browseMenu <|-- filterOptions : <<extends>>
 browseMenu <|-- readArticles : <<extends>>
 browseMenu <|-- viewFeedback : <<extends>>
+browseMenu <|-- giveFeedback : <<extends>>
+browseMenu <|-- preferenceType : <<extends>>
+browseMenu <|-- getRecommendations : <<extends>>
+browseMenu <|-- comment : <<extends>>
 
-authenticate <|-- giveFeedback : <<extends>>
-authenticate <|-- preferenceType : <<extends>>
-authenticate <|-- getRecommendations : <<extends>>
+giveFeedback <|-- authenticate : <<include>>
+preferenceType <|-- authenticate : <<include>>
+getRecommendations <|-- authenticate : <<include>>
+
 
 ' system actors
 browseMenu --> cafebonappetit
 ```
+user --> authenticate
+

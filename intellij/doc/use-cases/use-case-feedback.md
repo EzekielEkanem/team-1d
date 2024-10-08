@@ -44,7 +44,7 @@ title feedback (casual level)
 
 start
 
-:Browse menu options;
+:Execute __browse__;
 :Gives comments on food items;
 :Goes to the feedback section;
 :Gives feedback;

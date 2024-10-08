@@ -49,19 +49,22 @@ title Browse (casual level)
 
 |User|
 start
-:browse dining menu;
-:finds menu options for the day;
-:views the picture and name of each food item;
-:filters food according to dietary choices;
-:views upcoming events organized by the dining services;
-:reads food and wellness articles;
+:finds menu options for a specific day;
 
-if (swipe?) is  ( left ) then
-:views previous day's food menu;
-else ( right ) 
-:views the food menu for the following day;
-endif
-
+switch (action?) 
+    case (filter)
+        :;
+    case (swipe)
+    case (user)
+if (action?) is (filter) then
+:filters food according to dietary choices/recommendations;;
+else if (action?) is ( swipe ) then
+  if (swipe?) is  ( left ) then
+  :views previous day's food menu;
+  else ( right ) 
+  :views the food menu for the following day;
+  endif
+else (user?)
 if (user?) is (students and staff) then
 :likes/dislikes food item;
 :comments on a food item;
