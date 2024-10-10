@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3761ae3-cfd0-432b-a4e0-2f1bdafd5729" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-authenticate.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-read-article.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/glossary.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/glossary.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-feedback.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-feedback.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-preference.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-like-dislike.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-recommendation.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-recommendation.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/team-1d.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-recommendation.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-recommendation.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/intellij/doc/vision.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/vision.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,8 +46,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -71,6 +68,9 @@
       <workItem from="1728397984776" duration="118000" />
       <workItem from="1728398104926" duration="846000" />
       <workItem from="1728398963784" duration="1630000" />
+      <workItem from="1728572568269" duration="2500000" />
+      <workItem from="1728602544706" duration="29000" />
+      <workItem from="1728602680673" duration="39000" />
     </task>
     <servers />
   </component>

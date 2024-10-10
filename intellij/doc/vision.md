@@ -21,14 +21,15 @@ administrators.
 - Read dining articles available on the vassar dining website.
 - Recommend dining options to customers based on their preferences.
 - Provide feedback section where users can voice out their honest opinions.
+- Give comments on a particular food item
 
 ## 4. Stakeholder goals summary
 - **Vassar students, staff**: browse dining options, like or dislike dining options, filter dining options, read dining 
 articles, give feedback, get recommended menu items, view users' food preferences ('likes' or 'dislikes').
 - **Visitors**: browse dining options, filter dining options, read dining articles, view users' food preferences 
 ('likes' or 'dislikes').
-- **Dining administrators and chefs**: browse dining options, filter dining options, read dining articles, view feedback
-and give responses, view users' food preferences ('likes' or 'dislikes').
+- **Dining administrators and chefs**: browse dining options, filter dining options, read dining articles, view feedback, 
+view users' food preferences ('likes' or 'dislikes').
 
 ## Use case diagram
 
@@ -49,7 +50,7 @@ package VassarEats{
     usecase "Give Feedback" as giveFeedback
     usecase "Get recommendations" as getRecommendations
     usecase "Read articles" as readArticles
-    usecase "View feedback" as viewFeedback
+    usecase "Preference" as preference
     usecase "Comment" as comment
     
     usecase "Authenticate" as authenticate
@@ -59,7 +60,7 @@ package VassarEats{
 user --> browseMenu
 
 browseMenu <|-- readArticles : <<extends>>
-browseMenu <|-- viewFeedback : <<extends>>
+browseMenu <|-- preference : <<extends>>
 browseMenu <|-- giveFeedback : <<extends>>
 browseMenu <|-- preferenceType : <<extends>>
 browseMenu <|-- getRecommendations : <<extends>>
@@ -73,5 +74,4 @@ getRecommendations <|-- authenticate : <<include>>
 ' system actors
 browseMenu --> cafebonappetit
 ```
-user --> authenticate
 

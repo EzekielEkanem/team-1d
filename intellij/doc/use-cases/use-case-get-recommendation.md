@@ -38,8 +38,11 @@ title Recommendation (casual level)
 |#application|System|
 |#technology|User|
 
-|System|
 start
+|User|
+:;
+
+|System|
 :Uses users preferences to make recommendations;
 if (Notification?) is  ( On ) then
 :Execute __Notify users of recommendations__;
