@@ -8,9 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/team-1d.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-recommendation.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-recommendation.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/vision.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/vision.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +70,10 @@
       <workItem from="1728572568269" duration="2500000" />
       <workItem from="1728602544706" duration="29000" />
       <workItem from="1728602680673" duration="39000" />
+      <workItem from="1728602730967" duration="709000" />
+      <workItem from="1728603451683" duration="39000" />
+      <workItem from="1728603492537" duration="208000" />
+      <workItem from="1728603732328" duration="43000" />
     </task>
     <servers />
   </component>
