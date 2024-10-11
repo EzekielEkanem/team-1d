@@ -42,7 +42,7 @@ start
 |System|
 
 :Execute __authentication__;
-:Email service pop open;
+:Email service pops open;
     
 |User|
 :Submit feedback;

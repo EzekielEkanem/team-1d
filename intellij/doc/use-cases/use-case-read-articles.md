@@ -2,20 +2,19 @@
 
 ## 1. Primary actor and goals
 
-__Vassar staff and visitors__: wants to see deatils on 
+__Vassar staff and visitors__: wants to read articles about food and wellness
 
 ## 2. Other stakeholders and their goals
 
-__Vassar dining administration__: wants to view vassar students' and staffs' feedback on food items
+No other stake holders
 
 ## 3. Preconditions
 
-* Authentication works
-* User has email service
+No preconditions
 
 ## 4. Postconditions
 
-* Emails service apps opens
+* The article's page opens on the user's default browser
 
 
 ## 4. Workflow
@@ -37,15 +36,15 @@ title feedback (casual level)
 
 start
 
-:Navigate to feedback section;
+:Navigate to articles section;
+
+:Click article;
 
 |System|
 
-:Execute __authentication__;
-:Email service pop open;
+:opens article in default browser;
     
-|User|
-:Submit feedback;
+
 
 stop
 @enduml
