@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3761ae3-cfd0-432b-a4e0-2f1bdafd5729" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/team-1d.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +71,8 @@
       <workItem from="1728603451683" duration="39000" />
       <workItem from="1728603492537" duration="208000" />
       <workItem from="1728603732328" duration="43000" />
+      <workItem from="1728604447012" duration="24000" />
+      <workItem from="1728604481438" duration="3676000" />
     </task>
     <servers />
   </component>
