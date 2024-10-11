@@ -8,19 +8,14 @@ __Vassar students and staff__: wants to give feedback to vassar dining admin in 
 
 __Vassar dining administration__: wants to view vassar students' and staffs' feedback on food items
 
-__Visitors__: wants to see what feedback vassar students and staff have of dining options which may help them make more 
-informed decisions about dining
-
 ## 3. Preconditions
 
-* The app is able to access dining options from the dining website *https://vassar.cafebonappetit.com/*.
-* Users are able to browse the menu options.
+* Authentication works
+* User has email service
 
 ## 4. Postconditions
 
-* Users and administrators are identified and authenticated.
-* Authentication is stored
-* Feedback is saved
+* Emails service apps opens
 
 
 ## 4. Workflow
@@ -36,39 +31,21 @@ title feedback (casual level)
 
 |#technology|User|
 |#implementation|System|
-|#application|Dining admin|
-|#business|Visitor|
 
 
 |User|
 
 start
 
-:Execute __browse__;
-:Gives comments on food items;
-:Goes to the feedback section;
-:Gives feedback;
-:Submit feedback;
+:Navigate to feedback section;
 
 |System|
 
-while (Authentication?) is (False)
-  :Authenticate the user;
-endwhile (True)
-:Feedback saved;
+:Execute __authentication__;
+:Email service pop open;
     
-|Dining admin|
-
-:Views feedback;
-:Responds to feedback;
-
-|User| 
-:Views feedback;
-
-|Visitor|
-:Views feedback;
-
-|System|
+|User|
+:Submit feedback;
 
 stop
 @enduml
