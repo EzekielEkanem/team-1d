@@ -7,7 +7,8 @@ quickly and see information clearly in order to help them make decisions faster
 
 
 ## 2. Other stakeholders and their goals
-None
+__System__: displays dining menu for users to browse and enables users to perform further actions on the app, such as 
+like/dislike food items, give comments, read articles, etc.
 
 ## 3. Preconditions
 
@@ -39,7 +40,7 @@ media
 
 skin rose
 
-title Browse (casual level)
+title browse (casual level)
 
 'define the lanes
 

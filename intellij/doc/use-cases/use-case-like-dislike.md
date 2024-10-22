@@ -1,4 +1,4 @@
-# Preference
+# Like-Dislike
 
 ## 1. Primary actor and goals
 

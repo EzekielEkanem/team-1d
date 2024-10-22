@@ -1,4 +1,4 @@
-# Feedback
+# Read articles
 
 ## 1. Primary actor and goals
 
@@ -24,7 +24,7 @@ No preconditions
 
 skin rose
 
-title feedback (casual level)
+title read-articles (casual level)
 
 'define the lanes
 

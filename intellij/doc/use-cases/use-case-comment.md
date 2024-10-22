@@ -1,12 +1,12 @@
-# Feedback
+# Comment
 
 ## 1. Primary actor and goals
 
-__Vassar staff and visitors__: wants to comment on food items in the menu
+__Vassar students, staff and visitors__: wants to comment on food items in the menu
 
 ## 2. Other stakeholders and their goals
 
-No other stake holders
+__System__: wants to save comments so that all users can view the comments on the app
 
 ## 3. Preconditions
 
@@ -25,7 +25,7 @@ No other stake holders
 
 skin rose
 
-title feedback (casual level)
+title comment (casual level)
 
 'define the lanes
 
