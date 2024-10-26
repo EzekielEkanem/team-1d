@@ -6,8 +6,8 @@ __Vassar students and staff__: wants to give feedback to vassar dining admin in 
 
 ## 2. Other stakeholders and their goals
 
-__Vassar dining administration__: wants to view vassar students' and staffs' feedback on food items
-__System__: wants to redirect users to their default email service whenever they want to give a feedback
+* __Vassar dining administration__: wants to view vassar students' and staffs' feedback on food items
+* __System__: wants to redirect users to their default email service whenever they want to give a feedback
 
 ## 3. Preconditions
 
@@ -26,7 +26,7 @@ __System__: wants to redirect users to their default email service whenever they
 
 skin rose
 
-title feedback (casual level)
+title give-feedback (casual level)
 
 'define the lanes
 

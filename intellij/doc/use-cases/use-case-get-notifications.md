@@ -31,7 +31,7 @@ on/off their notifications.
 
 skin rose
 
-title Notification (casual level)
+title Get-Notification (casual level)
 
 'define the lanes
 |#technology|User|

@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3761ae3-cfd0-432b-a4e0-2f1bdafd5729" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/intellij/doc/class-diagram.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/class-diagram.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/class-diagram.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-authenticate.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-authenticate.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-comment.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-comment.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-notifications.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-get-notifications.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-give-feedback.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-give-feedback.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-like-dislike.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-like-dislike.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-preference.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-preference.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,14 +45,6 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -80,6 +78,11 @@
       <workItem from="1729602170284" duration="197000" />
       <workItem from="1729603299717" duration="4277000" />
       <workItem from="1729607843401" duration="1097000" />
+      <workItem from="1729716799386" duration="287000" />
+      <workItem from="1729952119207" duration="15000" />
+      <workItem from="1729952142355" duration="587000" />
+      <workItem from="1729952737198" duration="789000" />
+      <workItem from="1729953534561" duration="5164000" />
     </task>
     <servers />
   </component>

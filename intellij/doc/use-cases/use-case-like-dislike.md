@@ -12,7 +12,9 @@ decisions for users.
 ## 2. Other stakeholders and their goals
 
 * __Visitors__: They want to be able to view people's preference for a particular menu option. This information can help 
-* them to make better informed dining decisions.
+them to make better informed dining decisions.
+* __System__: It makes sure that only authenticated users can like/dislike a food item. It also saves 'like' or 'dislike'
+food items and rearranges the menu items to ensure that liked foods appear first. 
 
 ## 3. Preconditions
 
@@ -26,6 +28,9 @@ decisions for users.
 * The system uses this preference to order the menu (with liked preferences appearing first).
 * Users can remove this preference by clicking on the 'like' or 'dislike' button again, and the system correctly responds
 to this change.
+* Users' 'like' and 'dislike' choices are used by the get-notifications use-case to notify users of recommended food 
+items in the future.
+* Users' 'like' and 'dislike' choices are reflected in the recommendation section of preference use-case
 
 ## 5. Workflow
 
@@ -34,44 +39,54 @@ to this change.
 
 skin rose
 
-title Preferences (casual level)
+title Like-Dislike (casual level)
 
 'define the lanes
 |#application|User|
 |#technology|Visitor|
 |#implementation|System|
 
-|User|
-start
-:Browse through the food menu;
-:Likes or dislikes a food item;
-while (Authentication?) is (False)
-  :Authenticate the user;
-endwhile (True)
-
-|System|
-:Saves authentication;
-:Saves the food item;
-:Rearranges menu options based on user's preference;
 
 |User|
-:Filter menu options based on their preferences;
-:Views the number of likes or dislikes for a menu option;
 
-|Visitor|
-:Views the number of likes or dislikes for a menu option;
+start  
 
-|User|
-:Undo the action;
+while (browse?) is (yes) 
+    :Execute __browse__;
+    if (Like-dislike) is (Yes) then
+        :clicks on like/dislike  button;
+        
+        |System|
+        while (Authenticated?) is (False)
+            :Execute __authenticate__;
+        endwhile (True)
+        :Saves the food item;
+        :Rearranges menu options based on user's preference;
+        
+    else (No)
+    endif  
+    
+    |User|
+    :Views the number of likes or dislikes for a menu option;
+    
+    |Visitor|
+    :Views the number of likes or dislikes for a menu option;
+    
+    |User|
+    if (undo action?) is (yes) then
+        
+        |System|
+        while (Authenticated?) is (False)
+            :Execute __authenticate__;
+        endwhile (True)
+        :Unsaves food item;
+        :Rearranges menu options based on user's preference;
+    else (no)
+    endif
+    |User|
+    :Views changes;
+endwhile(no)
 
-|System|
-:Checks authentication;
-if (Authentication?) is  ( False ) then
-:Request authentication;
-else ( True ) 
-endif
-:Unsaves food item;
-:Rearranges menu options based on user's preference;
 stop
 @enduml
 ```

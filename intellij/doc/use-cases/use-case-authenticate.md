@@ -40,7 +40,7 @@ while (browse?) is (yes)
     :Execute __Browse__;
     switch (action?)
         case (like-dislike)
-            :cliks on like/dislike  button;
+            :clicks on like/dislike  button;
         case (give-feedback)
             :navigates to feedback section;
         case (get-notifications)
@@ -58,8 +58,8 @@ while (browse?) is (yes)
     :Execute __action__;
     
 
-|User|
-:views action;
+    |User|
+    :views action;
 endwhile(no)
 
 stop

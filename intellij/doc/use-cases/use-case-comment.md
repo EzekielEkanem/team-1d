@@ -43,6 +43,10 @@ while (browse?) is (yes)
         :Clicks food item;
         :comment;
         |System|
+        if (authenticated?) is (yes) then
+            :asks user to choose to either save comments with their names or anonymously;
+        else
+        endif
         :saves comment;
     else ( no ) 
     endif  
