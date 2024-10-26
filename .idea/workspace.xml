@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3761ae3-cfd0-432b-a4e0-2f1bdafd5729" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/intellij/src/FoodItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/MealType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/MealTypeSection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/Menu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/team-1d.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/team-1d.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/intellij/doc/reference-class-diagram.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/class-diagram.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/class-diagram.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,24 +34,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.team-1d config.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.team-1d config.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/acamara/Desktop/team-1d/intellij/doc/use-cases&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/intellij/doc/use-cases" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/intellij/doc" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="team-1d config" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="openjdk-23" />
@@ -67,6 +72,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -108,6 +121,8 @@
       <workItem from="1729953534561" duration="8086000" />
       <workItem from="1729961632806" duration="395000" />
       <workItem from="1729962039064" duration="5127000" />
+      <workItem from="1729970077000" duration="6000" />
+      <workItem from="1729970092312" duration="4209000" />
     </task>
     <servers />
   </component>

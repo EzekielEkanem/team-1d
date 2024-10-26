@@ -76,4 +76,41 @@ stop
 @enduml
 ```
 
+## Sequence Diagram
+
+```plantuml
+Sequence diagrams: messages
+@startuml
+hide footbox
+
+participant "User" as user
+participant ": UI" as ui
+participant ": Menu" as menu
+participant ": Request" as request
+participant ": Request parser" as request_parser
+participant ": Food Item" as food_item
+participant ": Dining Section" as dining_section
+participant ": Meal Type Section" as meal_type_section
+participant ": Meal Type" as meal_type
+
+
+
+
+
+
+
+ui -> user : display menu
+menu -> ui : updateMenuDisplay()
+menu -> request : getRequest()
+request -> request_parser : parseRequest()
+loop i in 0..request_parser.size-1
+    request_parser -> food_item : create()
+end
+food_item -> dining_section : addFood()
+dining_section -> meal_type_section : addSection()
+meal_type_section  -> meal_type : ???
+
+@enduml
+```
+
 
