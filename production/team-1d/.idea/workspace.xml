@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3761ae3-cfd0-432b-a4e0-2f1bdafd5729" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/intellij/src/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/intellij/src/Request.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/team-1d.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/team-1d.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/FoodItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/FoodItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/MealType.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/MealType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Request.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,23 +40,20 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/eekanem/Downloads/json-simple-1.1.1",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RunManager">
     <configuration name="team-1d config" type="Application" factoryName="Application">
-      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-23" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="intellij.src.Main" />
       <module name="team-1d" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -105,11 +99,7 @@
       <workItem from="1729952119207" duration="15000" />
       <workItem from="1729952142355" duration="587000" />
       <workItem from="1729952737198" duration="789000" />
-      <workItem from="1729953534561" duration="8086000" />
-      <workItem from="1729961632806" duration="395000" />
-      <workItem from="1729962039064" duration="6856000" />
-      <workItem from="1730192853351" duration="7086000" />
-      <workItem from="1730207138636" duration="8150000" />
+      <workItem from="1729953534561" duration="7177000" />
     </task>
     <servers />
   </component>

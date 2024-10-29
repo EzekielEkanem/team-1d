@@ -1,0 +1,6 @@
+../.idea/**/workspace.xml
+../.idea/**/usage.statistics.xml
+doc/use-case-template.md
+doc/vision-template.md
+../.idea/**
+out/**

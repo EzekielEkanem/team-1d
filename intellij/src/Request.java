@@ -6,15 +6,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Request {
     String urlStr;
+    String html;
 
     public Request(String urlStr) {
-        urlStr = urlStr;
+        this.urlStr = urlStr;
     }
 
-    public static String getWebPage(String urlStr){
+    public String getWebPage(){
 
         String html = null; // return value
 
@@ -43,7 +50,23 @@ public class Request {
             System.err.printf("Error: exception %s", e.getMessage());
         }
 
+        this.html = html;
         return html;
+    }
+
+    public JSONObject getJsonMenu() throws ParseException {
+        // Isolate JSON String from HTML
+        String pattern = "Bamco.menu_items = (.*);";
+        Pattern r = Pattern.compile(pattern);
+        Matcher matcher = r.matcher(html);
+        matcher.find();
+
+        // Remove final semicolon from JSON String
+        String jsonText = matcher.group(1).split(";")[0];
+
+        // Parse the jsonText string into a JSON object
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(jsonText);
     }
 }
 
