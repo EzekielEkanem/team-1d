@@ -1,0 +1,261 @@
+Index: intellij/doc/class-diagram.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>```plantuml\n@startuml\nhide circle\nhide empty methods\n\n' classes\nclass User{\nemail\npassword\nname\n\n}\nclass Menu{\nFood_items\n}\nclass Food_item{\nid\nlabel\ncor_icon\ndescription\nlikes\ndislikes\ncomments\n}\nclass Location {\nDeece\nRetreat\nThe brew\nexpress\nstreet eats\n}\nclass day {\nDate\n}\nclass preferences {\nHalal\nVegan\nVegetarian\nKosher\nMade-w/o-gluten\nHumane\n\n}\nclass homepage {\n\n}\nclass comment {\ntitle\ntext\n}\nclass notifications {\nFood_items\n}\nclass article {\nText\n}\nclass feedback {\n\n}\nclass likes {\nFood_item\n}\nclass dislikes {\nFood_item\n}\nclass sidebar {\n\n}\n' associations\nFood_item \"1\" -- \"*\" comment : \\t\nFood_item \"1..*\" -- \"1\" Menu : \\t\nFood_item \"1\" - \"*\" likes : \\t\nFood_item \"1\" -- \"*\" dislikes : \\t\nMenu \"1\" - \"1\" preferences : \\t\npreferences \"1\" -- \"*\" notifications : \\t\npreferences \"1\" -- \"*\" sidebar : \\t\nLocation \"1\" -- \"1\" sidebar : \\t\nday \"1\" -- \"1\" sidebar : \\t\nhomepage \"1\" -- \"1\" sidebar : \\t\nUser \"1\" - \"1\" feedback : \\t\nUser \"*\" -- \"1\" likes : \\t\nUser \"*\" - \"1\" dislikes : \\t\n\n@end\n```
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/intellij/doc/class-diagram.md b/intellij/doc/class-diagram.md
+--- a/intellij/doc/class-diagram.md	(revision 0ff229c36a4f044eb1e6bed6e9559e4f18bbb266)
++++ b/intellij/doc/class-diagram.md	(date 1730216800632)
+@@ -4,12 +4,6 @@
+ hide empty methods
+ 
+ ' classes
+-class User{
+-email
+-password
+-name
+-
+-}
+ class Menu{
+ Food_items
+ }
+@@ -18,68 +12,11 @@
+ label
+ cor_icon
+ description
+-likes
+-dislikes
+-comments
+-}
+-class Location {
+-Deece
+-Retreat
+-The brew
+-express
+-street eats
+-}
+-class day {
+-Date
+-}
+-class preferences {
+-Halal
+-Vegan
+-Vegetarian
+-Kosher
+-Made-w/o-gluten
+-Humane
+-
+-}
+-class homepage {
+-
+-}
+-class comment {
+-title
+-text
+-}
+-class notifications {
+-Food_items
+-}
+-class article {
+-Text
++special
+ }
+-class feedback {
+ 
+-}
+-class likes {
+-Food_item
+-}
+-class dislikes {
+-Food_item
+-}
+-class sidebar {
+-
+-}
+ ' associations
+-Food_item "1" -- "*" comment : \t
+-Food_item "1..*" -- "1" Menu : \t
+-Food_item "1" - "*" likes : \t
+-Food_item "1" -- "*" dislikes : \t
+-Menu "1" - "1" preferences : \t
+-preferences "1" -- "*" notifications : \t
+-preferences "1" -- "*" sidebar : \t
+-Location "1" -- "1" sidebar : \t
+-day "1" -- "1" sidebar : \t
+-homepage "1" -- "1" sidebar : \t
+-User "1" - "1" feedback : \t
+-User "*" -- "1" likes : \t
+-User "*" - "1" dislikes : \t
++Food_item "1..*" - "1" Menu : \t
+ 
+ @end
+ ```
+\ No newline at end of file
+Index: intellij/doc/use-cases/use-case-browse.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Browse\n\n## 1. Primary actor and goals\n\n__Vassar students, staff (including dining administrators), and visitors__: wants to browse through the dining menu \nquickly and see information clearly in order to help them make decisions faster\n\n\n## 2. Other stakeholders and their goals\n__System__: displays dining menu for users to browse and enables users to perform further actions on the app, such as \nlike/dislike food items, give comments, read articles, etc.\n\n## 3. Preconditions\n\n* The app is able to access dining options from the dining website *https://vassar.cafebonappetit.com/*.\n\n## 4. Postconditions\n\n* Dining menu is shown clearly with food items' information in a consistent format\n* The following are the food items' information that will be shown:\n  * A photo of each food item\n  * The name of each food item\n  * Like and dislike buttons for each food item\n  * Comment section for each food item\n  * If the food is part of the recommended section, a ***star*** feature will appear close to the food's name\n* There will be a section to filter food via dietary preferences (e.g. Vegetarian, Vegan, etc) or via recommended food\nchoices\n* The default menu will be the current day's menu, but users can select the menu of future dates \n* The default dining center that will be shown on the app will be the Gordon Commons, but their will be a section where\nusers can check the menu of other dining centers, such as Retreat, The Brew, Express, and Street Eats. \n* There will also be a section where people can read food and wellness articles\n* There will be a section for giving feedback to the dining services as well as links to connect with them on social \nmedia\n* Students and staff members should be able to like or dislike menu option and give feedback.\n\n## 4. Workflow\n\n```plantuml\n@startuml\n\nskin rose\n\ntitle browse (casual level)\n\n'define the lanes\n\n|#technology|User|\n\n|User|\nstart\nwhile (browsing?) is (yes) \n  :finds menu options for a specific day;\n  \n  switch (click/browse) \n      case (filter)\n          :Execute __preference__;\n      case (location)\n          :chooses dining location;\n      case (day)\n          :chooses day;\n      case (food items)\n          switch (view food item)\n              case (like-dislike)\n                  :Execute __like-dislike__;\n              case (comment)\n                  :Execute __comment__;\n              case (give-feedback)\n                  :Execute __give-feedback__;\n          endswitch\n      case (articles)\n          :read articles;\n  endswitch\nendwhile (no)\n\nstop\n@enduml\n```\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/intellij/doc/use-cases/use-case-browse.md b/intellij/doc/use-cases/use-case-browse.md
+--- a/intellij/doc/use-cases/use-case-browse.md	(revision 0ff229c36a4f044eb1e6bed6e9559e4f18bbb266)
++++ b/intellij/doc/use-cases/use-case-browse.md	(date 1730216800636)
+@@ -76,4 +76,41 @@
+ @enduml
+ ```
+ 
++## Sequence Diagram
++
++```plantuml
++Sequence diagrams: messages
++@startuml
++hide footbox
++
++participant "User" as user
++participant ": UI" as ui
++participant ": Menu" as menu
++participant ": Request" as request
++participant ": Request parser" as request_parser
++participant ": Food Item" as food_item
++participant ": Dining Section" as dining_section
++participant ": Meal Type Section" as meal_type_section
++participant ": Meal Type" as meal_type
++
++
++
++
++
++
++
++ui -> user : display menu
++menu -> ui : updateMenuDisplay()
++menu -> request : getRequest()
++request -> request_parser : parseRequest()
++loop i in 0..request_parser.size-1
++    request_parser -> food_item : create()
++end
++food_item -> dining_section : addFood()
++dining_section -> meal_type_section : addSection()
++meal_type_section  -> meal_type : ???
++
++@enduml
++```
++
+ 
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+deleted file mode 100644
+--- a/.idea/misc.xml	(revision 0ff229c36a4f044eb1e6bed6e9559e4f18bbb266)
++++ /dev/null	(revision 0ff229c36a4f044eb1e6bed6e9559e4f18bbb266)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_23_PREVIEW" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">
+-    <output url="file://$PROJECT_DIR$/intellij/out" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: intellij/doc/reference-class-diagram.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/intellij/doc/reference-class-diagram.md b/intellij/doc/reference-class-diagram.md
+new file mode 100644
+--- /dev/null	(date 1730216800632)
++++ b/intellij/doc/reference-class-diagram.md	(date 1730216800632)
+@@ -0,0 +1,86 @@
++```plantuml
++@startuml
++hide circle
++hide empty methods
++
++' classes
++class User{
++email
++password
++name
++
++}
++class Menu{
++Food_items
++}
++class Food_item{
++id
++label
++cor_icon
++description
++likes
++dislikes
++comments
++}
++class Location {
++Deece
++Retreat
++The brew
++express
++street eats
++}
++class day {
++Date
++}
++class preferences {
++Halal
++Vegan
++Vegetarian
++Kosher
++Made-w/o-gluten
++Humane
++
++}
++class homepage {
++
++}
++class comment {
++title
++text
++}
++class notifications {
++Food_items
++}
++class article {
++Text
++}
++class feedback {
++
++}
++class likes {
++Food_item
++}
++class dislikes {
++Food_item
++}
++class sidebar {
++
++}
++
++' associations
++Food_item "1" -- "*" comment : \t
++Food_item "1..*" -- "1" Menu : \t
++Food_item "1" - "*" likes : \t
++Food_item "1" -- "*" dislikes : \t
++Menu "1" - "1" preferences : \t
++preferences "1" -- "*" notifications : \t
++preferences "1" -- "*" sidebar : \t
++Location "1" -- "1" sidebar : \t
++day "1" -- "1" sidebar : \t
++homepage "1" -- "1" sidebar : \t
++User "1" - "1" feedback : \t
++User "*" -- "1" likes : \t
++User "*" - "1" dislikes : \t
++
++@end
++```
+\ No newline at end of file

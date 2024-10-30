@@ -66,7 +66,6 @@ Food_item
 class sidebar {
 
 }
-
 ' associations
 Food_item "1" -- "*" comment : \t
 Food_item "1..*" -- "1" Menu : \t
