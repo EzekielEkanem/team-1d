@@ -16,8 +16,6 @@ public class FoodItem {
         this.name = (String) value.get("label");
         this.dietLabels = new HashSet<String>();
 
-        //out.println((JSONObject) value.get("cor_icon"));
-
         // looping through the object to find the cor_icon dictionary
         for (Object valueKey : value.keySet()) {
             String valueKeyStr = (String) valueKey;
@@ -42,10 +40,20 @@ public class FoodItem {
             }
         }
 
-        out.println(this.dietLabels);
+//        if (value.get("cor_icon") instanceof JSONObject) {
+//            JSONObject icons = (JSONObject) value.get("cor_icon");
+//            for (Object key : icons.keySet()) {
+//                dietLabels.add((String) icons.get(key));
+//            }
+//        }
     }
 
+    public HashSet<String> getDietLabels(){
+        return dietLabels;
+    }
 
-
+    public String toString(){
+        return "Food id: " + this.id + "\n" + "Food name: " + this.name + "\n" + "Dietary labels: " + this.dietLabels;
+    }
 }
 

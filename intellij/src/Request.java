@@ -17,8 +17,8 @@ import org.json.simple.parser.ParseException;
 import static java.lang.System.out;
 
 public class Request {
-    String urlStr;
-    String html;
+    private String urlStr;
+    private String html;
 
     public Request(String urlStr) {
         this.urlStr = urlStr;
@@ -81,19 +81,19 @@ public class Request {
 
         for (int index : daypartsIndices) {
             // Isolate JSON String from HTML
-            String pattern = String.format("Bamco.dayparts['%d'] = (.*);", index);
+            String pattern = String.format("Bamco.dayparts\\['%d'] = (.*);", index);
             Pattern r = Pattern.compile(pattern);
             Matcher matcher = r.matcher(html);
             matcher.find();
 
-            out.println(matcher);
+            if (matcher.hasMatch()) {
+                // Remove final semicolon from JSON String
+                String jsonText = matcher.group(1).split(";")[0];
 
-            // Remove final semicolon from JSON String
-            String jsonText = matcher.group(1).split(";")[0];
-
-            // Parse the jsonText string into a JSON object
-            JSONParser parser = new JSONParser();
-            mealDayParts.put(index, (JSONObject) parser.parse(jsonText));
+                // Parse the jsonText string into a JSON object
+                JSONParser parser = new JSONParser();
+                mealDayParts.put(index, (JSONObject) parser.parse(jsonText));
+            }
         }
         return mealDayParts;
     }
