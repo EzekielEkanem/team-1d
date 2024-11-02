@@ -85,25 +85,42 @@ hide footbox
 
 participant "User" as user
 participant ": UI" as ui
+participant "Controller" as controller
 participant ": Menu" as menu
 participant ": Request" as request
+participant ": Preference" as preference
+participant ": MealType" as meal_t
+participant ": Meal Type Section" as meal_t_s
+participant ": Dining Section" as d_s
 participant ": Food Item" as food_item
 
+user -> ui : Clicks menu
+ui -> controller : getMenu()
+controller -> menu : getMenu()
+menu -> request : requestMenu()
+request -> menu : return menu
+menu -> controller : requestPreferences()
+controller -> ui : getPref()
+ui -> user : Show preferences filter
+user -> ui : Clicks preferences
+ui -> controller : return preferences
+controller -> menu : updatePreferences(preferences)
+loop i in 0..preferences.size-1
+    menu -> preference : createPreference()
+    preference -> menu : return preferences
+end
+menu -> meal_t : createMealType(preferences)
+meal_t -> meal_t_s : createMealTypeSection(preferences)
+meal_t_s -> d_s : createDiningSection(preferences)
+d_s -> food_item : createFoodItem(preferences)
+food_item -> d_s : return food item
+d_s -> meal_t_s : return dining section
+meal_t_s -> meal_t : return meal type section
+meal_t -> menu : return meal type
+menu -> controller : return menu
+controller -> ui : return menu
+ui -> user : Display menu
 
-
-
-
-
-
-
-
-ui -> user : display menu
-menu -> ui : updateMenuDisplay()
-menu -> request : getRequest()
-request -> menu : json
-loop i in 0..json.size-1
-    menu -> food_item : createFood(food_info)
-end 
 
 
 
