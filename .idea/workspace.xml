@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f9c8f6d-ad78-477f-b59c-fbf7f2cfb7da" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/intellij/src/Controller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/InputReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/intellij/src/View.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/DiningSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/DiningSection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/MealType.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/MealType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/MealTypeSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/MealTypeSection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/test-report.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/test-report.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
