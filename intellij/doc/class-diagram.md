@@ -9,12 +9,11 @@ class Menu{
 }
 class Food_item{
 -id : int
--label : string
--cor_icon : int
--description : string
--special : int
+-name : String
+-cor_icon : Hashset<String>
 --
-+createFood() : food object
++getDietLabels() : Hashset<String> 
++toString() : String
 }
 class Request{
 --

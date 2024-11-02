@@ -5,15 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f9c8f6d-ad78-477f-b59c-fbf7f2cfb7da" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/intellij/src/Preference.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/intellij/doc/requirements-documentation.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/DiningSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/DiningSection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/FoodItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/FoodItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/MealType.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/MealType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/MealTypeSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/MealTypeSection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/src/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/src/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/class-diagram.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/class-diagram.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/iteration-plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/iteration-plan.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +88,13 @@
       <workItem from="1730417275742" duration="3294000" />
       <workItem from="1730430696560" duration="18219000" />
       <workItem from="1730473135519" duration="3347000" />
+      <workItem from="1730490103915" duration="300000" />
+      <workItem from="1730490412044" duration="1962000" />
+      <workItem from="1730501704144" duration="18000" />
+      <workItem from="1730501728837" duration="688000" />
+      <workItem from="1730502423955" duration="2318000" />
+      <workItem from="1730504749392" duration="3793000" />
+      <workItem from="1730508722845" duration="1146000" />
     </task>
     <servers />
   </component>
