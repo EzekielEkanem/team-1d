@@ -15,6 +15,7 @@ public class MealTypeSection {
     private HashMap<String, String> sectionNameHashMap;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> diningSectionHashMap;
     private Preference preference;
+    private ArrayList<DiningSection> diningStations = new ArrayList<DiningSection>();
 
     public MealTypeSection(String tierStr, HashSet<HashMap<String, JSONObject>> foodItems, String mealType, Preference preference) {
         this.tierStr = tierStr;
@@ -51,17 +52,29 @@ public class MealTypeSection {
     }
 
     public void getMealTypeSection() {
-
-        String sectionName = sectionNameHashMap.get(tierStr);
-        out.println("              " + sectionName + "                          ");
-        out.println("***********************************************************");
+        diningStations.clear();
 
         setDiningSectionHashMap();
 
         for (String key : diningSectionHashMap.keySet()) {
             DiningSection diningSection = new DiningSection(key, diningSectionHashMap.get(key), preference);
+            diningStations.add(diningSection);
             diningSection.getDiningSection();
-            out.println("********************************************");
         }
+    }
+
+    public String toString() {
+        String returnString = "";
+
+        String sectionName = sectionNameHashMap.get(tierStr);
+        returnString += "              " + sectionName + "                          \n";
+        returnString += "***********************************************************\n";
+
+        for (DiningSection station : diningStations) {
+            returnString += station.toString();
+            returnString += "********************************************\n";
+        }
+
+        return returnString;
     }
 }

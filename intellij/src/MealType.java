@@ -17,6 +17,7 @@ public class MealType {
     private HashMap<Integer, String> mealTypeName;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> mealTypeSection;
     private Preference preference;
+    private ArrayList<MealTypeSection> mealTypeSections = new ArrayList<MealTypeSection>();
 
     public MealType(int keyStr, JSONObject value, JSONObject jsonMenuObject, Preference preference) {
         this.keyStr = keyStr;
@@ -59,10 +60,9 @@ public class MealType {
     }
 
     public void getMealType() {
-
         String mealType = mealTypeName.get(keyStr);
-        out.println("                               " + mealType + "                                 ");
-        out.println("**************************************************************************");
+
+        mealTypeSections.clear();
 
         setMealTypeSection();
 
@@ -72,9 +72,24 @@ public class MealType {
             String tierStr = String.valueOf(tier);
             HashSet<HashMap<String, JSONObject>> foodItems = mealTypeSection.get(tierStr);
             MealTypeSection mealSection = new MealTypeSection(tierStr, foodItems, mealType, preference);
+            mealTypeSections.add(mealSection);
             mealSection.getMealTypeSection();
-            out.println("***********************************************************");
         }
 
+    }
+
+    public String toString () {
+        String returnString = "";
+
+        String mealType = mealTypeName.get(keyStr);
+        returnString += "                               " + mealType + "                                 \n";
+        returnString += "**************************************************************************\n";
+
+        for (MealTypeSection mealTypeSection : mealTypeSections) {
+            returnString += mealTypeSection.toString();
+            returnString += "***********************************************************\n";
+        }
+
+        return returnString;
     }
 }
