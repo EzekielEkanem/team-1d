@@ -28,7 +28,7 @@ items based on their 'liked' preferences.
 
 skin rose
 
-title Preference (casual level)
+title Manage Preferences (casual level)
 
 'define the lanes
 |#application|User|
@@ -39,8 +39,6 @@ title Preference (casual level)
 
 start  
 
-while (browse?) is (yes) 
-    :Execute __browse__;
     if (choose preference?) is (Yes) then
         :goes to preference section;
         :selects/unselects one or more preferences;
@@ -54,8 +52,6 @@ while (browse?) is (yes)
     
     |User|
     :views updated food menu;
-    
-endwhile(no)
 
 stop
 @enduml
