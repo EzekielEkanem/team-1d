@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Vassar Eats</string>
+    <string name="welcome">Welcome to Vassar Eats</string>
+    <string name="preference">Select preference</string>
+</resources>

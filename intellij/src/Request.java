@@ -33,6 +33,7 @@ public class Request {
             URL url = new URI(urlStr).toURL();
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
+            out.println(con);
 
             final int status = con.getResponseCode();
             if (status != 200) { // 200 means success
