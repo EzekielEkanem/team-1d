@@ -20,17 +20,7 @@ public class Menu {
     private ArrayList<MealType> mealTypes = new ArrayList<MealType>();
 
     public Menu() throws ParseException, JSONException {
-        Request request = new Request(menuURL, new IWebPageCallback() {
-            @Override
-            public void onSuccess(String htmlContent) {
-                System.out.println("HTML Content: " + htmlContent);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                System.err.println("Error: " + errorMessage);
-            }
-        });
+        Request request = new Request(menuURL);
         request.getWebPage();
         this.jsonMenuObject = request.getJsonMenu();
         this.mealDayParts = request.getMealDayParts();

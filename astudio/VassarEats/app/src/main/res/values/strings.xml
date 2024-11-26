@@ -2,4 +2,7 @@
     <string name="app_name">Vassar Eats</string>
     <string name="welcome">Welcome to Vassar Eats</string>
     <string name="preference">Select preference</string>
+    <string name="meal_type">Click meal_type</string>
+    <string name="meal_type_view">View meal_type</string>
+    <string name="meal_type_menu">View meal_type_menu</string>
 </resources>

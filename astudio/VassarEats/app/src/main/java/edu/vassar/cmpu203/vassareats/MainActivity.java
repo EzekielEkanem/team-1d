@@ -1,12 +1,16 @@
 package edu.vassar.cmpu203.vassareats;
 
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+=======
+import android.os.StrictMode;
+>>>>>>> 7ae9a24fbea6a45291ab674e0d4336017cbf2335
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -30,6 +34,7 @@ import edu.vassar.cmpu203.vassareats.view.SelectPreferenceView;
 public class MainActivity extends AppCompatActivity implements ISelectPreferenceView.Listener{
 //    Initialize variable
     ISelectPreferenceView selectPreferenceView;
+    Menu menu;
 
     public MainActivity() throws JSONException, ParseException {
     }
@@ -39,6 +44,16 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            menu = new Menu();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         this.selectPreferenceView = new SelectPreferenceView(this, this);
         setContentView(selectPreferenceView.getRootView());
 
@@ -53,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
 
     @Override
     public void onAddPreferenceList(List preferenceList) throws JSONException, ParseException {
+<<<<<<< HEAD
         // Make the text screen
         LinearLayout mainLayout = findViewById(R.id.main);
 
@@ -94,5 +110,9 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
 //        Menu menu = new Menu();
 //        InputReport inputReport = menu.changePreferences(preferenceList);
 //        menu.updateMenu();
+=======
+        InputReport inputReport = menu.changePreferences(preferenceList);
+        menu.updateMenu();
+>>>>>>> 7ae9a24fbea6a45291ab674e0d4336017cbf2335
     }
 }
