@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/welcomeLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="17dp"
         android:layout_marginTop="20dp"
         android:text="@string/welcome"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/preference"
@@ -25,12 +26,10 @@
         android:drawablePadding="16dp"
         android:drawableEnd="@android:drawable/arrow_down_float"
         android:background="@android:drawable/editbox_background"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeLabel" />
 
-<<<<<<< HEAD
-</LinearLayout>
-=======
     <ExpandableListView
         android:id="@+id/meal_type"
         android:layout_width="match_parent"
@@ -41,4 +40,3 @@
         app:layout_constraintTop_toTopOf="parent"></ExpandableListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
->>>>>>> 7ae9a24fbea6a45291ab674e0d4336017cbf2335
