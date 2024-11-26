@@ -2,6 +2,8 @@ package edu.vassar.cmpu203.vassareats.model;
 
 import static java.lang.System.out;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,13 +51,18 @@ public class Menu {
         for (Object key : mealDayParts.keySet()) {
 
             int keyStr = (int) key;
+            Log.e("Testing", "Key: " + keyStr);
             JSONObject value = (JSONObject) mealDayParts.get(keyStr);
 
             MealType mealType = new MealType(keyStr, value, jsonMenuObject, preference);
             mealTypes.add(mealType);
 
             mealType.getMealType();
+
+            Log.e("Testing", mealType.toString());
         }
+
+
     }
 
     public InputReport changePreferences(List preferences) {

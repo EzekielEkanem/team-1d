@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
@@ -13,9 +13,7 @@
         android:layout_height="17dp"
         android:layout_marginTop="20dp"
         android:text="@string/welcome"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/preference"
@@ -26,17 +24,12 @@
         android:drawablePadding="16dp"
         android:drawableEnd="@android:drawable/arrow_down_float"
         android:background="@android:drawable/editbox_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeLabel" />
+        android:layout_gravity="center_horizontal" />
 
     <ExpandableListView
         android:id="@+id/meal_type"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="200dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ExpandableListView>
+        android:layout_marginTop="200dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

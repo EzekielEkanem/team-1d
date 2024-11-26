@@ -4,6 +4,7 @@ import static java.lang.System.out;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,11 +60,17 @@ public class Request {
             // read and save html
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
+
             StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) content.append(inputLine);
+            while ((inputLine = in.readLine()) != null) {
+//                Log.e("Testing", "inputLine" + inputLine);
+                content.append(inputLine);
+            }
             in.close();
 
             html = content.toString();
+
+            Log.e("Testing", html);
 
         } catch(URISyntaxException | IOException e) {
             System.err.printf("Error: exception %s", e.getMessage());
@@ -84,6 +91,8 @@ public class Request {
         // Remove final semicolon from JSON String
         String jsonText = matcher.group(1).split(";")[0];
 
+        Log.e("Testing", jsonText);
+
         // Parse the jsonText string into a JSON object
         JSONObject parser = new JSONObject(jsonText);
         return parser;
@@ -98,10 +107,10 @@ public class Request {
 
         for (int index : daypartsIndices) {
             // Isolate JSON String from HTML
-            String pattern = String.format("Bamco.dayparts\\['%d'] = (.*);", index);
+            String pattern = String.format("Bamco\\.dayparts\\['%d'\\]\\s*=\\s*(\\{.*?\\});", index);
+//            Log.e("Testing", pattern);
             Pattern r = Pattern.compile(pattern);
             Matcher matcher = r.matcher(html);
-            matcher.find();
 
             if (matcher.find()) {
                 // Remove final semicolon from JSON String
@@ -110,6 +119,7 @@ public class Request {
                 // Parse the jsonText string into a JSON object
                 JSONObject parser = new JSONObject(jsonText);
                 mealDayParts.put(index, parser);
+//                Log.e("Testing", "Daypart: " + index);
             }
         }
         return mealDayParts;
