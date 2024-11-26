@@ -29,54 +29,48 @@ import java.util.regex.Pattern;
 public class Request {
     private String urlStr;
     private String html;
-    private IWebPageCallback callback;
+//    private IWebPageCallback callback;
 
-    public Request(String urlStr, IWebPageCallback callback) {
+    public Request(String urlStr) {
         this.urlStr = urlStr;
-        this.callback = callback;
+//        this.callback = callback;
     }
 
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    Handler handler = new Handler(Looper.getMainLooper());
+//    ExecutorService executor = Executors.newSingleThreadExecutor();
+//    Handler handler = new Handler(Looper.getMainLooper());
 
-    public void getWebPage() {
-        executor.execute(() -> {
-            String html = null;
-            try {
-                URL url = new URI(urlStr).toURL();
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+    public String getWebPage(){
 
-                int status = con.getResponseCode();
-                if (status >= 200 && status < 300) { // Success
-                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    StringBuilder content = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
-                    }
-                    in.close();
-                    html = content.toString();
+        String html = null; // return value
 
-                    // Post result to the main thread
-                    String finalHtml = html;
-                    handler.post(() -> callback.onSuccess(finalHtml));
-                } else {
-                    BufferedReader errorReader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-                    StringBuilder errorContent = new StringBuilder();
-                    String line;
-                    while ((line = errorReader.readLine()) != null) {
-                        errorContent.append(line);
-                    }
-                    errorReader.close();
-                    String errorMessage = "Error code: " + status + ", message: " + errorContent;
-                    handler.post(() -> callback.onError(errorMessage));
-                }
-            } catch (Exception e) {
-                String errorMessage = "Exception: " + e.getMessage();
-                handler.post(() -> callback.onError(errorMessage));
+        try {
+            // create URL, issue request
+            URL url = new URI(urlStr).toURL();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            out.println(con);
+
+            final int status = con.getResponseCode();
+            if (status != 200) { // 200 means success
+                System.err.printf("Error: code %d", status);
+                return html;
             }
-        });
+
+            // read and save html
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) content.append(inputLine);
+            in.close();
+
+            html = content.toString();
+
+        } catch(URISyntaxException | IOException e) {
+            System.err.printf("Error: exception %s", e.getMessage());
+        }
+
+        this.html = html;
+        return html;
     }
 
 
