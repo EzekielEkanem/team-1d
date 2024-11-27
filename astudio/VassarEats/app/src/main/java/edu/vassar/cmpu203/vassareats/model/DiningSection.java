@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class DiningSection {
     private String station;
@@ -17,6 +18,14 @@ public class DiningSection {
         this.station = section;
         this.foodItem = foodItem;
         this.preference = preference.getPreference();
+    }
+
+    public List<FoodItem> getFoodItems() {
+        return foodItems;
+    }
+
+    public String getDiningSectionName() {
+        return station;
     }
 
     public void getDiningSection() throws JSONException {

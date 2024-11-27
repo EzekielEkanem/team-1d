@@ -25,6 +25,10 @@ public class FoodItem {
         }
     }
 
+    public String getFoodItemName(){
+        return name;
+    }
+
     public HashSet<String> getDietLabels(){
         return dietLabels;
     }

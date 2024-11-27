@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
 //        Menu menu = new Menu();
         InputReport inputReport = menu.changePreferences(preferenceList);
         menu.updateMenu();
-        Log.e("Testing", menu.toString());
+        selectPreferenceView.updateMenu(menu.getMenu());
+        Log.e("Testing", "Menu should be updated");
+
     }
 }

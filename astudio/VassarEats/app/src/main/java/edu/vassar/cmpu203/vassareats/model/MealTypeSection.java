@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class MealTypeSection {
     private String tierStr;
@@ -27,6 +28,14 @@ public class MealTypeSection {
         sectionNameHashMap.put("3", mealType + " Condiments and Extras");
         this.diningSectionHashMap = new HashMap<>();
         this.preference = preference;
+    }
+
+    public List<DiningSection> getDiningSections() {
+        return diningStations;
+    }
+
+    public String getMealTypeSectionName() {
+        return sectionNameHashMap.get(tierStr);
     }
 
     public void setDiningSectionHashMap() throws JSONException {

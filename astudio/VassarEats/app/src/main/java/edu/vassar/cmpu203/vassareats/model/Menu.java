@@ -51,7 +51,7 @@ public class Menu {
         for (Object key : mealDayParts.keySet()) {
 
             int keyStr = (int) key;
-            Log.e("Testing", "Key: " + keyStr);
+//            Log.e("Testing", "Key: " + keyStr);
             JSONObject value = (JSONObject) mealDayParts.get(keyStr);
 
             MealType mealType = new MealType(keyStr, value, jsonMenuObject, preference);
@@ -59,10 +59,14 @@ public class Menu {
 
             mealType.getMealType();
 
-            Log.e("Testing", mealType.toString());
+//            Log.e("Testing", mealType.toString());
         }
 
 
+    }
+
+    public List<MealType> getMenu() {
+        return mealTypes;
     }
 
     public InputReport changePreferences(List preferences) {

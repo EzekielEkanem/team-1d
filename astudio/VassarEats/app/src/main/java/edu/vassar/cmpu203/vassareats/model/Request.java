@@ -70,7 +70,7 @@ public class Request {
 
             html = content.toString();
 
-            Log.e("Testing", html);
+//            Log.e("Testing", html);
 
         } catch(URISyntaxException | IOException e) {
             System.err.printf("Error: exception %s", e.getMessage());
@@ -91,7 +91,7 @@ public class Request {
         // Remove final semicolon from JSON String
         String jsonText = matcher.group(1).split(";")[0];
 
-        Log.e("Testing", jsonText);
+//        Log.e("Testing", jsonText);
 
         // Parse the jsonText string into a JSON object
         JSONObject parser = new JSONObject(jsonText);

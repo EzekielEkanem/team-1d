@@ -1,35 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/welcomeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/welcome"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:id="@+id/preference"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="Select Preference"
-        android:drawablePadding="16dp"
-        android:drawableEnd="@android:drawable/arrow_down_float"
-        android:background="@android:drawable/editbox_background"
-        android:layout_gravity="center_horizontal" />
-
-    <ExpandableListView
-        android:id="@+id/meal_type"
+    <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="200dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/welcomeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/welcome"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/preference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Select Preference"
+            android:drawablePadding="16dp"
+            android:drawableEnd="@android:drawable/arrow_down_float"
+            android:background="@android:drawable/editbox_background"
+            android:layout_gravity="center_horizontal" />
+
+        <!--
+        <ExpandableListView
+            android:id="@+id/expanded_menu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="200dp" />
+        -->
+
+    </LinearLayout>
+</ScrollView>

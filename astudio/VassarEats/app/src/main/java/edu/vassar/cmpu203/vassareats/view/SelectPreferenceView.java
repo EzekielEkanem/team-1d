@@ -3,8 +3,13 @@ package edu.vassar.cmpu203.vassareats.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -14,7 +19,12 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.MainActivity;
+import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
+import edu.vassar.cmpu203.vassareats.model.DiningSection;
+import edu.vassar.cmpu203.vassareats.model.FoodItem;
+import edu.vassar.cmpu203.vassareats.model.MealType;
+import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
 
 public class SelectPreferenceView implements ISelectPreferenceView{
 
@@ -119,6 +129,58 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                 builder.show();
             }
         });
+    }
+
+    @Override
+    public void updateMenu(List<MealType> mealTypes) {
+        Log.e("Testing", "is this function running");
+        Context context = binding.getRoot().getContext();
+
+// Make the text screen
+        LinearLayout mainLayout = binding.getRoot().findViewById(R.id.main);
+        LayoutInflater inflater = LayoutInflater.from(context);
+//        int indexBeforeExpandableListView = mainLayout.indexOfChild(mainLayout.findViewById(R.id.expanded_menu));
+
+        for (MealType mealType : mealTypes) {
+
+            View mealTypeView = inflater.inflate(R.layout.activity_meal_type, null);
+            TextView mealTypeTextView = mealTypeView.findViewById(R.id.mealType);
+
+            mealTypeTextView.setText(mealType.getMealTypeName());
+
+            mainLayout.addView(mealTypeView);
+
+            for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
+
+                View mealTypeSectionView = inflater.inflate(R.layout.activity_meal_type_section, null);
+                TextView mealTypeSectionTextView = mealTypeSectionView.findViewById(R.id.mealTypeSection);
+
+                mealTypeSectionTextView.setText(mealTypeSection.getMealTypeSectionName());
+
+                mainLayout.addView(mealTypeSectionView);
+
+                for (DiningSection diningSection : mealTypeSection.getDiningSections()) {
+
+                    View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
+                    TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
+
+                    diningSectionTextView.setText(diningSection.getDiningSectionName());
+
+                    mainLayout.addView(diningSectionView);
+
+                    for (FoodItem foodItem : diningSection.getFoodItems()) {
+
+                        View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
+                        TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
+
+                        foodItemTextView.setText(foodItem.getFoodItemName());
+
+                        mainLayout.addView(foodItemView);
+
+                    }
+                }
+            }
+        }
     }
 
     @Override

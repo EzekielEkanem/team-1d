@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class MealType {
     private int keyStr;
@@ -57,6 +58,14 @@ public class MealType {
                 }
             }
         }
+    }
+
+    public List<MealTypeSection> getMealTypeSections() {
+        return mealTypeSections;
+    }
+
+    public String getMealTypeName() {
+        return mealTypeName.get(keyStr);
     }
 
     public void getMealType() throws JSONException {
