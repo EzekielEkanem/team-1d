@@ -12,22 +12,42 @@ public class DiningSection {
     private String station;
     private HashSet<HashMap<String, JSONObject>> foodItem;
     private ArrayList<String> preference;
-    private ArrayList<FoodItem> foodItems = new ArrayList<FoodItem>();
+    private ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
 
-    public DiningSection(String section, HashSet<HashMap<String, JSONObject>> foodItem, Preference preference) {
+    /**
+     * DiningSection constructor instantiates station, foodItem, and preference field variables.
+     * @param section: the station section of the food item
+     * @param foodItem: a hashset containing a hashmap of each food item. Each hashmap contains the
+     *                id of the food and the JSONObject containing all the information of the food
+     * @param preference: the preference class that contains the preference selected by the user
+     */
+    public DiningSection(String section, HashSet<HashMap<String, JSONObject>> foodItem, edu.vassar.cmpu203.vassareats.model.Preference preference) {
         this.station = section;
         this.foodItem = foodItem;
         this.preference = preference.getPreference();
     }
 
-    public List<FoodItem> getFoodItems() {
+    /**
+     * getFoodItems method returns the list of the food items for a particular station
+     * @return List<FoodItem>: the list containing the food items for a particular station
+     */
+    public List<edu.vassar.cmpu203.vassareats.model.FoodItem> getFoodItems() {
         return foodItems;
     }
 
+    /**
+     * getDiningSectionName method returns the station name for the food item
+     * @return String: the station name of the food item
+     */
     public String getDiningSectionName() {
         return station;
     }
 
+    /**
+     * getDiningSection method creates a food item class for each method in foodItem and appends each
+     * foodItem class to foodItems Array list
+     * @throws JSONException
+     */
     public void getDiningSection() throws JSONException {
         boolean printItem = false;
 
@@ -35,7 +55,7 @@ public class DiningSection {
 
         for (HashMap<String, JSONObject> key : foodItem) {
             for (String keyName : key.keySet()) {
-                FoodItem newFood = new FoodItem(keyName, key.get(keyName));
+                edu.vassar.cmpu203.vassareats.model.FoodItem newFood = new edu.vassar.cmpu203.vassareats.model.FoodItem(keyName, key.get(keyName));
                 HashSet<String> dietLabels = newFood.getDietLabels();
                 for (String dietLabel : dietLabels) {
                     if (preference.contains(dietLabel) || preference.isEmpty()) {
@@ -50,13 +70,17 @@ public class DiningSection {
         }
     }
 
+    /**
+     * toString method returns a string representation of dining section
+     * @return String: a string representation of dining section
+     */
     public String toString() {
         String returnString = "";
 
         returnString += "          " + station + "                   \n" +
                 "********************************************\n";
 
-        for (FoodItem foodItem : foodItems) {
+        for (edu.vassar.cmpu203.vassareats.model.FoodItem foodItem : foodItems) {
             returnString += foodItem.toString() + "\n";
             returnString += "*****************************\n";
         }

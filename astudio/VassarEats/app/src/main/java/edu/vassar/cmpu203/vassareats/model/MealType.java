@@ -15,10 +15,20 @@ public class MealType {
     private JSONObject jsonMenuObject;
     private HashMap<Integer, String> mealTypeName;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> mealTypeSection;
-    private Preference preference;
-    private ArrayList<MealTypeSection> mealTypeSections = new ArrayList<MealTypeSection>();
+    private edu.vassar.cmpu203.vassareats.model.Preference preference;
+    private ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection> mealTypeSections = new ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection>();
 
-    public MealType(int keyStr, JSONObject value, JSONObject jsonMenuObject, Preference preference) {
+    /**
+     * MealType constructor instantiates keyStr, value, jsonMenuObject, mealTypeName, mealTypeSection and
+     * preference field variables. It also puts the corresponding section for each meal Type in
+     * mealTypeName
+     * @param keyStr: the integer that corresponds to a particular meal type (e.g. Breakfast)
+     * @param value: JSON Object that contains the information for all food items for a particular meal type
+     * @param jsonMenuObject: JSON Object that contains all information for all food items for a particular
+     *                      day
+     * @param preference: contains the preference selected by the user
+     */
+    public MealType(int keyStr, JSONObject value, JSONObject jsonMenuObject, edu.vassar.cmpu203.vassareats.model.Preference preference) {
         this.keyStr = keyStr;
         this.value = value;
         this.jsonMenuObject = jsonMenuObject;
@@ -33,7 +43,12 @@ public class MealType {
         this.preference = preference;
     }
 
-    public void setMealTypeSection () throws JSONException {
+    /**
+     * setMealTypeSection method gets the stations of each meal and group them together in mealTypeSection
+     * hashmap
+     * @throws JSONException
+     */
+    public void setMealTypeSection() throws JSONException {
 
         if (value.get("stations") instanceof JSONArray stations) {
             for (int i = 0; i < stations.length(); i++) {
@@ -60,14 +75,27 @@ public class MealType {
         }
     }
 
-    public List<MealTypeSection> getMealTypeSections() {
+    /**
+     * getMealTypeSections method returns a list of the meal type sections under a particular meal type
+     * @return List<MealTypeSection>: the list of mealTypeSections classes
+     */
+    public List<edu.vassar.cmpu203.vassareats.model.MealTypeSection> getMealTypeSections() {
         return mealTypeSections;
     }
 
+    /**
+     * getMealTypeName method returns the meal type
+     * @return String: the meal type (e.g., Dinner, Breakfast)
+     */
     public String getMealTypeName() {
         return mealTypeName.get(keyStr);
     }
 
+    /**
+     * getMealType method separates the food items based on the meal type sections and appends each
+     * mealTypeSection class into mealTypeSections list
+     * @throws JSONException
+     */
     public void getMealType() throws JSONException {
         String mealType = mealTypeName.get(keyStr);
 
@@ -80,13 +108,17 @@ public class MealType {
         for (char tier : tiers) {
             String tierStr = String.valueOf(tier);
             HashSet<HashMap<String, JSONObject>> foodItems = mealTypeSection.get(tierStr);
-            MealTypeSection mealSection = new MealTypeSection(tierStr, foodItems, mealType, preference);
+            edu.vassar.cmpu203.vassareats.model.MealTypeSection mealSection = new edu.vassar.cmpu203.vassareats.model.MealTypeSection(tierStr, foodItems, mealType, preference);
             mealTypeSections.add(mealSection);
             mealSection.getMealTypeSection();
         }
 
     }
 
+    /**
+     * toString method returns a string representation of meal type
+     * @return String: a string representation of meal type
+     */
     public String toString () {
         String returnString = "";
 
@@ -94,7 +126,7 @@ public class MealType {
         returnString += "                               " + mealType + "                                 \n";
         returnString += "**************************************************************************\n";
 
-        for (MealTypeSection mealTypeSection : mealTypeSections) {
+        for (edu.vassar.cmpu203.vassareats.model.MealTypeSection mealTypeSection : mealTypeSections) {
             returnString += mealTypeSection.toString();
             returnString += "***********************************************************\n";
         }
