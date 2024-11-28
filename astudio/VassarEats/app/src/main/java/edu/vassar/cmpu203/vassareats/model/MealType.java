@@ -17,6 +17,7 @@ public class MealType {
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> mealTypeSection;
     private Preference preference;
     private ArrayList<MealTypeSection> mealTypeSections = new ArrayList<MealTypeSection>();
+    private String mealTypeNameReal;
 
     public MealType(int keyStr, JSONObject value, JSONObject jsonMenuObject, Preference preference) {
         this.keyStr = keyStr;
@@ -31,6 +32,14 @@ public class MealType {
         mealTypeName.put(7, "Late Night");
         this.mealTypeSection = new HashMap<String, HashSet<HashMap<String, JSONObject>>>();
         this.preference = preference;
+    }
+
+    public MealType(String mealTypeName) {
+        this.mealTypeNameReal = mealTypeName;
+    }
+
+    public void addMealTypeSection(MealTypeSection mealTypeSection) {
+        mealTypeSections.add(mealTypeSection);
     }
 
     public void setMealTypeSection () throws JSONException {
@@ -65,7 +74,7 @@ public class MealType {
     }
 
     public String getMealTypeName() {
-        return mealTypeName.get(keyStr);
+        return mealTypeNameReal;
     }
 
     public void getMealType() throws JSONException {
@@ -90,8 +99,7 @@ public class MealType {
     public String toString () {
         String returnString = "";
 
-        String mealType = mealTypeName.get(keyStr);
-        returnString += "                               " + mealType + "                                 \n";
+        returnString += "                               " + mealTypeNameReal + "                                 \n";
         returnString += "**************************************************************************\n";
 
         for (MealTypeSection mealTypeSection : mealTypeSections) {

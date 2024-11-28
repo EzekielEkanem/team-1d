@@ -2,13 +2,14 @@ package edu.vassar.cmpu203.vassareats.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Preference {
-    private ArrayList<Integer> preferencesList;
+    private List<Integer> preferencesList;
     private HashMap<Integer, String> preferencesMap;
     private ArrayList<String> preferences;
 
-    public Preference(ArrayList<Integer> preferencesList) {
+    public Preference(List<Integer> preferencesList) {
         this.preferencesList = preferencesList;
         this.preferencesMap = new HashMap<>();
         preferencesMap.put(0, "Vegetarian");

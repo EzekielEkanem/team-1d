@@ -16,7 +16,8 @@ public class MealTypeSection {
     private HashMap<String, String> sectionNameHashMap;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> diningSectionHashMap;
     private Preference preference;
-    private ArrayList<DiningSection> diningStations = new ArrayList<DiningSection>();
+    private ArrayList<DiningStation> diningStations = new ArrayList<DiningStation>();
+    private String mealTypeSectionName;
 
     public MealTypeSection(String tierStr, HashSet<HashMap<String, JSONObject>> foodItems, String mealType, Preference preference) {
         this.tierStr = tierStr;
@@ -30,12 +31,20 @@ public class MealTypeSection {
         this.preference = preference;
     }
 
-    public List<DiningSection> getDiningSections() {
+    public MealTypeSection(String mealTypeSectionName) {
+        this.mealTypeSectionName = mealTypeSectionName;
+    }
+
+    public void addDiningSection(DiningStation diningStation) {
+        diningStations.add(diningStation);
+    }
+
+    public List<DiningStation> getDiningSections() {
         return diningStations;
     }
 
     public String getMealTypeSectionName() {
-        return sectionNameHashMap.get(tierStr);
+        return mealTypeSectionName;
     }
 
     public void setDiningSectionHashMap() throws JSONException {
@@ -66,20 +75,19 @@ public class MealTypeSection {
         setDiningSectionHashMap();
 
         for (String key : diningSectionHashMap.keySet()) {
-            DiningSection diningSection = new DiningSection(key, diningSectionHashMap.get(key), preference);
-            diningStations.add(diningSection);
-            diningSection.getDiningSection();
+            DiningStation diningStation = new DiningStation(key, diningSectionHashMap.get(key), preference);
+            diningStations.add(diningStation);
+            diningStation.getDiningSection();
         }
     }
 
     public String toString() {
         String returnString = "";
 
-        String sectionName = sectionNameHashMap.get(tierStr);
-        returnString += "              " + sectionName + "                          \n";
+        returnString += "              " + mealTypeSectionName + "                          \n";
         returnString += "***********************************************************\n";
 
-        for (DiningSection station : diningStations) {
+        for (DiningStation station : diningStations) {
             returnString += station.toString();
             returnString += "********************************************\n";
         }

@@ -8,16 +8,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class DiningSection {
-    private String station;
+public class DiningStation {
+    private String stationName;
     private HashSet<HashMap<String, JSONObject>> foodItem;
     private ArrayList<String> preference;
     private ArrayList<FoodItem> foodItems = new ArrayList<FoodItem>();
 
-    public DiningSection(String section, HashSet<HashMap<String, JSONObject>> foodItem, Preference preference) {
-        this.station = section;
+    public DiningStation(String section, HashSet<HashMap<String, JSONObject>> foodItem, Preference preference) {
+        this.stationName = section;
         this.foodItem = foodItem;
         this.preference = preference.getPreference();
+    }
+
+    public DiningStation(String stationName) {
+        this.stationName = stationName;
+    }
+
+    public void addFoodItem(FoodItem foodItem) {
+        foodItems.add(foodItem);
     }
 
     public List<FoodItem> getFoodItems() {
@@ -25,7 +33,7 @@ public class DiningSection {
     }
 
     public String getDiningSectionName() {
-        return station;
+        return stationName;
     }
 
     public void getDiningSection() throws JSONException {
@@ -53,7 +61,7 @@ public class DiningSection {
     public String toString() {
         String returnString = "";
 
-        returnString += "          " + station + "                   \n" +
+        returnString += "          " + stationName + "                   \n" +
                 "********************************************\n";
 
         for (FoodItem foodItem : foodItems) {

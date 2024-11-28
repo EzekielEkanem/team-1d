@@ -3,9 +3,6 @@ package edu.vassar.cmpu203.vassareats.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,10 +15,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.MainActivity;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
-import edu.vassar.cmpu203.vassareats.model.DiningSection;
+import edu.vassar.cmpu203.vassareats.model.DiningStation;
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
@@ -177,16 +173,16 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                 mainLayout.addView(mealTypeSectionView);
 
-                for (DiningSection diningSection : mealTypeSection.getDiningSections()) {
+                for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
 
                     View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
                     TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
 
-                    diningSectionTextView.setText(diningSection.getDiningSectionName());
+                    diningSectionTextView.setText(diningStation.getDiningSectionName());
 
                     mainLayout.addView(diningSectionView);
 
-                    for (FoodItem foodItem : diningSection.getFoodItems()) {
+                    for (FoodItem foodItem : diningStation.getFoodItems()) {
 
                         View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
                         TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public class FoodItem {
     private String id;
@@ -25,8 +26,18 @@ public class FoodItem {
         }
     }
 
+    public FoodItem(String name, String id, HashSet<String> dietLabels){
+        this.name = name;
+        this.id = id;
+        this.dietLabels = dietLabels;
+    }
+
     public String getFoodItemName(){
         return name;
+    }
+
+    public String getFoodId(){
+        return id;
     }
 
     public HashSet<String> getDietLabels(){
