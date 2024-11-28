@@ -11,13 +11,13 @@ public class Preference {
     public Preference(ArrayList<Integer> preferencesList) {
         this.preferencesList = preferencesList;
         this.preferencesMap = new HashMap<>();
-        preferencesMap.put(1, "Vegetarian");
-        preferencesMap.put(2, "Vegan");
-        preferencesMap.put(3, "Halal");
-        preferencesMap.put(4, "Kosher");
-        preferencesMap.put(5, "Made without Gluten-Containing Ingredients");
-        preferencesMap.put(6, "Humane");
-        preferencesMap.put(7, "Farm to Fork");
+        preferencesMap.put(0, "Vegetarian");
+        preferencesMap.put(1, "Vegan");
+        preferencesMap.put(2, "Halal");
+        preferencesMap.put(3, "Kosher");
+        preferencesMap.put(4, "Made without Gluten-Containing Ingredients");
+        preferencesMap.put(5, "Humane");
+        preferencesMap.put(6, "Farm to Fork");
         this.preferences = new ArrayList<>();
     }
 
