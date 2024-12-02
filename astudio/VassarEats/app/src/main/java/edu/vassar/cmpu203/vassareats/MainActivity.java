@@ -2,17 +2,10 @@ package edu.vassar.cmpu203.vassareats;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.os.StrictMode;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,9 +15,7 @@ import org.json.JSONException;
 import java.text.ParseException;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.model.InputReport;
 import edu.vassar.cmpu203.vassareats.model.Menu;
-import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.ISelectPreferenceView;
 import edu.vassar.cmpu203.vassareats.view.SelectPreferenceView;
 
@@ -46,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
         StrictMode.setThreadPolicy(policy);
         try {
             menu = new Menu();
-            menu.updateMenu();
+            Log.e("Testing", "Menu on load \n" + menu);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         } catch (JSONException e) {
@@ -65,12 +56,12 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
     }
 
     @Override
-    public void onAddPreferenceList(List preferenceList) throws JSONException, ParseException {
+    public void onAddPreferenceList(List<Integer> preferenceList) throws JSONException, ParseException {
 //        Menu menu = new Menu();
-        InputReport inputReport = menu.changePreferences(preferenceList);
+        menu.changePreferences(preferenceList);
         menu.updateMenu();
+        Log.e("Testing", "Menu should be updated \n" + menu.toString());
         selectPreferenceView.updateMenu(menu.getMenu());
-        Log.e("Testing", "Menu should be updated");
 
     }
 }

@@ -11,7 +11,7 @@ import edu.vassar.cmpu203.vassareats.model.MealType;
 
 public interface ISelectPreferenceView {
     interface Listener {
-        void onAddPreferenceList(List preferenceList) throws JSONException, ParseException;
+        void onAddPreferenceList(List<Integer> preferenceList) throws JSONException, ParseException;
     }
 
     void updateMenu(List<MealType> mealTypes);

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public class FoodItem {
     private String id;
@@ -32,18 +33,34 @@ public class FoodItem {
         }
     }
 
+<<<<<<< HEAD
     /**
      * getFoodItemName method returns the name of the food item based on the label on the json Object
      * @return String: the name of the food item
      */
+=======
+    public FoodItem(String name, String id, HashSet<String> dietLabels){
+        this.name = name;
+        this.id = id;
+        this.dietLabels = dietLabels;
+    }
+
+>>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
     public String getFoodItemName(){
         return name;
     }
 
+<<<<<<< HEAD
     /**
      * getDietLabels method returns the dietLabels in which the food item is classified under (e.g. Vegan)
      * @return HashSet<String>: an hashset containing all dietary labels of the food
      */
+=======
+    public String getFoodId(){
+        return id;
+    }
+
+>>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
     public HashSet<String> getDietLabels(){
         return dietLabels;
     }

@@ -3,6 +3,8 @@ package edu.vassar.cmpu203.vassareats.model;
 import static java.lang.System.out;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.vassar.cmpu203.vassareats.R;
+
 public class Menu {
     private JSONObject jsonMenuObject;
     private HashMap<Integer, JSONObject> mealDayParts;
@@ -20,12 +24,15 @@ public class Menu {
     private String menuURL = "https://vassar.cafebonappetit.com/cafe/gordon/2024-11-22/";
     private Preference preference;
     private ArrayList<MealType> mealTypes = new ArrayList<MealType>();
+    private List<MealType> originalMenu;
+    private List<MealType> menu;
 
     public Menu() throws ParseException, JSONException {
-        Request request = new Request(menuURL);
-        request.getWebPage();
-        this.jsonMenuObject = request.getJsonMenu();
-        this.mealDayParts = request.getMealDayParts();
+        Request request = new Request();
+
+        originalMenu = request.getJavaMenu(menuURL);
+        menu = new ArrayList<MealType>();
+
         this.preference = new Preference(new ArrayList<Integer>());
     }
 
@@ -46,85 +53,48 @@ public class Menu {
     }
 
     public void updateMenu() throws JSONException {
-        mealTypes.clear();
+        menu.clear();
 
-        for (Object key : mealDayParts.keySet()) {
+        for (MealType mealType : originalMenu) {
 
-            int keyStr = (int) key;
-//            Log.e("Testing", "Key: " + keyStr);
-            JSONObject value = (JSONObject) mealDayParts.get(keyStr);
+            MealType newMealType = new MealType(mealType.getMealTypeName());
 
-            MealType mealType = new MealType(keyStr, value, jsonMenuObject, preference);
-            mealTypes.add(mealType);
+            menu.add(newMealType);
 
-            mealType.getMealType();
+            for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
 
-//            Log.e("Testing", mealType.toString());
+                MealTypeSection newMealTypeSection = new MealTypeSection(mealTypeSection.getMealTypeSectionName());
+
+                newMealType.addMealTypeSection(newMealTypeSection);
+
+                for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
+
+                    DiningStation newDiningStation = new DiningStation(diningStation.getDiningSectionName());
+
+                    newMealTypeSection.addDiningSection(newDiningStation);
+
+                    for (FoodItem foodItem : diningStation.getFoodItems()) {
+
+                        for (String dietLabel : foodItem.getDietLabels()) {
+                            List<String> preferences = preference.getPreference();
+                            if (preferences.contains(dietLabel) || preferences.isEmpty()) {
+                                FoodItem newFood = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels());
+
+                                newDiningStation.addFoodItem(newFood);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-
     }
 
     public List<MealType> getMenu() {
-        return mealTypes;
+        return menu;
     }
 
-    public InputReport changePreferences(List preferences) {
-        InputReport inputReport = new InputReport(true);
-//        int preference;
-//        ArrayList<Integer> preferencesList = new ArrayList<Integer>();
-//
-//        if (!preferences.isEmpty()) {
-//            if (preferences.length() > 1) {
-//                try {
-//                    String[] preferencesArray = preferences.split(",");
-//
-//                    for (String p : preferencesArray) {
-//                        preference = Integer.parseInt(p);
-//
-//                        if (preference <= 0 || preference >= 9) {
-//                            inputReport.setStatusSuccess(false);
-//                            inputReport.setErrorCode(0);
-//                            break;
-//                        }
-//                        else {
-//                            preferencesList.add(Integer.parseInt(p));
-//                        }
-//                    }
-//                }
-//                catch (Exception e) {
-//                    inputReport.setStatusSuccess(false);
-//                    inputReport.setErrorCode(1);
-//                }
-//            } else {
-//                try{
-//                    preference = Integer.parseInt(preferences);
-//
-//                    if (preference <= 0 || preference >= 9) {
-//                        inputReport.setStatusSuccess(false);
-//                        inputReport.setErrorCode(0);
-//                    }
-//                    else {
-//                        preferencesList.add(preference);
-//                    }
-//                }
-//                catch (Exception e) {
-//                    inputReport.setStatusSuccess(false);
-//                    inputReport.setErrorCode(1);
-//                }
-//            }
-//        }
-//        else {
-//            inputReport.setStatusSuccess(false);
-//            inputReport.setErrorCode(2);
-//        }
-
-        setMenuPreferences((ArrayList<Integer>) preferences);
-
-        return inputReport;
-    }
-
-    private void setMenuPreferences(ArrayList<Integer> preferences){
+    public void changePreferences(List<Integer> preferences) {
         this.preference = new Preference(preferences);
     }
 
@@ -139,11 +109,11 @@ public class Menu {
         returnString += "                               Menu Items                                 \n";
         returnString += "**************************************************************************\n";
 
-        for (MealType mealType : mealTypes) {
+        for (MealType mealType : menu) {
             returnString += mealType.toString() + "\n";
             returnString += "**************************************************************************\n";
         }
 
         return returnString;
     }
-        }
+}

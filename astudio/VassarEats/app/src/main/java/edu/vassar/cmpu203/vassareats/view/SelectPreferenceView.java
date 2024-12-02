@@ -3,9 +3,6 @@ package edu.vassar.cmpu203.vassareats.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,10 +15,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.MainActivity;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
-import edu.vassar.cmpu203.vassareats.model.DiningSection;
+import edu.vassar.cmpu203.vassareats.model.DiningStation;
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
@@ -57,6 +53,7 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                 builder.setMultiChoiceItems(preferenceArray, selectedPreference, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+//                        Log.e("Testing", "Which: " + which + " isChecked: " + isChecked);
 //                        Check condition
                         if (isChecked) {
 //                            When checkbox is selected, add position in preferenceList
@@ -65,7 +62,12 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                             Collections.sort(preferenceList);
                         } else {
 //                            When checkbox is unselected, remove position from preferenceList
-                            preferenceList.remove(which);
+                            for (int i = 0; i < preferenceList.size(); i++) {
+                                if (preferenceList.get(i) == which) {
+                                    preferenceList.remove(i);
+                                }
+                            }
+//                            preferenceList.remove(which);
                         }
                     }
                 });
@@ -103,6 +105,8 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                     public void onClick(DialogInterface dialog, int which) {
 //                        Dismiss dialog
                         dialog.dismiss();
+
+                        //Doesn't do anything in terms of reversing selected preferences
                     }
                 });
 
@@ -113,11 +117,13 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         for (int i = 0; i < selectedPreference.length; i++) {
 //                            Remove all selection
                             selectedPreference[i] = false;
-//                            Clear preferenceList
-                            preferenceList.clear();
-//                            Clear preference value
-                            binding.preference.setText("");
                         }
+                        // Clear preferenceList
+                        preferenceList.clear();
+
+//                        Clear preference value
+                        binding.preference.setText("");
+
                         try {
                             listener.onAddPreferenceList(preferenceList);
                         } catch (JSONException | ParseException e) {
@@ -133,13 +139,21 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
     @Override
     public void updateMenu(List<MealType> mealTypes) {
-        Log.e("Testing", "is this function running");
+//        Log.e("Testing", "is this function running");
         Context context = binding.getRoot().getContext();
 
 // Make the text screen
         LinearLayout mainLayout = binding.getRoot().findViewById(R.id.main);
         LayoutInflater inflater = LayoutInflater.from(context);
 //        int indexBeforeExpandableListView = mainLayout.indexOfChild(mainLayout.findViewById(R.id.expanded_menu));
+
+        View selectPreferenceView = binding.preference; // Assuming this is the SelectPreferenceView
+        for (int i = mainLayout.getChildCount() - 1; i >= 2; i--) {
+            View child = mainLayout.getChildAt(i);
+            if (child != selectPreferenceView) {
+                mainLayout.removeViewAt(i);
+            }
+        }
 
         for (MealType mealType : mealTypes) {
 
@@ -159,16 +173,16 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                 mainLayout.addView(mealTypeSectionView);
 
-                for (DiningSection diningSection : mealTypeSection.getDiningSections()) {
+                for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
 
                     View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
                     TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
 
-                    diningSectionTextView.setText(diningSection.getDiningSectionName());
+                    diningSectionTextView.setText(diningStation.getDiningSectionName());
 
                     mainLayout.addView(diningSectionView);
 
-                    for (FoodItem foodItem : diningSection.getFoodItems()) {
+                    for (FoodItem foodItem : diningStation.getFoodItems()) {
 
                         View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
                         TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
