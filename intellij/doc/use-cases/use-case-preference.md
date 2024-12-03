@@ -56,3 +56,34 @@ start
 stop
 @enduml
 ```
+
+## Sequence Diagram
+
+```plantuml
+Sequence diagrams: messages
+@startuml
+hide footbox
+
+participant "User" as user
+participant ": UI" as ui
+participant "Controller" as controller
+participant ": Menu" as menu
+participant ": Request" as request
+participant ": Preference" as preference
+participant ": MealType" as meal_t
+participant ": Meal Type Section" as meal_t_s
+participant ": Dining Section" as d_s
+participant ": Food Item" as food_item
+
+user -> ui : Clicks preferences
+ui -> controller : return preferences
+controller -> menu : updatePreferences(preferences)
+menu -> preference : updatePreference(preferences)
+
+menu -> controller : return menu
+controller -> ui : return menu
+ui -> user : Display menu
+
+
+@enduml
+```

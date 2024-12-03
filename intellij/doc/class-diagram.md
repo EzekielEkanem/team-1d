@@ -5,32 +5,39 @@ hide empty methods
 
 ' classes
 class Menu{
--jsonMenuObject : JSONObject
+-originalMenu : List<MealType>
+-menu : List<MealType>
 -mealDayParts : HashMap<Integer, JSONObject>
 -menuURL : String
 -preference : Preference
 --
++Menu() : void {ParseException, JSONException}
 +updateMenu() : void
-+changePreferences(preferences : String) : InputReport
++getMenu() : List<MealType> {exception JSONException}
++changePreferences(preferences : List<Integer>) : void
 +toString() : String
 }
 
 class Food_Item{
--id : String
--name : String
--dietLabels : Hashset<String>
+-String id;
+-String name;
+-HashSet<String> dietLabels;
 --
++FoodItem(name : String, id : String, dietLabels : HashSet<String>) : void 
++getFoodItemName() : String
++getFoodId() : String
 +getDietLabels() : Hashset<String> 
 +toString() : String
 }
 
 class Request{
--urlStr : String
 -html : String
 --
-+getWebPage() : String
-+getJsonMenu() : JSONObject {exception ParseException}
-+getMealDayParts() : HashMap<Integer, JSONObject> {exception ParseException}
++Request() : void
++getJavaMenu(url : String) : List<MealType>
+-getWebPage(urlStr : String) : void
+-getJsonMenu() : JSONObject {exception ParseException}
+-getMealDayParts() : HashMap<Integer, JSONObject> {exception ParseException}
 +toString() : String
 }
 
@@ -43,35 +50,35 @@ class Preference {
 }
 
 class Meal_Type {
--keyStr : int
--value : JSONObject
--jsonMenuObject : JSONObject
--mealTypeName : HashMap<Integer, String>
--mealTypeSection : HashMap<String, HashSet<HashMap<String, JSONObject>>>
--preference : Preference
+-mealTypeSections : List<MealTypeSection>
+-mealTypeName : String
 --
-+setMealTypeSection() : void
-+getMealType() : void
++MealType(mealTypeName : String) : void
++addMealTypeSection(MealTypeSection mealTypeSection) : void
++getMealTypeSections() : List<MealTypeSection>
++getMealTypeName() : String
 +toString() : String
 }
 
 class Meal_Type_Section {
--tierStr : String
--foodItems : HashSet<HashMap<String, JSONObject>>
--sectionNameHashMap : HashMap<String, String>
--diningSectionHashMap : HashMap<String, HashSet<HashMap<String, JSONObject>>>
--preference : Preference
+-diningStations : List<DiningStation>
+-mealTypeSectionName : String
 --
-+getMealTypeSection() : void
++MealTypeSection(mealTypeSectionName : String) : void
++addDiningSection(diningStation : DiningStation) : void
++getDiningSections() : List<DiningStation>
++getMealTypeSectionName() : String
 +toString() : String
 }
 
 class Dining_Section {
--station : String
--foodItem : HashSet<HashMap<String, JSONObject>>
--preference : ArrayList<String>
+-stationName : String
+-foodItems : List<FoodItem>
 --
-+getDiningSection() : void
++DiningStation(stationName : String) : void
++addFoodItem(foodItem : FoodItem) : void
++getFoodItems() : List<FoodItem>
++getDiningSectionName() : String
 +toString() : String
 }
 
