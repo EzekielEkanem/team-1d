@@ -41,10 +41,18 @@ public class MealTypeSection {
         this.preference = preference;
     }
 
+    /**
+     * MealTypeSection constructor instantiates name of the mealTypeSection (e.g. Breakfast Specials)
+     * @param mealTypeSectionName: the name of the mealTypeSection
+     */
     public MealTypeSection(String mealTypeSectionName) {
         this.mealTypeSectionName = mealTypeSectionName;
     }
 
+    /**
+     * addDiningSection method adds the dining station of the foodItems to the diningStations arraylist
+     * @param diningStation: the dining station of the foodItems
+     */
     public void addDiningSection(DiningStation diningStation) {
         diningStations.add(diningStation);
     }

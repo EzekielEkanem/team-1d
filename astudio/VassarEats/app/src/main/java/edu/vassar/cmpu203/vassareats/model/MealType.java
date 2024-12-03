@@ -44,10 +44,18 @@ public class MealType {
         this.preference = preference;
     }
 
+    /**
+     * MealType constructor instantiates name of the mealType (e.g. Breakfast)
+     * @param mealTypeName: the mealType of the food item
+     */
     public MealType(String mealTypeName) {
         this.mealTypeNameReal = mealTypeName;
     }
 
+    /**
+     * addMealTypeSection method adds the meal type section of the foodItems to the mealTypeSections arraylist
+     * @param mealTypeSection: the mealTypeSection of the food items
+     */
     public void addMealTypeSection(MealTypeSection mealTypeSection) {
         mealTypeSections.add(mealTypeSection);
     }

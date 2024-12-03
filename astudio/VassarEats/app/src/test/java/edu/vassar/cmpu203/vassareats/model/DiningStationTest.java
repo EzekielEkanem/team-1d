@@ -25,7 +25,7 @@ public class DiningStationTest {
         foodItemHashMap.put("27444491", value);
         foodItem.add(foodItemHashMap);
         ArrayList<Integer> preferenceList = new ArrayList<Integer>();
-        preferenceList.add(2);
+        preferenceList.add(1);
         Preference preference = new Preference(preferenceList);
         diningStation = new DiningStation("Stocks", foodItem, preference);
     }
@@ -44,6 +44,7 @@ public class DiningStationTest {
     @Test
     public void getFoodItems() throws JSONException {
         diningStation.getDiningSection();
+        assertEquals(1, diningStation.getFoodItems().size());
         assertEquals("Food id: 27444491\nFood name: oatmeal\nDietary labels: [Vegan]", diningStation.getFoodItems().get(0).toString());
     }
 

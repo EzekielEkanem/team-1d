@@ -27,7 +27,7 @@ public class MealTypeSectionTest {
         foodItemHashMap.put("27444491", value);
         foodItem.add(foodItemHashMap);
         ArrayList<Integer> preferenceList = new ArrayList<Integer>();
-        preferenceList.add(2);
+        preferenceList.add(1);
         Preference preference = new Preference(preferenceList);
         mealTypeSection = new MealTypeSection("1", foodItem, "Breakfast", preference);
         diningSection = new DiningStation("Stocks", foodItem, preference);
@@ -61,7 +61,8 @@ public class MealTypeSectionTest {
      */
     @Test
     public void getMealTypeSectionName() {
-        String mealTypeSectionName = mealTypeSection.getMealTypeSectionName();
+        MealTypeSection mealTypeSection2 = new MealTypeSection("Breakfast Specials");
+        String mealTypeSectionName = mealTypeSection2.getMealTypeSectionName();
         assertEquals("Breakfast Specials", mealTypeSectionName);
     }
 }
