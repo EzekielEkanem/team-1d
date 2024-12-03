@@ -27,6 +27,11 @@ public class Menu {
     private List<MealType> originalMenu;
     private List<MealType> menu;
 
+    /**
+     *
+     * @throws ParseException
+     * @throws JSONException
+     */
     public Menu() throws ParseException, JSONException {
         Request request = new Request();
 

@@ -77,7 +77,8 @@ public class MealTypeTest {
      */
     @Test
     public void getMealTypeName() {
-        String mealTypeName = mealType.getMealTypeName();
+        MealType mealType2 = new MealType("Breakfast");
+        String mealTypeName = mealType2.getMealTypeName();
         assertEquals("Breakfast", mealTypeName);
     }
 }
