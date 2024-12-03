@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class DiningSectionTest {
-    DiningSection diningSection;
+public class DiningStationTest {
+    DiningStation diningStation;
 
     /**
-     * Default constructor for test class DiningSectionTest
+     * Default constructor for test class DiningStationTest
      */
-    public DiningSectionTest() throws JSONException {
+    public DiningStationTest() throws JSONException {
         HashSet<HashMap<String, JSONObject>> foodItem = new HashSet<HashMap<String, JSONObject>>();
         HashMap<String, JSONObject> foodItemHashMap = new HashMap<String, JSONObject>();
         JSONObject value = getJsonObject();
@@ -27,7 +27,7 @@ public class DiningSectionTest {
         ArrayList<Integer> preferenceList = new ArrayList<Integer>();
         preferenceList.add(2);
         Preference preference = new Preference(preferenceList);
-        diningSection = new DiningSection("Stocks", foodItem, preference);
+        diningStation = new DiningStation("Stocks", foodItem, preference);
     }
 
     @NonNull
@@ -38,21 +38,21 @@ public class DiningSectionTest {
     }
 
     /**
-     * Tests the foodItems list returned by the getFoodItems method in DiningSection class. Note that
+     * Tests the foodItems list returned by the getFoodItems method in DiningStation class. Note that
      * getDiningSection will have to be working properly for this to work
      */
     @Test
     public void getFoodItems() throws JSONException {
-        diningSection.getDiningSection();
-        assertEquals("Food id: 27444491\nFood name: oatmeal\nDietary labels: [Vegan]", diningSection.getFoodItems().get(0).toString());
+        diningStation.getDiningSection();
+        assertEquals("Food id: 27444491\nFood name: oatmeal\nDietary labels: [Vegan]", diningStation.getFoodItems().get(0).toString());
     }
 
     /**
-     * Tests the station returned by the getDiningSectionName method in DiningSection class
+     * Tests the station returned by the getDiningSectionName method in DiningStation class
      */
     @Test
     public void getDiningSectionName() {
-        String diningSectionName = diningSection.getDiningSectionName();
+        String diningSectionName = diningStation.getDiningSectionName();
         assertEquals("Stocks", diningSectionName);
     }
 }

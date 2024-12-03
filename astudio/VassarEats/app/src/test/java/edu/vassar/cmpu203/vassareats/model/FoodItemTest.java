@@ -40,6 +40,15 @@ public class FoodItemTest {
     }
 
     /**
+     * Tests the food id returned by the getFoodId method in FoodItem class
+     */
+    @Test
+    public void getFoodId() {
+        String foodId = foodItem.getFoodId();
+        assertEquals("27444491", foodId);
+    }
+
+    /**
      * Tests the string returned by the toString method in FoodItem class
      */
     @Test

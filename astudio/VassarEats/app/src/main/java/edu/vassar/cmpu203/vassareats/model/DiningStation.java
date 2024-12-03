@@ -12,10 +12,10 @@ public class DiningStation {
     private String stationName;
     private HashSet<HashMap<String, JSONObject>> foodItem;
     private ArrayList<String> preference;
-    private ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
+    private ArrayList<FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
 
     /**
-     * DiningSection constructor instantiates station, foodItem, and preference field variables.
+     * DiningStation constructor instantiates station, foodItem, and preference field variables.
      * @param section: the station section of the food item
      * @param foodItem: a hashset containing a hashmap of each food item. Each hashmap contains the
      *                id of the food and the JSONObject containing all the information of the food
@@ -27,10 +27,18 @@ public class DiningStation {
         this.preference = preference.getPreference();
     }
 
+    /**
+     * DiningStation constructor instantiates station section of the food item
+     * @param stationName: the station section of the food item
+     */
     public DiningStation(String stationName) {
         this.stationName = stationName;
     }
 
+    /**
+     * addFoodItem method adds foodItems to the foodItems arraylist
+     * @param foodItem: the foodItem to be added to the list
+     */
     public void addFoodItem(FoodItem foodItem) {
         foodItems.add(foodItem);
     }
@@ -63,7 +71,7 @@ public class DiningStation {
 
         for (HashMap<String, JSONObject> key : foodItem) {
             for (String keyName : key.keySet()) {
-                edu.vassar.cmpu203.vassareats.model.FoodItem newFood = new edu.vassar.cmpu203.vassareats.model.FoodItem(keyName, key.get(keyName));
+                FoodItem newFood = new FoodItem(keyName, key.get(keyName));
                 HashSet<String> dietLabels = newFood.getDietLabels();
                 for (String dietLabel : dietLabels) {
                     if (preference.contains(dietLabel) || preference.isEmpty()) {

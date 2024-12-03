@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MealTypeSectionTest {
     MealTypeSection mealTypeSection;
-    DiningSection diningSection;
+    DiningStation diningSection;
 
     /**
      * Default constructor for test class MealTypeSectionTest
@@ -30,7 +30,7 @@ public class MealTypeSectionTest {
         preferenceList.add(2);
         Preference preference = new Preference(preferenceList);
         mealTypeSection = new MealTypeSection("1", foodItem, "Breakfast", preference);
-        diningSection = new DiningSection("Stocks", foodItem, preference);
+        diningSection = new DiningStation("Stocks", foodItem, preference);
     }
 
     @NonNull
@@ -50,7 +50,7 @@ public class MealTypeSectionTest {
     public void getDiningSections() throws JSONException {
         mealTypeSection.setDiningSectionHashMap();
         mealTypeSection.getMealTypeSection();
-        List<DiningSection> diningSections = mealTypeSection.getDiningSections();
+        List<DiningStation> diningSections = mealTypeSection.getDiningSections();
         diningSection.getDiningSection();
         assertEquals(diningSection.toString(), diningSections.get(0).toString());
     }

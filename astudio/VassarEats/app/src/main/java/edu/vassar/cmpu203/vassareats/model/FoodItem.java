@@ -33,6 +33,12 @@ public class FoodItem {
         }
     }
 
+    /**
+     * FoodItem constructor instantiates id, name, and dietLabels field variables.
+     * @param name: the name of the food item
+     * @param id: the id of the food item
+     * @param dietLabels: an hashset containing the dietlabels of the food item
+     */
     public FoodItem(String name, String id, HashSet<String> dietLabels){
         this.name = name;
         this.id = id;
@@ -47,6 +53,10 @@ public class FoodItem {
         return name;
     }
 
+    /**
+     * getFoodId method returns the foodIDs of a particular food item
+     * @return String: the food id
+     */
     public String getFoodId(){
         return id;
     }
