@@ -10,22 +10,7 @@ import java.util.List;
 
 public class DiningStation {
     private String stationName;
-    private HashSet<HashMap<String, JSONObject>> foodItem;
-    private ArrayList<String> preference;
-    private ArrayList<FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
-
-    /**
-     * DiningStation constructor instantiates station, foodItem, and preference field variables.
-     * @param section: the station section of the food item
-     * @param foodItem: a hashset containing a hashmap of each food item. Each hashmap contains the
-     *                id of the food and the JSONObject containing all the information of the food
-     * @param preference: the preference class that contains the preference selected by the user
-     */
-    public DiningStation(String section, HashSet<HashMap<String, JSONObject>> foodItem, Preference preference) {
-        this.stationName = section;
-        this.foodItem = foodItem;
-        this.preference = preference.getPreference();
-    }
+    private List<FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
 
     /**
      * DiningStation constructor instantiates station section of the food item
@@ -57,33 +42,6 @@ public class DiningStation {
      */
     public String getDiningSectionName() {
         return stationName;
-    }
-
-    /**
-     * getDiningSection method creates a food item class for each method in foodItem and appends each
-     * foodItem class to foodItems Array list
-     * @throws JSONException
-     */
-    public void getDiningSection() throws JSONException {
-        boolean printItem = false;
-
-        foodItems.clear();
-
-        for (HashMap<String, JSONObject> key : foodItem) {
-            for (String keyName : key.keySet()) {
-                FoodItem newFood = new FoodItem(keyName, key.get(keyName));
-                HashSet<String> dietLabels = newFood.getDietLabels();
-                for (String dietLabel : dietLabels) {
-                    if (preference.contains(dietLabel) || preference.isEmpty()) {
-                        printItem = true;
-                    }
-                }
-                if (printItem) {
-                    foodItems.add(newFood);
-                }
-                printItem = false;
-            }
-        }
     }
 
     /**

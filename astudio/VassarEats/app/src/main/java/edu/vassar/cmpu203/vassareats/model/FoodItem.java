@@ -13,27 +13,6 @@ public class FoodItem {
     private HashSet<String> dietLabels;
 
     /**
-     * FoodItem constructor instantiates id, name, and dietLabels field variables. It adds the appropriate
-     * label(s) to dietLabels hashset
-     * @param id: the id of the food item
-     * @param value: a json object that contains all the information of the food item
-     * @throws JSONException
-     */
-    public FoodItem(String id, JSONObject value) throws JSONException {
-        this.id = id;
-        this.name = (String) value.get("label");
-        this.dietLabels = new HashSet<String>();
-
-        if (value.get("cor_icon") instanceof JSONObject) {
-            JSONObject icons = (JSONObject) value.get("cor_icon");
-            for (Iterator<String> it = icons.keys(); it.hasNext();) {
-                Object key = it.next();
-                dietLabels.add((String) icons.get((String) key));
-            }
-        }
-    }
-
-    /**
      * FoodItem constructor instantiates id, name, and dietLabels field variables.
      * @param name: the name of the food item
      * @param id: the id of the food item
