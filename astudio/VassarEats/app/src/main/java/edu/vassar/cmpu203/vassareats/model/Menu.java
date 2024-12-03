@@ -18,12 +18,8 @@ import java.util.List;
 import edu.vassar.cmpu203.vassareats.R;
 
 public class Menu {
-    private JSONObject jsonMenuObject;
-    private HashMap<Integer, JSONObject> mealDayParts;
-    private HashMap<String, Object> FoodItems = new HashMap<String, Object>();
     private String menuURL = "https://vassar.cafebonappetit.com/cafe/gordon/2024-11-22/";
     private Preference preference;
-    private ArrayList<MealType> mealTypes = new ArrayList<MealType>();
     private List<MealType> originalMenu;
     private List<MealType> menu;
 
@@ -33,22 +29,6 @@ public class Menu {
         originalMenu = request.getJavaMenu(menuURL);
         menu = new ArrayList<MealType>();
         this.preference = new Preference(new ArrayList<Integer>());
-    }
-
-    public void getAllMenuItems() throws JSONException {
-        out.println("**************************************************************************");
-        out.println("                               Menu Items                                 ");
-        out.println("**************************************************************************");
-        for (Iterator<String> it = jsonMenuObject.keys(); it.hasNext(); ) {
-            Object key = it.next();
-            String keyStr = (String) key;
-            JSONObject value = (JSONObject) jsonMenuObject.get(keyStr);
-
-            FoodItem newFood = new FoodItem(keyStr, value);
-
-            out.println(newFood);
-            out.println("**************************************************************************");
-        }
     }
 
     public void updateMenu() throws JSONException {
@@ -91,10 +71,6 @@ public class Menu {
 
     public void changePreferences(List<Integer> preferences) {
         this.preference = new Preference(preferences);
-    }
-
-    public void changeMenuURL() {
-
     }
 
     public String toString () {
