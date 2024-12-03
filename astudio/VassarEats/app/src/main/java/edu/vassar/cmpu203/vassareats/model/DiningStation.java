@@ -14,7 +14,6 @@ public class DiningStation {
     private ArrayList<String> preference;
     private ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem> foodItems = new ArrayList<edu.vassar.cmpu203.vassareats.model.FoodItem>();
 
-<<<<<<< HEAD:astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningSection.java
     /**
      * DiningSection constructor instantiates station, foodItem, and preference field variables.
      * @param section: the station section of the food item
@@ -22,23 +21,12 @@ public class DiningStation {
      *                id of the food and the JSONObject containing all the information of the food
      * @param preference: the preference class that contains the preference selected by the user
      */
-    public DiningSection(String section, HashSet<HashMap<String, JSONObject>> foodItem, edu.vassar.cmpu203.vassareats.model.Preference preference) {
-        this.station = section;
-=======
     public DiningStation(String section, HashSet<HashMap<String, JSONObject>> foodItem, Preference preference) {
         this.stationName = section;
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b:astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningStation.java
         this.foodItem = foodItem;
         this.preference = preference.getPreference();
     }
 
-<<<<<<< HEAD:astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningSection.java
-    /**
-     * getFoodItems method returns the list of the food items for a particular station
-     * @return List<FoodItem>: the list containing the food items for a particular station
-     */
-    public List<edu.vassar.cmpu203.vassareats.model.FoodItem> getFoodItems() {
-=======
     public DiningStation(String stationName) {
         this.stationName = stationName;
     }
@@ -47,8 +35,11 @@ public class DiningStation {
         foodItems.add(foodItem);
     }
 
+    /**
+     * getFoodItems method returns the list of the food items for a particular station
+     * @return List<FoodItem>: the list containing the food items for a particular station
+     */
     public List<FoodItem> getFoodItems() {
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b:astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningStation.java
         return foodItems;
     }
 
@@ -105,3 +96,4 @@ public class DiningStation {
         return returnString;
     }
 }
+

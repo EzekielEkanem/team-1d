@@ -32,7 +32,6 @@ public class Menu {
 
         originalMenu = request.getJavaMenu(menuURL);
         menu = new ArrayList<MealType>();
-
         this.preference = new Preference(new ArrayList<Integer>());
     }
 
@@ -62,13 +61,9 @@ public class Menu {
             menu.add(newMealType);
 
             for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
-
                 MealTypeSection newMealTypeSection = new MealTypeSection(mealTypeSection.getMealTypeSectionName());
-
                 newMealType.addMealTypeSection(newMealTypeSection);
-
                 for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
-
                     DiningStation newDiningStation = new DiningStation(diningStation.getDiningSectionName());
 
                     newMealTypeSection.addDiningSection(newDiningStation);

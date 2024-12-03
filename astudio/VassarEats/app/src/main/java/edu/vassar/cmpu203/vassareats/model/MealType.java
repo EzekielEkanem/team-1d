@@ -15,14 +15,9 @@ public class MealType {
     private JSONObject jsonMenuObject;
     private HashMap<Integer, String> mealTypeName;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> mealTypeSection;
-<<<<<<< HEAD
-    private edu.vassar.cmpu203.vassareats.model.Preference preference;
-    private ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection> mealTypeSections = new ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection>();
-=======
     private Preference preference;
-    private ArrayList<MealTypeSection> mealTypeSections = new ArrayList<MealTypeSection>();
+    private ArrayList<MealTypeSection> mealTypeSections = new ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection>();
     private String mealTypeNameReal;
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
 
     /**
      * MealType constructor instantiates keyStr, value, jsonMenuObject, mealTypeName, mealTypeSection and
@@ -49,14 +44,6 @@ public class MealType {
         this.preference = preference;
     }
 
-<<<<<<< HEAD
-    /**
-     * setMealTypeSection method gets the stations of each meal and group them together in mealTypeSection
-     * hashmap
-     * @throws JSONException
-     */
-    public void setMealTypeSection() throws JSONException {
-=======
     public MealType(String mealTypeName) {
         this.mealTypeNameReal = mealTypeName;
     }
@@ -65,8 +52,12 @@ public class MealType {
         mealTypeSections.add(mealTypeSection);
     }
 
-    public void setMealTypeSection () throws JSONException {
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
+    /**
+     * setMealTypeSection method gets the stations of each meal and group them together in mealTypeSection
+     * hashmap
+     * @throws JSONException
+     */
+    public void setMealTypeSection() throws JSONException {
 
         if (value.get("stations") instanceof JSONArray stations) {
             for (int i = 0; i < stations.length(); i++) {
@@ -97,7 +88,7 @@ public class MealType {
      * getMealTypeSections method returns a list of the meal type sections under a particular meal type
      * @return List<MealTypeSection>: the list of mealTypeSections classes
      */
-    public List<edu.vassar.cmpu203.vassareats.model.MealTypeSection> getMealTypeSections() {
+    public List<MealTypeSection> getMealTypeSections() {
         return mealTypeSections;
     }
 

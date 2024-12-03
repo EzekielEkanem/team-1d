@@ -15,14 +15,9 @@ public class MealTypeSection {
     private String mealType;
     private HashMap<String, String> sectionNameHashMap;
     private HashMap<String, HashSet<HashMap<String, JSONObject>>> diningSectionHashMap;
-<<<<<<< HEAD
-    private edu.vassar.cmpu203.vassareats.model.Preference preference;
-    private ArrayList<edu.vassar.cmpu203.vassareats.model.DiningSection> diningStations = new ArrayList<edu.vassar.cmpu203.vassareats.model.DiningSection>();
-=======
     private Preference preference;
     private ArrayList<DiningStation> diningStations = new ArrayList<DiningStation>();
     private String mealTypeSectionName;
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
 
     /**
      * MealTypeSection constructor instantiates tierStr, foodItems, mealType, sectionNameHashMap, and
@@ -46,13 +41,6 @@ public class MealTypeSection {
         this.preference = preference;
     }
 
-<<<<<<< HEAD
-    /**
-     * getDiningSections method returns the list of the dining sections for a particular mealTypeSection
-     * @return List<DiningSection>: the list containing the dining sections for a particular mealTypeSection
-     */
-    public List<edu.vassar.cmpu203.vassareats.model.DiningSection> getDiningSections() {
-=======
     public MealTypeSection(String mealTypeSectionName) {
         this.mealTypeSectionName = mealTypeSectionName;
     }
@@ -61,8 +49,12 @@ public class MealTypeSection {
         diningStations.add(diningStation);
     }
 
+    /**
+     * getDiningSections method returns the list of the dining sections for a particular mealTypeSection
+     * @return List<DiningSection>: the list containing the dining sections for a particular mealTypeSection
+     */
     public List<DiningStation> getDiningSections() {
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
+
         return diningStations;
     }
 
@@ -112,15 +104,9 @@ public class MealTypeSection {
         setDiningSectionHashMap();
 
         for (String key : diningSectionHashMap.keySet()) {
-<<<<<<< HEAD
-            edu.vassar.cmpu203.vassareats.model.DiningSection diningSection = new edu.vassar.cmpu203.vassareats.model.DiningSection(key, diningSectionHashMap.get(key), preference);
-            diningStations.add(diningSection);
-            diningSection.getDiningSection();
-=======
             DiningStation diningStation = new DiningStation(key, diningSectionHashMap.get(key), preference);
             diningStations.add(diningStation);
             diningStation.getDiningSection();
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
         }
     }
 
@@ -134,11 +120,7 @@ public class MealTypeSection {
         returnString += "              " + mealTypeSectionName + "                          \n";
         returnString += "***********************************************************\n";
 
-<<<<<<< HEAD
-        for (edu.vassar.cmpu203.vassareats.model.DiningSection station : diningStations) {
-=======
         for (DiningStation station : diningStations) {
->>>>>>> 2293aa9737e09b9836ea25153db9fd87130f929b
             returnString += station.toString();
             returnString += "********************************************\n";
         }

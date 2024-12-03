@@ -105,8 +105,8 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                     public void onClick(DialogInterface dialog, int which) {
 //                        Dismiss dialog
                         dialog.dismiss();
+//                      Doesn't do anything in terms of reversing selected preferences
 
-                        //Doesn't do anything in terms of reversing selected preferences
                     }
                 });
 
@@ -117,13 +117,11 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         for (int i = 0; i < selectedPreference.length; i++) {
 //                            Remove all selection
                             selectedPreference[i] = false;
+//                            Clear preferenceList
+                            preferenceList.clear();
+//                            Clear preference value
+                            binding.preference.setText("");
                         }
-                        // Clear preferenceList
-                        preferenceList.clear();
-
-//                        Clear preference value
-                        binding.preference.setText("");
-
                         try {
                             listener.onAddPreferenceList(preferenceList);
                         } catch (JSONException | ParseException e) {
