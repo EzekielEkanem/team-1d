@@ -7,27 +7,53 @@ import java.util.List;
 public class Preference {
     private List<Integer> preferencesList;
     private HashMap<Integer, String> preferencesMap;
-    private ArrayList<String> preferences;
+    private List<Preferences> preferences;
+    public enum Preferences {
+        Vegetarian("Vegetarian"),
+        Vegan("Vegan"),
+        Halal("Halal"),
+        Kosher("Kosher"),
+        MadeWithoutGluten("Made without Gluten-Containing Ingredients"),
+        Humane("Humane"),
+        FarmToFork("Farm to Fork");
 
-    public Preference(List<Integer> preferencesList) {
-        this.preferencesList = preferencesList;
-        this.preferencesMap = new HashMap<>();
-        preferencesMap.put(0, "Vegetarian");
-        preferencesMap.put(1, "Vegan");
-        preferencesMap.put(2, "Halal");
-        preferencesMap.put(3, "Kosher");
-        preferencesMap.put(4, "Made without Gluten-Containing Ingredients");
-        preferencesMap.put(5, "Humane");
-        preferencesMap.put(6, "Farm to Fork");
-        this.preferences = new ArrayList<>();
+        private final String preferenceName;
+
+        // Constructor to initialize the course name
+        Preferences(String preferenceName) {
+            this.preferenceName = preferenceName;
+        }
+
+        public static Preferences getPreference(String preferenceName) {
+            for (Preferences preference : Preferences.values()) {
+                if (preference.preferenceName.equals(preferenceName)) {
+                    return preference;
+                }
+            }
+            return null;
+        }
+
+        // Override the toString() method
+        @Override
+        public String toString() {
+            return preferenceName;
+        }
+    }
+
+    public Preference() {
+        preferences = new ArrayList<>();
+    }
+
+    public void setPreferences(List<Preferences> preferencesList) {
+        preferences = preferencesList;
     }
 
     public ArrayList<String> getPreference() {
-        for (int i = 0; i < preferencesList.size(); i++) {
-            if (preferencesMap.containsKey(preferencesList.get(i))) {
-                preferences.add(preferencesMap.get(preferencesList.get(i)));
-            }
+        ArrayList<String> preferencesString = new ArrayList<>();
+
+        for (Preferences preference : preferences) {
+            preferencesString.add(preference.toString());
         }
-        return preferences;
+        return preferencesString;
     }
 }

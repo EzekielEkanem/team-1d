@@ -21,6 +21,7 @@ import edu.vassar.cmpu203.vassareats.model.DiningStation;
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
+import edu.vassar.cmpu203.vassareats.model.Preference;
 
 public class SelectPreferenceView implements ISelectPreferenceView{
 
@@ -28,11 +29,22 @@ public class SelectPreferenceView implements ISelectPreferenceView{
     Listener listener;
     boolean[] selectedPreference;
     List<Integer> preferenceList = new ArrayList<Integer>();
-    String[] preferenceArray = {"Vegetarian", "Vegan", "Halal", "Kosher", "Made without gluten-containing ingredients",
-            "Humane", "Farm to Fork"};
+    String[] preferenceArray;
+    List<Preference.Preferences> preferences = new ArrayList<>();
 
     public SelectPreferenceView(Context context, Listener listener) {
         this.listener = listener;
+
+        //Add the preferences to the preferenceArray
+        preferenceArray = new String[Preference.Preferences.values().length];
+        int count = 0;
+
+        for (Preference.Preferences preference : Preference.Preferences.values()) {
+            preferenceArray[count] = preference.toString();
+            count++;
+        }
+
+
         //    Initialize selected preference array
         selectedPreference = new boolean[preferenceArray.length];
 
@@ -55,19 +67,15 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 //                        Log.e("Testing", "Which: " + which + " isChecked: " + isChecked);
 //                        Check condition
+
                         if (isChecked) {
-//                            When checkbox is selected, add position in preferenceList
-                            preferenceList.add(which);
+//                            When checkbox is selected, add the enum to the preferences list
+                            preferences.add(Preference.Preferences.getPreference(preferenceArray[which]));
 //                            Sort preferenceList
                             Collections.sort(preferenceList);
                         } else {
 //                            When checkbox is unselected, remove position from preferenceList
-                            for (int i = 0; i < preferenceList.size(); i++) {
-                                if (preferenceList.get(i) == which) {
-                                    preferenceList.remove(i);
-                                }
-                            }
-//                            preferenceList.remove(which);
+                            preferences.remove(Preference.Preferences.getPreference(preferenceArray[which]));
                         }
                     }
                 });
@@ -90,7 +98,7 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         }
 //                        Set the preference list to listener
                         try {
-                            listener.onAddPreferenceList(preferenceList);
+                            listener.onAddPreferenceList(preferences);
                         } catch (JSONException | ParseException e) {
                             throw new RuntimeException(e);
                         }
@@ -117,13 +125,15 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         for (int i = 0; i < selectedPreference.length; i++) {
 //                            Remove all selection
                             selectedPreference[i] = false;
-//                            Clear preferenceList
-                            preferenceList.clear();
-//                            Clear preference value
-                            binding.preference.setText("");
                         }
+
+                        preferences.clear();
+
+//                            Clear preference value
+                        binding.preference.setText("");
+
                         try {
-                            listener.onAddPreferenceList(preferenceList);
+                            listener.onAddPreferenceList(preferences);
                         } catch (JSONException | ParseException e) {
                             throw new RuntimeException(e);
                         }

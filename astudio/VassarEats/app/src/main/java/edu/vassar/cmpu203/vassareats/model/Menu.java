@@ -33,7 +33,7 @@ public class Menu {
 
         originalMenu = request.getJavaMenu(menuURL);
         menu = new ArrayList<MealType>();
-        this.preference = new Preference(new ArrayList<Integer>());
+        this.preference = new Preference();
     }
 
     public void updateMenu() throws JSONException {
@@ -74,8 +74,8 @@ public class Menu {
         return menu;
     }
 
-    public void changePreferences(List<Integer> preferences) {
-        this.preference = new Preference(preferences);
+    public void changePreferences(List<Preference.Preferences> preferences) {
+        preference.setPreferences(preferences);
     }
 
     public String toString () {

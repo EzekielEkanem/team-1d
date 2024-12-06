@@ -8,10 +8,11 @@ import java.text.ParseException;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.model.MealType;
+import edu.vassar.cmpu203.vassareats.model.Preference;
 
 public interface ISelectPreferenceView {
     interface Listener {
-        void onAddPreferenceList(List<Integer> preferenceList) throws JSONException, ParseException;
+        void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException;
     }
 
     void updateMenu(List<MealType> mealTypes);

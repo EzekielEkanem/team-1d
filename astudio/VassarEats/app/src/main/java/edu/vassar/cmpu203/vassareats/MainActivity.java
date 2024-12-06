@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.model.Menu;
+import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.ISelectPreferenceView;
 import edu.vassar.cmpu203.vassareats.view.SelectPreferenceView;
 
@@ -56,11 +57,10 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
     }
 
     @Override
-    public void onAddPreferenceList(List<Integer> preferenceList) throws JSONException, ParseException {
-//        Menu menu = new Menu();
+    public void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException {
         menu.changePreferences(preferenceList);
         menu.updateMenu();
-        Log.e("Testing", "Menu should be updated \n" + menu.toString());
+//        Log.e("Testing", "Menu should be updated \n" + menu.toString());
         selectPreferenceView.updateMenu(menu.getMenu());
     }
 }
