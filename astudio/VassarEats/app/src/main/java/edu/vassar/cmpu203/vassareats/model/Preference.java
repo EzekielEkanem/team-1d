@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Preference {
-    private List<Integer> preferencesList;
-    private HashMap<Integer, String> preferencesMap;
     private List<Preferences> preferences;
     public enum Preferences {
         Vegetarian("Vegetarian"),
