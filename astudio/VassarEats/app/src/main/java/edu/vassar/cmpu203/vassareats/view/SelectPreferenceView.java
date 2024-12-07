@@ -192,6 +192,8 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
             mainLayout.addView(mealTypeView);
 
+            int mealTypeCount = mainLayout.getChildCount();
+
             for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
 
                 View mealTypeSectionView = inflater.inflate(R.layout.activity_meal_type_section, null);
@@ -201,6 +203,8 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                 mainLayout.addView(mealTypeSectionView);
 
+                int mealTypeSectionCount = mainLayout.getChildCount();
+
                 for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
 
                     View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
@@ -208,7 +212,9 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                     diningSectionTextView.setText(diningStation.getDiningSectionName());
 
-                    mainLayout.addView(diningSectionView);
+                    if (!diningStation.getFoodItems().isEmpty()) {
+                        mainLayout.addView(diningSectionView);
+                    }
 
                     for (FoodItem foodItem : diningStation.getFoodItems()) {
 
@@ -221,6 +227,14 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                     }
                 }
+
+                if (mealTypeSectionCount == mainLayout.getChildCount()) {
+                    mainLayout.removeViewAt(mealTypeSectionCount - 1);
+                }
+            }
+
+            if (mealTypeCount == mainLayout.getChildCount()) {
+                mainLayout.removeViewAt(mealTypeCount - 1);
             }
         }
     }
