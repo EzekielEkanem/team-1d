@@ -28,9 +28,11 @@ public class SelectPreferenceView implements ISelectPreferenceView{
     ActivityMainBinding binding;
     Listener listener;
     boolean[] selectedPreference;
+    boolean[] selectedPreferenceTemp;
     List<Integer> preferenceList = new ArrayList<Integer>();
     String[] preferenceArray;
     List<Preference.Preferences> preferences = new ArrayList<>();
+    List<Preference.Preferences> preferencesTemp = new ArrayList<>();
 
     public SelectPreferenceView(Context context, Listener listener) {
         this.listener = listener;
@@ -47,6 +49,7 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
         //    Initialize selected preference array
         selectedPreference = new boolean[preferenceArray.length];
+        selectedPreferenceTemp = new boolean[preferenceArray.length];
 
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
         this.binding.preference.setOnClickListener(new View.OnClickListener() {
@@ -70,12 +73,12 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                         if (isChecked) {
 //                            When checkbox is selected, add the enum to the preferences list
-                            preferences.add(Preference.Preferences.getPreference(preferenceArray[which]));
+                            preferencesTemp.add(Preference.Preferences.getPreference(preferenceArray[which]));
 //                            Sort preferenceList
                             Collections.sort(preferenceList);
                         } else {
 //                            When checkbox is unselected, remove position from preferenceList
-                            preferences.remove(Preference.Preferences.getPreference(preferenceArray[which]));
+                            preferencesTemp.remove(Preference.Preferences.getPreference(preferenceArray[which]));
                         }
                     }
                 });
@@ -96,6 +99,13 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                                 stringBuilder.append(", ");
                             }
                         }
+
+                        preferences = preferencesTemp;
+
+                        for (int i = 0; i < selectedPreference.length; i++) {
+                            selectedPreferenceTemp[i] = selectedPreference[i];
+                        }
+
 //                        Set the preference list to listener
                         try {
                             listener.onAddPreferenceList(preferences);
@@ -111,6 +121,14 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        preferencesTemp.clear();
+
+                        preferencesTemp.addAll(preferences);
+
+                        for (int i = 0; i < selectedPreferenceTemp.length; i++) {
+                            selectedPreference[i] = selectedPreferenceTemp[i];
+                        }
+
 //                        Dismiss dialog
                         dialog.dismiss();
 //                      Doesn't do anything in terms of reversing selected preferences
@@ -125,9 +143,11 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         for (int i = 0; i < selectedPreference.length; i++) {
 //                            Remove all selection
                             selectedPreference[i] = false;
+                            selectedPreferenceTemp[i] = false;
                         }
 
                         preferences.clear();
+                        preferencesTemp.clear();
 
 //                            Clear preference value
                         binding.preference.setText("");
