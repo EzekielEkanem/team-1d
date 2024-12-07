@@ -7,14 +7,13 @@ hide empty methods
 class Menu{
 -originalMenu : List<MealType>
 -menu : List<MealType>
--mealDayParts : HashMap<Integer, JSONObject>
 -menuURL : String
 -preference : Preference
 --
 +Menu() : void {ParseException, JSONException}
-+updateMenu() : void
-+getMenu() : List<MealType> {exception JSONException}
-+changePreferences(preferences : List<Integer>) : void
++updateMenu() : void {JSONException}
++getMenu() : List<MealType> 
++changePreferences(preferences : List<Preference.Preferences>) : void
 +toString() : String
 }
 
@@ -42,11 +41,12 @@ class Request{
 }
 
 class Preference {
--preferencesList : ArrayList<Integer>
--preferencesMap : HashMap<Integer, String>
--preferences : ArrayList<String>
+- preferences : List<Preferences>
++ Preferences : enum
 --
-+getPreference : ArrayList<String>
++Preference() : void
++setPreferences(preferencesList : List<Preferences>) : void
++getPreference() : ArrayList<String>
 }
 
 class Meal_Type {
