@@ -99,11 +99,6 @@ ui -> controller : getMenu(Date)
 controller -> menu : getMenu(Date)
 menu -> request : requestMenu(Date)
 request -> menu : return menu
-ui -> user : Show preferences filter
-user -> ui : Clicks preferences
-ui -> controller : return preferences
-controller -> menu : updatePreferences(preferences)
-menu -> preference : updatePreference()
 loop i in 0..menu.size-1
     menu -> meal_t : createMealType(preferences)
 end
@@ -114,8 +109,13 @@ food_item -> d_s : return food item
 d_s -> meal_t_s : return dining section
 meal_t_s -> meal_t : return meal type section
 meal_t -> menu : return meal type
-menu -> controller : return menu
-controller -> ui : return menu
+ui -> user : Show preferences filter
+
+user -> ui : Clicks preferences
+ui -> controller : return preferences
+controller -> menu : updatePreferences(preferences)
+menu -> preference : updatePreference()
+controller -> ui : updateMenu()
 ui -> user : Display menu
 
 user -> ui : Clicks date

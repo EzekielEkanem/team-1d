@@ -79,9 +79,7 @@ user -> ui : Clicks preferences
 ui -> controller : return preferences
 controller -> menu : updatePreferences(preferences)
 menu -> preference : updatePreference(preferences)
-
-menu -> controller : return menu
-controller -> ui : return menu
+controller -> ui : updateMenu()
 ui -> user : Display menu
 
 
