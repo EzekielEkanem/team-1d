@@ -6,13 +6,12 @@ hide empty methods
 ' classes
 class Menu{
 -originalMenu : List<MealType>
--menu : List<MealType>
 -menuURL : String
 -preference : Preference
 --
 +Menu() : void {ParseException, JSONException}
-+updateMenu() : void {JSONException}
 +getMenu() : List<MealType> 
++getPreferences() : List<String> 
 +changePreferences(preferences : List<Preference.Preferences>) : void
 +toString() : String
 }
