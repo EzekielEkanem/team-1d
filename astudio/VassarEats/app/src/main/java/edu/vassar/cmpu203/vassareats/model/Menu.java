@@ -21,7 +21,6 @@ public class Menu {
     private String menuURL = "https://vassar.cafebonappetit.com/cafe/gordon/2024-11-22/";
     private Preference preference;
     private List<MealType> originalMenu;
-    private List<MealType> menu;
 
     /**
      *
@@ -32,50 +31,19 @@ public class Menu {
         Request request = new Request();
 
         originalMenu = request.getJavaMenu(menuURL);
-        menu = new ArrayList<MealType>();
         this.preference = new Preference();
     }
 
-    public void updateMenu() throws JSONException {
-        menu.clear();
-
-        for (MealType mealType : originalMenu) {
-
-            MealType newMealType = new MealType(mealType.getMealTypeName());
-
-            menu.add(newMealType);
-
-            for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
-                MealTypeSection newMealTypeSection = new MealTypeSection(mealTypeSection.getMealTypeSectionName());
-                newMealType.addMealTypeSection(newMealTypeSection);
-                for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
-                    DiningStation newDiningStation = new DiningStation(diningStation.getDiningSectionName());
-
-                    newMealTypeSection.addDiningSection(newDiningStation);
-
-                    for (FoodItem foodItem : diningStation.getFoodItems()) {
-
-                        for (String dietLabel : foodItem.getDietLabels()) {
-                            List<String> preferences = preference.getPreference();
-                            if (preferences.contains(dietLabel) || preferences.isEmpty()) {
-                                FoodItem newFood = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels());
-
-                                newDiningStation.addFoodItem(newFood);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public List<MealType> getMenu() {
-        return menu;
+        return originalMenu;
     }
 
     public void changePreferences(List<Preference.Preferences> preferences) {
         preference.setPreferences(preferences);
+    }
+
+    public List<String> getPreferences() {
+        return preference.getPreference();
     }
 
     public String toString () {
@@ -85,7 +53,7 @@ public class Menu {
         returnString += "                               Menu Items                                 \n";
         returnString += "**************************************************************************\n";
 
-        for (MealType mealType : menu) {
+        for (MealType mealType : originalMenu) {
             returnString += mealType.toString() + "\n";
             returnString += "**************************************************************************\n";
         }

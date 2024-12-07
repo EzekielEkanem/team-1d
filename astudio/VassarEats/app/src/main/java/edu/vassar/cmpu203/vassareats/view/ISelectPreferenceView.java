@@ -15,6 +15,6 @@ public interface ISelectPreferenceView {
         void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException;
     }
 
-    void updateMenu(List<MealType> mealTypes);
+    void updateMenu(List<MealType> mealTypes, List<String> preferences);
     View getRootView();
 }

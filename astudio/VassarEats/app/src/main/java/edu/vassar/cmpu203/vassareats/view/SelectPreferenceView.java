@@ -166,7 +166,7 @@ public class SelectPreferenceView implements ISelectPreferenceView{
     }
 
     @Override
-    public void updateMenu(List<MealType> mealTypes) {
+    public void updateMenu(List<MealType> mealTypes, List<String> preferencesString) {
 //        Log.e("Testing", "is this function running");
         Context context = binding.getRoot().getContext();
 
@@ -207,24 +207,40 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                 for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
 
+                    int diningStationCount = mainLayout.getChildCount();
+
                     View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
                     TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
 
                     diningSectionTextView.setText(diningStation.getDiningSectionName());
 
-                    if (!diningStation.getFoodItems().isEmpty()) {
-                        mainLayout.addView(diningSectionView);
-                    }
-
                     for (FoodItem foodItem : diningStation.getFoodItems()) {
 
-                        View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
-                        TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
+                        if (preferencesString.isEmpty()) {
+                            View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
+                            TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
 
-                        foodItemTextView.setText(foodItem.getFoodItemName());
+                            foodItemTextView.setText(foodItem.getFoodItemName());
 
-                        mainLayout.addView(foodItemView);
+                            mainLayout.addView(foodItemView);
+                        } else {
+                            for (String dietLabel : foodItem.getDietLabels()) {
+                                if (preferencesString.contains(dietLabel)) {
+                                    View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
+                                    TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
 
+                                    foodItemTextView.setText(foodItem.getFoodItemName());
+
+                                    mainLayout.addView(foodItemView);
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (diningStationCount != mainLayout.getChildCount()) {
+                        mainLayout.addView(diningSectionView, diningStationCount);
                     }
                 }
 

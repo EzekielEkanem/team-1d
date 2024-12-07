@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
     @Override
     public void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException {
         menu.changePreferences(preferenceList);
-        menu.updateMenu();
 //        Log.e("Testing", "Menu should be updated \n" + menu.toString());
-        selectPreferenceView.updateMenu(menu.getMenu());
+        selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 }
