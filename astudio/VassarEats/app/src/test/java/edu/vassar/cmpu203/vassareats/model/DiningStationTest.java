@@ -13,47 +13,49 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DiningStationTest {
-    DiningStation diningStation;
-
     /**
-     * Default constructor for test class DiningStationTest
-     */
-    public DiningStationTest() throws JSONException {
-        HashSet<HashMap<String, JSONObject>> foodItem = new HashSet<HashMap<String, JSONObject>>();
-        HashMap<String, JSONObject> foodItemHashMap = new HashMap<String, JSONObject>();
-        JSONObject value = getJsonObject();
-        foodItemHashMap.put("27444491", value);
-        foodItem.add(foodItemHashMap);
-        ArrayList<Integer> preferenceList = new ArrayList<Integer>();
-        preferenceList.add(1);
-        Preference preference = new Preference(preferenceList);
-        diningStation = new DiningStation("Stocks", foodItem, preference);
-    }
-
-    @NonNull
-    private static JSONObject getJsonObject() throws JSONException {
-        String valueStr = "{\"id\":\"27444491\",\"label\":\"oatmeal\",\"recipes\":null,\"description\":\"\",\"short_name\":\"\",\"raw_cooked\":\"0\",\"is_rotating\":\"0\",\"zero_entree\":\"0\",\"cor_icon\":{\"4\":\"Vegan\"},\"ordered_cor_icon\":{\"0002-0004\":{\"id\":\"4\",\"label\":\"Vegan\"}},\"nextepid\":null,\"price\":\"\",\"sizes\":[],\"nutrition\":{\"kcal\":\"\",\"well_being\":\"\",\"well_being_image\":\"\"},\"special\":1,\"tier3\":0,\"tier\":1,\"rating\":\"\",\"connector\":\"\",\"options\":[],\"station_id\":\"13896\",\"station\":\"<strong>@Stocks<\\/strong>\",\"nutrition_details\":{},\"ingredients\":\"\",\"nutrition_link\":\"\",\"sub_station_id\":\"\",\"sub_station\":\"\",\"sub_station_order\":\"\",\"monotony\":{}}";
-        JSONObject value = new JSONObject(valueStr);
-        return value;
-    }
-
-    /**
-     * Tests the foodItems list returned by the getFoodItems method in DiningStation class. Note that
-     * getDiningSection will have to be working properly for this to work
+     * Tests toSring() with different amounts of food items in the list
      */
     @Test
-    public void getFoodItems() throws JSONException {
-        diningStation.getDiningSection();
-        assertEquals(1, diningStation.getFoodItems().size());
-        assertEquals("Food id: 27444491\nFood name: oatmeal\nDietary labels: [Vegan]", diningStation.getFoodItems().get(0).toString());
+    public void testToString() {
+        DiningStation diningStation = new DiningStation("Stocks");
+        String expectedValue1 = "          " + "Stocks" + "                   \n" +
+                "********************************************\n";
+        String expectedValue2 = expectedValue1 + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n";
+        String expectedValue3 = expectedValue1 + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[]" + "\n" + "*****************************\n";
+
+        assertEquals(expectedValue1, diningStation.toString());
+
+        HashSet<String> dietLabels = new HashSet<String>();
+        dietLabels.add("Vegan");
+        FoodItem foodItem = new FoodItem("oatmeal", "27444491", dietLabels);
+        diningStation.addFoodItem(foodItem);
+
+        assertEquals(expectedValue2, diningStation.toString());
+
+        FoodItem foodItem2 = new FoodItem("oatmeal", "27444491", new HashSet<String>());
+        diningStation.addFoodItem(foodItem2);
+
+        assertEquals(expectedValue3, diningStation.toString());
     }
 
     /**
-     * Tests the station returned by the getDiningSectionName method in DiningStation class
+     * Tests addFoodItem() by adding a food item and checking if it was added through the toString()
      */
     @Test
-    public void getDiningSectionName() {
-        String diningSectionName = diningStation.getDiningSectionName();
-        assertEquals("Stocks", diningSectionName);
+    public void testAddFoodItem() {
+        DiningStation diningStation = new DiningStation("Stocks");
+        String expectedValue1 = "          " + "Stocks" + "                   \n" +
+                "********************************************\n";
+        String expectedValue2 = expectedValue1 + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n";
+
+        assertEquals(expectedValue1, diningStation.toString());
+
+        HashSet<String> dietLabels = new HashSet<String>();
+        dietLabels.add("Vegan");
+        FoodItem foodItem = new FoodItem("oatmeal", "27444491", dietLabels);
+        diningStation.addFoodItem(foodItem);
+
+        assertEquals(expectedValue2, diningStation.toString());
     }
 }
