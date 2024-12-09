@@ -68,7 +68,6 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                 builder.setMultiChoiceItems(preferenceArray, selectedPreference, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-//                        Log.e("Testing", "Which: " + which + " isChecked: " + isChecked);
 //                        Check condition
 
                         if (isChecked) {
@@ -167,7 +166,6 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
     @Override
     public void updateMenu(List<MealType> mealTypes, List<String> preferencesString) {
-//        Log.e("Testing", "is this function running");
         Context context = binding.getRoot().getContext();
 
 // Make the text screen

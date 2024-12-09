@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
         StrictMode.setThreadPolicy(policy);
         try {
             menu = new Menu();
-            Log.e("Testing", "Menu on load \n" + menu);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         } catch (JSONException e) {
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
     @Override
     public void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException {
         menu.changePreferences(preferenceList);
-//        Log.e("Testing", "Menu should be updated \n" + menu.toString());
         selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 }
