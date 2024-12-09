@@ -32,20 +32,20 @@ title Manage Preferences (casual level)
 
 'define the lanes
 |#application|User|
-|#implementation|System|
+' Color code: pink for system, green for user.
 
 
 |User|
 
 start  
 
+    :Execute __Browse__;
     if (choose preference?) is (Yes) then
         :goes to preference section;
         :selects/unselects one or more preferences;
         
-        |System|
-        :Saves the preference;
-        :Updates browse menu to only display food items from selected class;
+        #pink:Saves the preference;
+        #pink:Updates browse menu to only display food items from selected class;
         
     else (No)
     endif  

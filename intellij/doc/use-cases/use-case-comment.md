@@ -37,16 +37,15 @@ title comment (casual level)
 
 start
 
-while (browse?) is (yes) 
+while (browsing) is (yes) 
     :Execute __Browse__;
     if (wants to comments?) is  ( yes ) then
         :Clicks food item;
         :comment;
         |System|
-        if (authenticated?) is (yes) then
-            :asks user to choose to either save comments with their names or anonymously;
-        else
-        endif
+        :asks user to choose to either save comments with their names or anonymously;
+        :prompt user name;
+        :prompt user comment;
         :saves comment;
     else ( no ) 
     endif  
