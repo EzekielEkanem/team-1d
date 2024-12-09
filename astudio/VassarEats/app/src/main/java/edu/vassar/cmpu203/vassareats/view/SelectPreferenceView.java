@@ -181,12 +181,24 @@ public class SelectPreferenceView implements ISelectPreferenceView{
             }
         }
 
+        int mealTypeTextCount = 0;
+        int mealTypeSectionTextCount = 0;
+        int diningStationTextCount = 0;
+        int foodItemTextCount = 0;
+
         for (MealType mealType : mealTypes) {
 
             View mealTypeView = inflater.inflate(R.layout.activity_meal_type, null);
             TextView mealTypeTextView = mealTypeView.findViewById(R.id.mealType);
 
             mealTypeTextView.setText(mealType.getMealTypeName());
+
+            mealTypeTextView.setId(View.generateViewId());
+
+            mealTypeTextCount ++;
+
+            mealTypeTextView.setTag("mealType_" + mealTypeTextCount);
+
 
             mainLayout.addView(mealTypeView);
 
@@ -198,6 +210,12 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                 TextView mealTypeSectionTextView = mealTypeSectionView.findViewById(R.id.mealTypeSection);
 
                 mealTypeSectionTextView.setText(mealTypeSection.getMealTypeSectionName());
+
+                mealTypeSectionTextView.setId(View.generateViewId());
+
+                mealTypeSectionTextCount ++;
+
+                mealTypeSectionTextView.setTag("mealTypeSection_" + mealTypeSectionTextCount);
 
                 mainLayout.addView(mealTypeSectionView);
 
@@ -212,6 +230,10 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                     diningSectionTextView.setText(diningStation.getDiningSectionName());
 
+                    diningSectionTextView.setId(View.generateViewId());
+
+                    diningSectionTextView.setTag("diningStation_" + diningStationTextCount);
+
                     for (FoodItem foodItem : diningStation.getFoodItems()) {
 
                         if (preferencesString.isEmpty()) {
@@ -219,6 +241,12 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                             TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
 
                             foodItemTextView.setText(foodItem.getFoodItemName());
+
+                            foodItemTextView.setId(View.generateViewId());
+
+                            foodItemTextCount ++;
+
+                            foodItemTextView.setTag("foodItem_" + foodItemTextCount);
 
                             mainLayout.addView(foodItemView);
                         } else {
@@ -228,6 +256,12 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                                     TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
 
                                     foodItemTextView.setText(foodItem.getFoodItemName());
+
+                                    foodItemTextView.setId(View.generateViewId());
+
+                                    foodItemTextCount ++;
+
+                                    foodItemTextView.setTag("foodItem_" + foodItemTextCount);
 
                                     mainLayout.addView(foodItemView);
 
@@ -239,16 +273,19 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
                     if (diningStationCount != mainLayout.getChildCount()) {
                         mainLayout.addView(diningSectionView, diningStationCount);
+                        diningStationTextCount ++;
                     }
                 }
 
                 if (mealTypeSectionCount == mainLayout.getChildCount()) {
                     mainLayout.removeViewAt(mealTypeSectionCount - 1);
+                    mealTypeSectionTextCount --;
                 }
             }
 
             if (mealTypeCount == mainLayout.getChildCount()) {
                 mainLayout.removeViewAt(mealTypeCount - 1);
+                mealTypeTextCount --;
             }
         }
     }

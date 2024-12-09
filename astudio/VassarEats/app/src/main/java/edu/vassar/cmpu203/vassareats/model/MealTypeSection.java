@@ -1,12 +1,7 @@
 package edu.vassar.cmpu203.vassareats.model;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class MealTypeSection {
@@ -25,7 +20,7 @@ public class MealTypeSection {
      * addDiningSection method adds the dining station of the foodItems to the diningStations arraylist
      * @param diningStation: the dining station of the foodItems
      */
-    public void addDiningSection(DiningStation diningStation) {
+    public void addDiningStation(DiningStation diningStation) {
         diningStations.add(diningStation);
     }
 

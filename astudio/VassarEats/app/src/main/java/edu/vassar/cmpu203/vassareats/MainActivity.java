@@ -22,7 +22,7 @@ import edu.vassar.cmpu203.vassareats.view.SelectPreferenceView;
 
 public class MainActivity extends AppCompatActivity implements ISelectPreferenceView.Listener{
 //    Initialize variable
-    ISelectPreferenceView selectPreferenceView;
+    public ISelectPreferenceView selectPreferenceView;
     Menu menu;
 
     public MainActivity() throws JSONException, ParseException {

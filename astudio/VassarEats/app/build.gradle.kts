@@ -35,6 +35,14 @@ android {
     buildFeatures {
         viewBinding = true;
     }
+
+
+}
+
+android {
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -49,4 +57,22 @@ dependencies {
     // Add Mockito Core for mocking
     androidTestImplementation(libs.mockito.core)
     implementation(libs.json)
+
+    // Espresso core library for UI tests
+    androidTestImplementation (libs.espresso.core.v361)
+
+    // JUnit 4 for Android tests
+    androidTestImplementation (libs.junit.v121)
+
+    // AndroidX Test Rules
+    androidTestImplementation (libs.rules.v150)
+
+    // AndroidX Test Core for ActivityScenario
+    androidTestImplementation (libs.core)
+
+    // Basic unit test dependency
+    testImplementation (libs.junit)
+
+    // Hamcrest for combining matchers
+//    androidTestImplementation (libs.hamcrest.library)
 }

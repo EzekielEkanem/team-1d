@@ -129,7 +129,7 @@ public class Request {
                     // The new DiningStation object is created here
                     DiningStation diningStation = new DiningStation(stationName);
 
-                    newMealTypeSection.addDiningSection(diningStation);
+                    newMealTypeSection.addDiningStation(diningStation);
 
                     for (HashMap<String, JSONObject> anotherMap : diningSectionHashMap.get(stationName)) {
                         for (String keyName : anotherMap.keySet()) {

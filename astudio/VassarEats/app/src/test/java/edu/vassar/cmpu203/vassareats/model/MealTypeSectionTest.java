@@ -12,7 +12,7 @@ public class MealTypeSectionTest extends TestCase {
      * Tests the addDiningSection() method by adding a dining section and checking if it was added through the toString()
      */
     @Test
-    public void testAddDiningSection() {
+    public void testAddDiningStation() {
         MealTypeSection mealTypeSection = new MealTypeSection("Breakfast Specials");
         DiningStation diningStation = new DiningStation("Stocks");
         DiningStation diningStation2 = new DiningStation("Stocks");
@@ -33,11 +33,11 @@ public class MealTypeSectionTest extends TestCase {
 
         assertEquals(expectedValue1, mealTypeSection.toString());
 
-        mealTypeSection.addDiningSection(diningStation);
+        mealTypeSection.addDiningStation(diningStation);
 
         assertEquals(expectedValue2, mealTypeSection.toString());
 
-        mealTypeSection.addDiningSection(diningStation2);
+        mealTypeSection.addDiningStation(diningStation2);
 
         assertEquals(expectedValue3, mealTypeSection.toString());
     }
@@ -61,7 +61,7 @@ public class MealTypeSectionTest extends TestCase {
 
         assertEquals(expectedValue1, mealTypeSection.toString());
 
-        mealTypeSection.addDiningSection(diningStation);
+        mealTypeSection.addDiningStation(diningStation);
 
         assertEquals(expectedValue2, mealTypeSection.toString());
     }
