@@ -94,8 +94,7 @@ participant ": Meal Type Section" as meal_t_s
 participant ": Dining Section" as d_s
 participant ": Food Item" as food_item
 
-user -> ui : Clicks menu
-ui -> controller : getMenu(Date)
+user -> ui : Opens app
 controller -> menu : getMenu(Date)
 menu -> request : requestMenu(Date)
 request -> menu : return menu
@@ -109,7 +108,7 @@ food_item -> d_s : return food item
 d_s -> meal_t_s : return dining section
 meal_t_s -> meal_t : return meal type section
 meal_t -> menu : return meal type
-ui -> user : Show preferences filter
+ui -> user : Display menu
 
 user -> ui : Clicks preferences
 ui -> controller : return preferences

@@ -6,10 +6,12 @@ hide empty methods
 ' classes
 class Menu{
 -originalMenu : List<MealType>
--menuURL : String
+-currentDate : LocalDate
+-request : Request
 -preference : Preference
 --
 +Menu() : void {ParseException, JSONException}
++updateDate(localDate : LocalDate) : void
 +getMenu() : List<MealType> 
 +getPreferences() : List<String> 
 +changePreferences(preferences : List<Preference.Preferences>) : void
@@ -30,9 +32,10 @@ class Food_Item{
 
 class Request{
 -html : String
+-baseURL : String
 --
 +Request() : void
-+getJavaMenu(url : String) : List<MealType>
++getJavaMenu(date : LocalDate) : List<MealType>
 -getWebPage(urlStr : String) : void
 -getJsonMenu() : JSONObject {exception ParseException}
 -getMealDayParts() : HashMap<Integer, JSONObject> {exception ParseException}
