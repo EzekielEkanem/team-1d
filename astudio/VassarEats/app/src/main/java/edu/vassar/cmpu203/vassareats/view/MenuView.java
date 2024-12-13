@@ -11,8 +11,8 @@ import android.widget.TextView;
 import org.json.JSONException;
 
 import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.R;
@@ -23,18 +23,24 @@ import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 
-public class SelectPreferenceView implements ISelectPreferenceView{
+import java.time.LocalDate;
+
+public class MenuView implements IMenuView {
 
     ActivityMainBinding binding;
     Listener listener;
     boolean[] selectedPreference;
     boolean[] selectedPreferenceTemp;
-    List<Integer> preferenceList = new ArrayList<Integer>();
     String[] preferenceArray;
     List<Preference.Preferences> preferences = new ArrayList<>();
     List<Preference.Preferences> preferencesTemp = new ArrayList<>();
 
-    public SelectPreferenceView(Context context, Listener listener) {
+    int dateItem = 0;
+    int tempDateItem = dateItem;
+    String[] dateList = new String[7];
+    List<LocalDate> localDateList = new ArrayList<LocalDate>();
+
+    public MenuView(Context context, Listener listener) {
         this.listener = listener;
 
         //Add the preferences to the preferenceArray
@@ -50,6 +56,26 @@ public class SelectPreferenceView implements ISelectPreferenceView{
         //    Initialize selected preference array
         selectedPreference = new boolean[preferenceArray.length];
         selectedPreferenceTemp = new boolean[preferenceArray.length];
+
+        //Fill in the dates into the datelists
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
+
+        // Fill in the first two days
+        dateList[0] = "TODAY";
+        localDateList.add(currentDate);
+        dateList[1] = "TOMORROW";
+        localDateList.add(currentDate.plusDays(1));
+
+        for (int i = 2; i < 7; i++) {
+            LocalDate date = currentDate.plusDays(i);
+            int dayOfMonth = date.getDayOfMonth();
+            String abbreviatedMonth = currentDate.format(monthFormatter).toUpperCase();
+
+            dateList[i] = date.getDayOfWeek().toString() + ", " + abbreviatedMonth + " " + dayOfMonth + getOrdinalSuffix(dayOfMonth);
+            localDateList.add(date);
+        }
 
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
         this.binding.preference.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +99,6 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                         if (isChecked) {
 //                            When checkbox is selected, add the enum to the preferences list
                             preferencesTemp.add(Preference.Preferences.getPreference(preferenceArray[which]));
-//                            Sort preferenceList
-                            Collections.sort(preferenceList);
                         } else {
 //                            When checkbox is unselected, remove position from preferenceList
                             preferencesTemp.remove(Preference.Preferences.getPreference(preferenceArray[which]));
@@ -89,11 +113,11 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 //                        Initialize string builder
                         StringBuilder stringBuilder = new StringBuilder();
 //                        Use for loop
-                        for (int i = 0; i < preferenceList.size(); i++) {
+                        for (int i = 0; i < preferencesTemp.size(); i++) {
 //                            Concatenate array value
-                            stringBuilder.append(preferenceArray[preferenceList.get(i)]);
+                            stringBuilder.append(preferencesTemp.get(i).toString());
 //                            Check condition
-                            if (i != preferenceList.size() - 1) {
+                            if (i != preferencesTemp.size() - 1) {
 //                                When we've not gotten to the end of the list, add a comma
                                 stringBuilder.append(", ");
                             }
@@ -105,12 +129,8 @@ public class SelectPreferenceView implements ISelectPreferenceView{
                             selectedPreferenceTemp[i] = selectedPreference[i];
                         }
 
-//                        Set the preference list to listener
-                        try {
-                            listener.onAddPreferenceList(preferences);
-                        } catch (JSONException | ParseException e) {
-                            throw new RuntimeException(e);
-                        }
+                        listener.updatePreferences(preferences);
+
 
 //                        Set text on view
                         binding.preference.setText(stringBuilder.toString());
@@ -130,7 +150,6 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 
 //                        Dismiss dialog
                         dialog.dismiss();
-//                      Doesn't do anything in terms of reversing selected preferences
 
                     }
                 });
@@ -151,17 +170,82 @@ public class SelectPreferenceView implements ISelectPreferenceView{
 //                            Clear preference value
                         binding.preference.setText("");
 
-                        try {
-                            listener.onAddPreferenceList(preferences);
-                        } catch (JSONException | ParseException e) {
-                            throw new RuntimeException(e);
-                        }
+                        listener.updatePreferences(preferences);
                     }
                 });
 //                Show dialog
                 builder.show();
             }
         });
+
+        // Logic for the Data UI
+
+        this.binding.date.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+//                Initialize alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        context
+                );
+//                Set title
+                builder.setTitle("Select Date");
+//                Set dialog non cancelable
+                builder.setCancelable(false);
+
+                builder.setSingleChoiceItems(dateList, dateItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tempDateItem = which;
+                    }
+                });
+
+                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dateItem = tempDateItem;
+
+                        try {
+                            listener.updateDate(localDateList.get(dateItem));
+
+                            //                        Set text on view
+                            binding.date.setText(dateList[dateItem]);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tempDateItem = dateItem;
+
+//                        Dismiss dialog
+                        dialog.dismiss();
+
+                    }
+                });
+
+//                Show dialog
+                builder.show();
+            }
+        });
+    }
+
+    private static String getOrdinalSuffix(int day) {
+        if (day >= 11 && day <= 13) {
+            return "th"; // Special case for 11th, 12th, 13th
+        }
+        switch (day % 10) {
+            case 1: return "st"; // 1st, 21st, etc.
+            case 2: return "nd"; // 2nd, 22nd, etc.
+            case 3: return "rd"; // 3rd, 23rd, etc.
+            default: return "th"; // All other days
+        }
     }
 
     @Override

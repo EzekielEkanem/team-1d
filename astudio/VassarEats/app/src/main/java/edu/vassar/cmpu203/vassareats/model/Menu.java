@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,9 +19,10 @@ import java.util.List;
 import edu.vassar.cmpu203.vassareats.R;
 
 public class Menu {
-    private String menuURL = "https://vassar.cafebonappetit.com/cafe/gordon/2024-11-22/";
     private Preference preference;
     private List<MealType> originalMenu;
+    private LocalDate currentDate;
+    private Request request;
 
     /**
      *
@@ -28,10 +30,18 @@ public class Menu {
      * @throws JSONException
      */
     public Menu() throws ParseException, JSONException {
-        Request request = new Request();
+        currentDate = LocalDate.now();
+        request = new Request();
+        preference = new Preference();
 
-        originalMenu = request.getJavaMenu(menuURL);
-        this.preference = new Preference();
+        originalMenu = request.getJavaMenu(currentDate);
+    }
+
+    public void updateDate(LocalDate localDate) throws JSONException, ParseException {
+        if (!currentDate.equals(localDate)) {
+            currentDate = localDate;
+            originalMenu = request.getJavaMenu(currentDate);
+        }
     }
 
     public List<MealType> getMenu() {

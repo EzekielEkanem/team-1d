@@ -1,8 +1,8 @@
 package edu.vassar.cmpu203.vassareats;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,16 +13,17 @@ import androidx.core.view.WindowInsetsCompat;
 import org.json.JSONException;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.model.Preference;
-import edu.vassar.cmpu203.vassareats.view.ISelectPreferenceView;
-import edu.vassar.cmpu203.vassareats.view.SelectPreferenceView;
+import edu.vassar.cmpu203.vassareats.view.IMenuView;
+import edu.vassar.cmpu203.vassareats.view.MenuView;
 
-public class MainActivity extends AppCompatActivity implements ISelectPreferenceView.Listener{
+public class MainActivity extends AppCompatActivity implements IMenuView.Listener{
 //    Initialize variable
-    public ISelectPreferenceView selectPreferenceView;
+    public IMenuView selectPreferenceView;
     Menu menu;
 
     public MainActivity() throws JSONException, ParseException {
@@ -43,9 +44,8 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        this.selectPreferenceView = new SelectPreferenceView(this, this);
+        this.selectPreferenceView = new MenuView(this, this);
         setContentView(selectPreferenceView.getRootView());
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -53,11 +53,19 @@ public class MainActivity extends AppCompatActivity implements ISelectPreference
             return insets;
         });
 
+        selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
+
     }
 
     @Override
-    public void onAddPreferenceList(List<Preference.Preferences> preferenceList) throws JSONException, ParseException {
+    public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
+        selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
+    }
+
+    @Override
+    public void updateDate(LocalDate date) throws JSONException, ParseException {
+        menu.updateDate(date);
         selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 }

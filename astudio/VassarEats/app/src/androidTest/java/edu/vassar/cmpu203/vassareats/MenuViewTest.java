@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-public class SelectPreferenceViewTest {
+public class MenuViewTest {
 
     @Test
     public void testMenuCreationAndDisplay() {
