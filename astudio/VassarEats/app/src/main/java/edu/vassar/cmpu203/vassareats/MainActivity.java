@@ -2,6 +2,7 @@ package edu.vassar.cmpu203.vassareats;
 
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.widget.ExpandableListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,17 @@ import org.json.JSONException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
+import edu.vassar.cmpu203.vassareats.model.ParentItem;
+import edu.vassar.cmpu203.vassareats.view.CustomExpandableListAdapter;
+import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 import edu.vassar.cmpu203.vassareats.view.MyAdapter;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.IMenuView;
@@ -90,9 +97,40 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
 
         // Set up the RecyclerView with LayoutManager and Adapter
+//        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(new MyAdapter(this, itemList));
+
+//        ExpandableListView expandableListView = findViewById(R.id.expandableListView);
+
+// Define parent and child data
+        List<String> parentList = new ArrayList<>();
+        Map<String, List<String>> childList = new HashMap<>();
+
+        parentList.add("Breakfast");
+        parentList.add("Lunch");
+
+        childList.put("Breakfast", Arrays.asList("Pancakes", "Waffles"));
+        childList.put("Lunch", Arrays.asList("Burger", "Salad"));
+
+// Set adapter
+//        CustomExpandableListAdapter adapter = new CustomExpandableListAdapter(this, parentList, childList);
+//        expandableListView.setAdapter(adapter);
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MyAdapter(this, itemList));
+
+        // Create sample data
+        List<ParentItem> parentItems = new ArrayList<>();
+        parentItems.add(new ParentItem("Breakfast", Arrays.asList("Pancakes", "Waffles")));
+        parentItems.add(new ParentItem("Lunch", Arrays.asList("Burger", "Salad")));
+        parentItems.add(new ParentItem("Dinner", Arrays.asList("Steak", "Pizza")));
+
+        ExpandableRecyclerViewAdapter adapter = new ExpandableRecyclerViewAdapter(parentItems);
+        recyclerView.setAdapter(adapter);
+
+
+
 
     }
 
