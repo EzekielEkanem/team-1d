@@ -14,7 +14,6 @@ import edu.vassar.cmpu203.vassareats.model.Preference;
 public interface IMenuView {
     interface Listener {
         void updatePreferences(List<Preference.Preferences> preferenceList);
-
         void updateDate(LocalDate localDate) throws JSONException, ParseException;
     }
 

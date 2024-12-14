@@ -36,8 +36,15 @@ android {
         viewBinding = true;
     }
 
-
 }
+
+android {
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
+
 
 android {
     testOptions {
@@ -75,4 +82,7 @@ dependencies {
 
     // Hamcrest for combining matchers
 //    androidTestImplementation (libs.hamcrest.library)
+
+    implementation (libs.recyclerview)
+
 }
