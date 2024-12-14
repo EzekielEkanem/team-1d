@@ -1,8 +1,5 @@
 package edu.vassar.cmpu203.vassareats.model;
 
-import android.view.View;
-import android.widget.TextView;
-
 import org.json.JSONException;
 
 import java.text.ParseException;
@@ -10,7 +7,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.view.ParentItem;
 
 public class Menu {

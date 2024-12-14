@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
             return insets;
         });
 
-//        selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -80,13 +78,11 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
         recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-//        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 
     @Override
     public void updateDate(LocalDate date) throws JSONException, ParseException {
         menu.updateDate(date);
         recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-//        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 }

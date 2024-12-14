@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 
 public interface IMenuView {
@@ -17,6 +16,5 @@ public interface IMenuView {
         void updateDate(LocalDate localDate) throws JSONException, ParseException;
     }
 
-    void updateMenu(List<MealType> mealTypes, List<String> preferences);
     View getRootView();
 }

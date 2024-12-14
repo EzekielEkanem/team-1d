@@ -1,11 +1,7 @@
 package edu.vassar.cmpu203.vassareats.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 public class FoodItem {
     private String id;

@@ -2,8 +2,6 @@ package edu.vassar.cmpu203.vassareats.model;
 
 import static java.lang.System.out;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 
 import org.json.JSONException;

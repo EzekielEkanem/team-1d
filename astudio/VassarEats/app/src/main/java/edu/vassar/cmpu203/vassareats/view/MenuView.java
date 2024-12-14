@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -15,12 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
-import edu.vassar.cmpu203.vassareats.model.DiningStation;
-import edu.vassar.cmpu203.vassareats.model.FoodItem;
-import edu.vassar.cmpu203.vassareats.model.MealType;
-import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 
 import java.time.LocalDate;
@@ -57,7 +50,7 @@ public class MenuView implements IMenuView {
         selectedPreference = new boolean[preferenceArray.length];
         selectedPreferenceTemp = new boolean[preferenceArray.length];
 
-        //Fill in the dates into the datelists
+        //Fill in the dates into the date list
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
@@ -248,131 +241,6 @@ public class MenuView implements IMenuView {
         }
     }
 
-    @Override
-    public void updateMenu(List<MealType> mealTypes, List<String> preferencesString) {
-        Context context = binding.getRoot().getContext();
-
-// Make the text screen
-        LinearLayout mainLayout = binding.getRoot().findViewById(R.id.main);
-        LayoutInflater inflater = LayoutInflater.from(context);
-//        int indexBeforeExpandableListView = mainLayout.indexOfChild(mainLayout.findViewById(R.id.expanded_menu));
-
-        View selectPreferenceView = binding.preference; // Assuming this is the SelectPreferenceView
-        for (int i = mainLayout.getChildCount() - 1; i >= 2; i--) {
-            View child = mainLayout.getChildAt(i);
-            if (child != selectPreferenceView) {
-                mainLayout.removeViewAt(i);
-            }
-        }
-
-        int mealTypeTextCount = 0;
-        int mealTypeSectionTextCount = 0;
-        int diningStationTextCount = 0;
-        int foodItemTextCount = 0;
-
-        for (MealType mealType : mealTypes) {
-
-            View mealTypeView = inflater.inflate(R.layout.activity_meal_type, null);
-            TextView mealTypeTextView = mealTypeView.findViewById(R.id.mealType);
-
-            mealTypeTextView.setText(mealType.getMealTypeName());
-
-            mealTypeTextView.setId(View.generateViewId());
-
-            mealTypeTextCount ++;
-
-            mealTypeTextView.setTag("mealType_" + mealTypeTextCount);
-
-
-            mainLayout.addView(mealTypeView);
-
-            int mealTypeCount = mainLayout.getChildCount();
-
-            for (MealTypeSection mealTypeSection : mealType.getMealTypeSections()) {
-
-                View mealTypeSectionView = inflater.inflate(R.layout.activity_meal_type_section, null);
-                TextView mealTypeSectionTextView = mealTypeSectionView.findViewById(R.id.mealTypeSection);
-
-                mealTypeSectionTextView.setText(mealTypeSection.getMealTypeSectionName());
-
-                mealTypeSectionTextView.setId(View.generateViewId());
-
-                mealTypeSectionTextCount ++;
-
-                mealTypeSectionTextView.setTag("mealTypeSection_" + mealTypeSectionTextCount);
-
-                mainLayout.addView(mealTypeSectionView);
-
-                int mealTypeSectionCount = mainLayout.getChildCount();
-
-                for (DiningStation diningStation : mealTypeSection.getDiningStations()) {
-
-                    int diningStationCount = mainLayout.getChildCount();
-
-                    View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
-                    TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
-
-                    diningSectionTextView.setText(diningStation.getDiningStationName());
-
-                    diningSectionTextView.setId(View.generateViewId());
-
-                    diningSectionTextView.setTag("diningStation_" + diningStationTextCount);
-
-                    for (FoodItem foodItem : diningStation.getFoodItems()) {
-
-                        if (preferencesString.isEmpty()) {
-                            View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
-                            TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
-
-                            foodItemTextView.setText(foodItem.getFoodItemName());
-
-                            foodItemTextView.setId(View.generateViewId());
-
-                            foodItemTextCount ++;
-
-                            foodItemTextView.setTag("foodItem_" + foodItemTextCount);
-
-                            mainLayout.addView(foodItemView);
-                        } else {
-                            for (String dietLabel : foodItem.getDietLabels()) {
-                                if (preferencesString.contains(dietLabel)) {
-                                    View foodItemView = inflater.inflate(R.layout.activity_food_item, null);
-                                    TextView foodItemTextView = foodItemView.findViewById(R.id.foodItem);
-
-                                    foodItemTextView.setText(foodItem.getFoodItemName());
-
-                                    foodItemTextView.setId(View.generateViewId());
-
-                                    foodItemTextCount ++;
-
-                                    foodItemTextView.setTag("foodItem_" + foodItemTextCount);
-
-                                    mainLayout.addView(foodItemView);
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (diningStationCount != mainLayout.getChildCount()) {
-                        mainLayout.addView(diningSectionView, diningStationCount);
-                        diningStationTextCount ++;
-                    }
-                }
-
-                if (mealTypeSectionCount == mainLayout.getChildCount()) {
-                    mainLayout.removeViewAt(mealTypeSectionCount - 1);
-                    mealTypeSectionTextCount --;
-                }
-            }
-
-            if (mealTypeCount == mainLayout.getChildCount()) {
-                mainLayout.removeViewAt(mealTypeCount - 1);
-                mealTypeTextCount --;
-            }
-        }
-    }
 
     @Override
     public View getRootView() {
