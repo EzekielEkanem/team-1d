@@ -1,7 +1,6 @@
 package edu.vassar.cmpu203.vassareats.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Preference {
@@ -46,7 +45,7 @@ public class Preference {
         preferences = preferencesList;
     }
 
-    public ArrayList<String> getPreference() {
+    public ArrayList<String> getPreferences() {
         ArrayList<String> preferencesString = new ArrayList<>();
 
         for (Preferences preference : preferences) {

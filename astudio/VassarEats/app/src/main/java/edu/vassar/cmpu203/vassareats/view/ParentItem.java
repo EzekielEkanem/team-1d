@@ -1,13 +1,13 @@
-package edu.vassar.cmpu203.vassareats.model;
+package edu.vassar.cmpu203.vassareats.view;
 
 import java.util.List;
 
 public class ParentItem {
     private String title; // Parent item title
-    private List<String> childItems; // List of child items
+    private List<Object> childItems; // List of child items
     private boolean isExpanded; // To track expanded state
 
-    public ParentItem(String title, List<String> childItems) {
+    public ParentItem(String title, List<Object> childItems) {
         this.title = title;
         this.childItems = childItems;
         this.isExpanded = false;
@@ -17,7 +17,7 @@ public class ParentItem {
         return title;
     }
 
-    public List<String> getChildItems() {
+    public List<Object> getChildItems() {
         return childItems;
     }
 

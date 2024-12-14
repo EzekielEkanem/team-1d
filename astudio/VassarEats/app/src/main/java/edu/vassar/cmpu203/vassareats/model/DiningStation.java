@@ -1,11 +1,6 @@
 package edu.vassar.cmpu203.vassareats.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class DiningStation {
@@ -40,7 +35,7 @@ public class DiningStation {
      * getDiningSectionName method returns the station name for the food item
      * @return String: the station name of the food item
      */
-    public String getDiningSectionName() {
+    public String getDiningStationName() {
         return stationName;
     }
 

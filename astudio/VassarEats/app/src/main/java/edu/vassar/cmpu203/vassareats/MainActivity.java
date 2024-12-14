@@ -1,8 +1,8 @@
 package edu.vassar.cmpu203.vassareats;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.widget.ExpandableListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,10 +23,9 @@ import java.util.Map;
 
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
-import edu.vassar.cmpu203.vassareats.model.ParentItem;
-import edu.vassar.cmpu203.vassareats.view.CustomExpandableListAdapter;
+import edu.vassar.cmpu203.vassareats.view.IExpandableRecylerViewAdapter;
+import edu.vassar.cmpu203.vassareats.view.ParentItem;
 import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
-import edu.vassar.cmpu203.vassareats.view.MyAdapter;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.IMenuView;
 import edu.vassar.cmpu203.vassareats.view.MenuView;
@@ -34,10 +33,11 @@ import edu.vassar.cmpu203.vassareats.view.MenuView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity implements IMenuView.Listener{
+public class MainActivity extends AppCompatActivity implements IMenuView.Listener, IExpandableRecylerViewAdapter.Listener {
 //    Initialize variable
     public IMenuView menuView;
     Menu menu;
+    public IExpandableRecylerViewAdapter recylerViewAdapter;
 
     public MainActivity() throws JSONException, ParseException {
     }
@@ -67,82 +67,26 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
 //        selectPreferenceView.updateMenu(menu.getMenu(), menu.getPreferences());
 
-        HashSet<String> dietLabels = new HashSet<String>();
-        dietLabels.add("Vegan");
-
-        List<FoodItem> itemList = new ArrayList<>();
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-        itemList.add(new FoodItem("Alice", "Class of 2024", dietLabels));
-        itemList.add(new FoodItem("Bob", "Class of 2025", dietLabels));
-        itemList.add(new FoodItem("Charlie", "Class of 2026", dietLabels));
-
-        // Set up the RecyclerView with LayoutManager and Adapter
-//        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setAdapter(new MyAdapter(this, itemList));
-
-//        ExpandableListView expandableListView = findViewById(R.id.expandableListView);
-
-// Define parent and child data
-        List<String> parentList = new ArrayList<>();
-        Map<String, List<String>> childList = new HashMap<>();
-
-        parentList.add("Breakfast");
-        parentList.add("Lunch");
-
-        childList.put("Breakfast", Arrays.asList("Pancakes", "Waffles"));
-        childList.put("Lunch", Arrays.asList("Burger", "Salad"));
-
-// Set adapter
-//        CustomExpandableListAdapter adapter = new CustomExpandableListAdapter(this, parentList, childList);
-//        expandableListView.setAdapter(adapter);
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Create sample data
-        List<ParentItem> parentItems = new ArrayList<>();
-        parentItems.add(new ParentItem("Breakfast", Arrays.asList("Pancakes", "Waffles")));
-        parentItems.add(new ParentItem("Lunch", Arrays.asList("Burger", "Salad")));
-        parentItems.add(new ParentItem("Dinner", Arrays.asList("Steak", "Pizza")));
-
-        ExpandableRecyclerViewAdapter adapter = new ExpandableRecyclerViewAdapter(parentItems);
-        recyclerView.setAdapter(adapter);
-
-
-
+        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this);
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
 
     }
 
     @Override
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
-        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+//        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 
     @Override
     public void updateDate(LocalDate date) throws JSONException, ParseException {
         menu.updateDate(date);
-        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+//        menuView.updateMenu(menu.getMenu(), menu.getPreferences());
     }
 }

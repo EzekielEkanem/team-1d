@@ -305,14 +305,14 @@ public class MenuView implements IMenuView {
 
                 int mealTypeSectionCount = mainLayout.getChildCount();
 
-                for (DiningStation diningStation : mealTypeSection.getDiningSections()) {
+                for (DiningStation diningStation : mealTypeSection.getDiningStations()) {
 
                     int diningStationCount = mainLayout.getChildCount();
 
                     View diningSectionView = inflater.inflate(R.layout.activity_dining_section, null);
                     TextView diningSectionTextView = diningSectionView.findViewById(R.id.diningStation);
 
-                    diningSectionTextView.setText(diningStation.getDiningSectionName());
+                    diningSectionTextView.setText(diningStation.getDiningStationName());
 
                     diningSectionTextView.setId(View.generateViewId());
 

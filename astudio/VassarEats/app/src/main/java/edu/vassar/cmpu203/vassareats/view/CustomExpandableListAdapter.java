@@ -64,9 +64,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_group, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_meal_type, parent, false);
         }
-        TextView parentTextView = convertView.findViewById(R.id.parentTextView);
+        TextView parentTextView = convertView.findViewById(R.id.mealTypeName);
         parentTextView.setText(parentList.get(groupPosition));
         return convertView;
     }
@@ -74,9 +74,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_child, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.expandable_list_food_item, parent, false);
         }
-        TextView childTextView = convertView.findViewById(R.id.childTextView);
+        TextView childTextView = convertView.findViewById(R.id.foodItemName);
         childTextView.setText((String) getChild(groupPosition, childPosition));
         return convertView;
     }

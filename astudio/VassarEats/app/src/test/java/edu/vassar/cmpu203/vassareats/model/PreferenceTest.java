@@ -22,6 +22,6 @@ public class PreferenceTest extends TestCase {
         List<String> expectedValue = new ArrayList<String>();
         expectedValue.add("Vegan");
 
-        assertEquals(expectedValue, preference.getPreference());
+        assertEquals(expectedValue, preference.getPreferences());
     }
 }

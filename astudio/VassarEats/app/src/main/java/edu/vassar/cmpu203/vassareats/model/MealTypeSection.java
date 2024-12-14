@@ -28,7 +28,7 @@ public class MealTypeSection {
      * getDiningSections method returns the list of the dining sections for a particular mealTypeSection
      * @return List<DiningSection>: the list containing the dining sections for a particular mealTypeSection
      */
-    public List<DiningStation> getDiningSections() {
+    public List<DiningStation> getDiningStations() {
 
         return diningStations;
     }

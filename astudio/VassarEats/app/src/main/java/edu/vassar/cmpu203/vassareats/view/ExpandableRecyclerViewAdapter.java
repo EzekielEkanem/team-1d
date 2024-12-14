@@ -1,5 +1,6 @@
 package edu.vassar.cmpu203.vassareats.view;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.vassar.cmpu203.vassareats.R;
-import edu.vassar.cmpu203.vassareats.model.ParentItem;
+import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
+import edu.vassar.cmpu203.vassareats.model.DiningStation;
+import edu.vassar.cmpu203.vassareats.model.FoodItem;
+import edu.vassar.cmpu203.vassareats.model.MealTypeSection;
 
-public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IExpandableRecylerViewAdapter {
 
-    private static final int TYPE_PARENT = 0;
-    private static final int TYPE_CHILD = 1;
+    private static final int TYPE_MEAL_TYPE = 0;
+    private static final int TYPE_FOOD_ITEM = 3;
+    private static final int TYPE_MEAL_TYPE_SECTION = 1;
+    private static final int TYPE_DINING_STATION = 2;
+    
+    ActivityMainBinding binding;
+    Listener listener;
+    Context context;
 
     private List<Object> items;
 
-    public ExpandableRecyclerViewAdapter(List<ParentItem> parentItems) {
+    public ExpandableRecyclerViewAdapter(Context context, Listener listener) {
+        this.context = context;
+        this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
+        this.listener = listener;
+    }
+
+    public void setParentItems(List<ParentItem> parentItems) {
         this.items = new ArrayList<>();
         for (ParentItem parent : parentItems) {
             items.add(parent);
@@ -29,44 +45,65 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 items.addAll(parent.getChildItems());
             }
         }
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
         if (items.get(position) instanceof ParentItem) {
-            return TYPE_PARENT;
+            return TYPE_MEAL_TYPE;
+        } else if (items.get(position) instanceof MealTypeSection) {
+            return TYPE_MEAL_TYPE_SECTION;
+        } else if (items.get(position) instanceof FoodItem) {
+            return TYPE_FOOD_ITEM;
         } else {
-            return TYPE_CHILD;
+            return TYPE_DINING_STATION;
         }
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == TYPE_PARENT) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_group, parent, false);
-            return new ParentViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        if (viewType == TYPE_MEAL_TYPE) {
+            View view = inflater.inflate(R.layout.expandable_list_meal_type, parent, false);
+            return new MealTypeViewHolder(view);
+        } else if (viewType == TYPE_FOOD_ITEM) {
+            View view = inflater.inflate(R.layout.expandable_list_food_item, parent, false);
+            return new FoodItemViewHolder(view);
+        } else if (viewType == TYPE_MEAL_TYPE_SECTION) {
+            View view = inflater.inflate(R.layout.expandable_list_meal_type_section, parent, false);
+            return new MealTypeSectionViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_child, parent, false);
-            return new ChildViewHolder(view);
+            View view = inflater.inflate(R.layout.expandable_list_dining_station, parent, false);
+            return new DiningStationViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == TYPE_PARENT) {
+        if (getItemViewType(position) == TYPE_MEAL_TYPE) {
             ParentItem parentItem = (ParentItem) items.get(position);
-            ParentViewHolder parentHolder = (ParentViewHolder) holder;
-            parentHolder.parentTitle.setText(parentItem.getTitle());
+            MealTypeViewHolder parentHolder = (MealTypeViewHolder) holder;
+            parentHolder.mealTypeName.setText(parentItem.getTitle());
 
             parentHolder.itemView.setOnClickListener(v -> {
                 parentItem.setExpanded(!parentItem.isExpanded());
                 updateItems();
             });
+        } else if (getItemViewType(position) == TYPE_FOOD_ITEM) {
+            FoodItem foodItem = (FoodItem) items.get(position);
+            FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
+            foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
+        } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
+            MealTypeSection mealTypeSection = (MealTypeSection) items.get(position);
+            MealTypeSectionViewHolder childHolder = (MealTypeSectionViewHolder) holder;
+            childHolder.mealTypeSectionName.setText(mealTypeSection.getMealTypeSectionName());
         } else {
-            String childItem = (String) items.get(position);
-            ChildViewHolder childHolder = (ChildViewHolder) holder;
-            childHolder.childTitle.setText(childItem);
+            DiningStation diningStation = (DiningStation) items.get(position);
+            DiningStationViewHolder diningStationHolder = (DiningStationViewHolder) holder;
+            diningStationHolder.diningStationName.setText(diningStation.getDiningStationName());
         }
     }
 
@@ -90,21 +127,39 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         notifyDataSetChanged();
     }
 
-    static class ParentViewHolder extends RecyclerView.ViewHolder {
-        TextView parentTitle;
+    static class MealTypeViewHolder extends RecyclerView.ViewHolder {
+        TextView mealTypeName;
 
-        public ParentViewHolder(@NonNull View itemView) {
+        public MealTypeViewHolder(@NonNull View itemView) {
             super(itemView);
-            parentTitle = itemView.findViewById(R.id.parentTextView);
+            mealTypeName = itemView.findViewById(R.id.mealTypeName);
         }
     }
 
-    static class ChildViewHolder extends RecyclerView.ViewHolder {
-        TextView childTitle;
+    static class FoodItemViewHolder extends RecyclerView.ViewHolder {
+        TextView foodItemName;
 
-        public ChildViewHolder(@NonNull View itemView) {
+        public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            childTitle = itemView.findViewById(R.id.childTextView);
+            foodItemName = itemView.findViewById(R.id.foodItemName);
+        }
+    }
+
+    static class MealTypeSectionViewHolder extends RecyclerView.ViewHolder {
+        TextView mealTypeSectionName;
+
+        public MealTypeSectionViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mealTypeSectionName = itemView.findViewById(R.id.mealTypeSectionName);
+        }
+    }
+
+    static class DiningStationViewHolder extends RecyclerView.ViewHolder {
+        TextView diningStationName;
+
+        public DiningStationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            diningStationName = itemView.findViewById(R.id.diningStationName);
         }
     }
 }
