@@ -1,16 +1,23 @@
 package edu.vassar.cmpu203.vassareats.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
@@ -28,13 +35,15 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     ActivityMainBinding binding;
     Listener listener;
     Context context;
+    Set<String> likedItems;
 
     private List<Object> items;
 
-    public ExpandableRecyclerViewAdapter(Context context, Listener listener) {
+    public ExpandableRecyclerViewAdapter(Context context, Listener listener, Set<String> likedItems) {
         this.context = context;
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
         this.listener = listener;
+        this.likedItems = likedItems;
     }
 
     public void setParentItems(List<ParentItem> parentItems) {
@@ -45,6 +54,11 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 items.addAll(parent.getChildItems());
             }
         }
+        notifyDataSetChanged();
+    }
+
+    public void setLikedItems(Set<String> likedItems) {
+        this.likedItems = likedItems;
         notifyDataSetChanged();
     }
 
@@ -96,6 +110,31 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             FoodItem foodItem = (FoodItem) items.get(position);
             FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
             foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
+
+            Log.d("MainActivity", "This item liked state: " + foodItem.getFoodId() + likedItems.contains(foodItem.getFoodId()));
+
+            // Check if the item is liked
+            boolean isLiked = likedItems.contains(foodItem.getFoodId());
+
+            // Set initial state
+            updateLikeButton(foodItemHolder.likeButton, isLiked);
+
+            foodItemHolder.likeButton.setOnClickListener((buttonView) -> {
+                boolean newState = !likedItems.contains(foodItem.getFoodId());
+                if (newState) {
+                    likedItems.add(foodItem.getFoodId());
+                } else {
+                    likedItems.remove(foodItem.getFoodId());
+                }
+
+                // Update button visuals
+                updateLikeButton(foodItemHolder.likeButton, newState);
+
+                // Notify MainActivity
+                listener.updateLikedItems(foodItem.getFoodId(), newState);
+            });
+
+
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
             MealTypeSection mealTypeSection = (MealTypeSection) items.get(position);
             MealTypeSectionViewHolder childHolder = (MealTypeSectionViewHolder) holder;
@@ -106,6 +145,12 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             diningStationHolder.diningStationName.setText(diningStation.getDiningStationName());
         }
     }
+
+    private void updateLikeButton(TextView likeButton, boolean isLiked) {
+        likeButton.setText(isLiked ? "Liked" : "Like");
+        likeButton.setBackgroundResource(isLiked ? R.color.purple_700 : R.color.gray);
+    }
+
 
     @Override
     public int getItemCount() {
@@ -138,10 +183,13 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     static class FoodItemViewHolder extends RecyclerView.ViewHolder {
         TextView foodItemName;
+        TextView likeButton;
 
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
             foodItemName = itemView.findViewById(R.id.foodItemName);
+            likeButton = itemView.findViewById(R.id.likeButton);
+//            dislikeButton = itemView.findViewById(R.id.dislikeButton);
         }
     }
 

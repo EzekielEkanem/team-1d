@@ -88,9 +88,6 @@ public class MenuViewTest {
 
             SystemClock.sleep(1000);
 
-            Espresso.onView(ViewMatchers.withId(R.id.scrollView))
-                    .perform(ViewActions.swipeUp());
-
             // Verify the menu is displayed in the UI
             Espresso.onView(ViewMatchers.withTagValue(Matchers.is("mealType_4")))
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
@@ -146,9 +143,6 @@ public class MenuViewTest {
             Espresso.onView(ViewMatchers.withText("Cancel")).perform(ViewActions.click());
 
             SystemClock.sleep(1000);
-
-            Espresso.onView(ViewMatchers.withId(R.id.scrollView))
-                    .perform(ViewActions.swipeUp());
 
             // Verify the menu is displayed in the UI
             Espresso.onView(ViewMatchers.withTagValue(Matchers.is("mealType_4")))

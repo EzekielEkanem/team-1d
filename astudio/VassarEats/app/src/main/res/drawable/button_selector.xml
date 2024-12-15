@@ -1,0 +1,7 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Liked State -->
+    <item android:state_selected="true" android:drawable="@color/purple_700" />
+
+    <!-- Default State -->
+    <item android:drawable="@color/gray" />
+</selector>
