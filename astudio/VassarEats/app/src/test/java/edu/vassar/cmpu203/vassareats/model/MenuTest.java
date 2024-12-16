@@ -74,4 +74,27 @@ public class MenuTest extends TestCase {
         assertTrue(menu1.contains("cream of wheat"));
         assertFalse(menu2.contains("cream of wheat"));
     }
+
+    /**
+     * Tests the updateLocation() method by checking if the menus are different after updating the
+     * dining location
+     */
+    @Test
+    public void testUpdateLocation() throws JSONException, ParseException {
+        Menu menu = new Menu();
+
+        Integer location1 = 1;
+        Integer location2 = 2;
+
+        menu.updateLocation(location1);
+
+        String menu1 = menu.getMenu().toString();
+
+        menu.updateLocation(location2);
+
+        String menu2 = menu.getMenu().toString();
+
+        assertTrue(menu1.contains("Express Specials"));
+        assertTrue(menu2.contains("Toppings"));
+    }
 }

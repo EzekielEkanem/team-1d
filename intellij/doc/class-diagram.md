@@ -11,6 +11,7 @@ class Menu{
 -preference : Preference
 -filteredMenu : List<MealType>
 -diningLocation : Integer
++toString() : String
 --
 +Menu() : void {ParseException, JSONException}
 +updateDate(localDate : LocalDate) : void
