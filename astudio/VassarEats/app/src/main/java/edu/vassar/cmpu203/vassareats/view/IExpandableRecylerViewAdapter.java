@@ -3,9 +3,13 @@ package edu.vassar.cmpu203.vassareats.view;
 import java.util.List;
 import java.util.Set;
 
+import edu.vassar.cmpu203.vassareats.FirestoreHelper;
+
 public interface IExpandableRecylerViewAdapter {
     interface Listener {
         void updateLikedItems(String foodItemName, boolean isLiked);
+        void updateLikeCount(String foodId, boolean isLiked);
+        void getLikeCount(String foodId, FirestoreHelper.FirestoreCallback2 firestoreCallback);
     }
 
     void setParentItems(List<ParentItem> parentItems);
