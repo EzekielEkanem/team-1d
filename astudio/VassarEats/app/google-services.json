@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "897047262329",
+    "project_id": "vassar-eats",
+    "storage_bucket": "vassar-eats.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897047262329:android:398f872946fefba88e10a8",
+        "android_client_info": {
+          "package_name": "edu.vassar.cmpu203.vassareats"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT3NLO9MASf1GLoDItwC3-WZr_nJQeLAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
