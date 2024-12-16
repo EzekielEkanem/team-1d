@@ -15,6 +15,7 @@ public class Menu {
     private List<MealType> filteredMenu;
     private LocalDate currentDate;
     private Request request;
+    private Integer diningLocation;
 
     /**
      *
@@ -25,15 +26,24 @@ public class Menu {
         currentDate = LocalDate.now();
         request = new Request();
         preference = new Preference();
+        diningLocation = 0;
 
-        originalMenu = request.getJavaMenu(currentDate);
+        originalMenu = request.getJavaMenu(currentDate, diningLocation);
         filteredMenu = originalMenu;
     }
 
     public void updateDate(LocalDate localDate) throws JSONException, ParseException {
         if (!currentDate.equals(localDate)) {
             currentDate = localDate;
-            originalMenu = request.getJavaMenu(currentDate);
+            originalMenu = request.getJavaMenu(currentDate, diningLocation);
+            updateFilteredMenu();
+        }
+    }
+
+    public void updateLocation(Integer diningLoc) throws JSONException, ParseException {
+        if (!(diningLocation == diningLoc)) {
+            diningLocation = diningLoc;
+            originalMenu = request.getJavaMenu(currentDate, diningLocation);
             updateFilteredMenu();
         }
     }

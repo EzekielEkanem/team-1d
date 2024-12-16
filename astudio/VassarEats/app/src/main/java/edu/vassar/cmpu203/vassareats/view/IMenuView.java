@@ -14,6 +14,7 @@ public interface IMenuView {
     interface Listener {
         void updatePreferences(List<Preference.Preferences> preferenceList);
         void updateDate(LocalDate localDate) throws JSONException, ParseException;
+        void updateLocation(Integer diningLocation) throws JSONException, ParseException;
     }
 
     View getRootView();

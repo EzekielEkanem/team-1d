@@ -187,4 +187,10 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         menu.updateDate(date);
         recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
     }
+
+    @Override
+    public void updateLocation(Integer diningLocation) throws JSONException, ParseException {
+        menu.updateLocation(diningLocation);
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+    }
 }

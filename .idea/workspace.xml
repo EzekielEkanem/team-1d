@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningStation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/astudio/VassarEats/app/src/test/java/edu/vassar/cmpu203/vassareats/model/MenuTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -13,7 +15,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/astudio/VassarEats" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="ProjectColorInfo">{
@@ -29,7 +31,7 @@
   &quot;keyToString&quot;: {
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/eekanem/cmpu203/team-1d/intellij/lib/json-simple-1.1.1&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -62,14 +64,6 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -95,6 +89,9 @@
       <workItem from="1732675941742" duration="8059000" />
       <workItem from="1733108039350" duration="1396000" />
       <workItem from="1733189342417" duration="620000" />
+      <workItem from="1733237611758" duration="749000" />
+      <workItem from="1734223623635" duration="3157000" />
+      <workItem from="1734239984583" duration="599000" />
     </task>
     <servers />
   </component>

@@ -28,6 +28,10 @@ public class MenuView implements IMenuView {
     List<Preference.Preferences> preferences = new ArrayList<>();
     List<Preference.Preferences> preferencesTemp = new ArrayList<>();
 
+    int locationItem = 0;
+    int tempLocationItem = locationItem;
+    String[] locationList = new String[3];
+
     int dateItem = 0;
     int tempDateItem = dateItem;
     String[] dateList = new String[7];
@@ -70,7 +74,70 @@ public class MenuView implements IMenuView {
             localDateList.add(date);
         }
 
+        // Fill in the location days
+        locationList[0] = "GORDON COMMONS";
+        locationList[1] = "EXPRESS";
+        locationList[2] = "STREET EATS";
+
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
+
+        // Logic for the Dining Location UI
+
+        this.binding.diningLocation.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+//                Initialize alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        context
+                );
+//                Set title
+                builder.setTitle("Select Dining Location");
+//                Set dialog non cancelable
+                builder.setCancelable(false);
+
+                builder.setSingleChoiceItems(locationList, locationItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tempLocationItem = which;
+                    }
+                });
+
+                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        locationItem = tempLocationItem;
+
+                        try {
+                            listener.updateLocation(locationItem);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        //                        Set text on view
+                        binding.diningLocation.setText(locationList[locationItem]);
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tempLocationItem = locationItem;
+
+//                        Dismiss dialog
+                        dialog.dismiss();
+
+                    }
+                });
+
+//                Show dialog
+                builder.show();
+            }
+        });
+
         this.binding.preference.setOnClickListener(new View.OnClickListener() {
 
             @Override
