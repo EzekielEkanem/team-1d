@@ -9,13 +9,18 @@ class Menu{
 -currentDate : LocalDate
 -request : Request
 -preference : Preference
+-filteredMenu : List<MealType>
+-diningLocation : Integer
 --
 +Menu() : void {ParseException, JSONException}
 +updateDate(localDate : LocalDate) : void
++updateLocation(diningLoc : Integer) : void
 +getMenu() : List<MealType> 
++unfilteredMenu() : void
 +getPreferences() : List<String> 
 +changePreferences(preferences : List<Preference.Preferences>) : void
-+toString() : String
++getParentItems(menu : List<MealType>) : List<ParentItem>
++getFilteredMenuParentItems() : List<ParentItem>
 }
 
 class Food_Item{
@@ -33,13 +38,13 @@ class Food_Item{
 class Request{
 -html : String
 -baseURL : String
+-diningLocations : HashMap<Integer, String>
 --
 +Request() : void
 +getJavaMenu(date : LocalDate) : List<MealType>
 -getWebPage(urlStr : String) : void
 -getJsonMenu() : JSONObject {exception ParseException}
 -getMealDayParts() : HashMap<Integer, JSONObject> {exception ParseException}
-+toString() : String
 }
 
 class Preference {

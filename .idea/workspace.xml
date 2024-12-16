@@ -8,7 +8,7 @@
       <change afterPath="$PROJECT_DIR$/astudio/VassarEats/app/src/main/java/edu/vassar/cmpu203/vassareats/model/DiningStation.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/astudio/VassarEats/app/src/test/java/edu/vassar/cmpu203/vassareats/model/MenuTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/use-cases/use-case-browse.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intellij/doc/class-diagram.md" beforeDir="false" afterPath="$PROJECT_DIR$/intellij/doc/class-diagram.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +95,7 @@
       <workItem from="1734239984583" duration="599000" />
       <workItem from="1734318489008" duration="550000" />
       <workItem from="1734319048195" duration="1883000" />
-      <workItem from="1734320940288" duration="365000" />
+      <workItem from="1734320940288" duration="1655000" />
     </task>
     <servers />
   </component>
