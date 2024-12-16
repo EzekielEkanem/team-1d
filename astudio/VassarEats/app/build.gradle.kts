@@ -1,7 +1,6 @@
-import android.databinding.tool.writer.ViewBinding
-
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -27,33 +26,22 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
-        viewBinding = true;
-    }
-
-}
-
-android {
-    buildFeatures {
         viewBinding = true
     }
-}
 
-
-
-android {
     testOptions {
         animationsDisabled = true
     }
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -61,28 +49,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    // Add Mockito Core for mocking
     androidTestImplementation(libs.mockito.core)
     implementation(libs.json)
-
-    // Espresso core library for UI tests
-    androidTestImplementation (libs.espresso.core.v361)
-
-    // JUnit 4 for Android tests
-    androidTestImplementation (libs.junit.v121)
-
-    // AndroidX Test Rules
-    androidTestImplementation (libs.rules.v150)
-
-    // AndroidX Test Core for ActivityScenario
-    androidTestImplementation (libs.core)
-
-    // Basic unit test dependency
-    testImplementation (libs.junit)
-
-    // Hamcrest for combining matchers
-//    androidTestImplementation (libs.hamcrest.library)
-
-    implementation (libs.recyclerview)
+    androidTestImplementation(libs.espresso.core.v361)
+    androidTestImplementation(libs.junit.v121)
+    androidTestImplementation(libs.rules.v150)
+    androidTestImplementation(libs.core)
+    testImplementation(libs.junit)
+    implementation(libs.recyclerview)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore.ktx)
 
 }

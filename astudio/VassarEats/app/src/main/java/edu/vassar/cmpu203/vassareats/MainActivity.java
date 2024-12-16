@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
@@ -37,6 +38,11 @@ import edu.vassar.cmpu203.vassareats.view.MenuView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class MainActivity extends AppCompatActivity implements IMenuView.Listener, IExpandableRecylerViewAdapter.Listener {
 //    Initialize variable
     public IMenuView menuView;
@@ -45,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
     private static final String LIKED_ITEMS_KEY = "likedItems";
     private Set<String> likedItems = new HashSet<>();
+
+    private FirebaseFirestore firestore;
+
+    private static final String PREFS_NAME = "AppPreferences";
+    private static final String UNIQUE_ID_KEY = "uniqueId";
+
+    FirestoreHelper firestoreHelper;
 
 
     public MainActivity() throws JSONException, ParseException {
@@ -58,38 +71,63 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        // Initialize menu
+        firestore = FirebaseFirestore.getInstance();
+        firestoreHelper = new FirestoreHelper();
+
+        String userId = getUniqueId(this);
+
+        // Load liked items from Firestore
+        firestoreHelper.loadUserLikedItems(userId, new FirestoreHelper.FirestoreCallback() {
+            @Override
+            public void onSuccess(List<String> likedItemsFromFirestore) {
+                if (likedItemsFromFirestore != null) {
+                    likedItems = new HashSet<>(likedItemsFromFirestore);
+                    Log.d("MainActivity", "Liked items loaded from Firestore: " + likedItems);
+
+                    // Notify adapter of loaded liked items
+                    if (recylerViewAdapter != null) {
+                        recylerViewAdapter.setLikedItems(likedItems);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("MainActivity", "Failed to load liked items from Firestore", e);
+            }
+        });
+
+        // Initialize menu and views
         try {
             menu = new Menu();
         } catch (ParseException | JSONException e) {
             throw new RuntimeException(e);
         }
 
-        // Restore liked items from SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-        likedItems = new HashSet<>(prefs.getStringSet(LIKED_ITEMS_KEY, new HashSet<>()));
-
-        Log.d("MainActivity", "Liked items on load: " + likedItems);
-
-        // Set up menu view and RecyclerView
-        this.menuView = new MenuView(this, this);
+        menuView = new MenuView(this, this);
         setContentView(menuView.getRootView());
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Initialize the adapter with loaded likedItems
         recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
         recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
         recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
     }
 
+
+    public static String getUniqueId(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String uniqueId = sharedPreferences.getString(UNIQUE_ID_KEY, null);
+
+        if (uniqueId == null) {
+            // Generate a new UUID
+            uniqueId = UUID.randomUUID().toString();
+            sharedPreferences.edit().putString(UNIQUE_ID_KEY, uniqueId).apply();
+        }
+
+        return uniqueId;
+    }
 
     public void updateLikedItems(String foodId, boolean isLiked) {
         if (isLiked) {
@@ -101,8 +139,14 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         // Save updated likedItems to SharedPreferences
         SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
         prefs.edit().putStringSet(LIKED_ITEMS_KEY, likedItems).apply();
-        Log.d("MainActivity", "Liked items on save: " + likedItems);
+
+        // Save updated likedItems to Firestore
+        String userId = getUniqueId(this);
+        firestoreHelper.saveUserLikedItems(this, userId, new ArrayList<>(likedItems));
+
+//        Log.d("MainActivity", "Liked items on save: " + likedItems);
     }
+
 
 
     @Override

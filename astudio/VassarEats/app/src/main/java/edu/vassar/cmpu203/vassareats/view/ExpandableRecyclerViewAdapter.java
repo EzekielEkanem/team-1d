@@ -111,7 +111,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
             foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
 
-            Log.d("MainActivity", "This item liked state: " + foodItem.getFoodId() + likedItems.contains(foodItem.getFoodId()));
+//            Log.d("MainActivity", "This item liked state: " + foodItem.getFoodId() + likedItems.contains(foodItem.getFoodId()));
 
             // Check if the item is liked
             boolean isLiked = likedItems.contains(foodItem.getFoodId());
