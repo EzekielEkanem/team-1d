@@ -1,24 +1,20 @@
 package edu.vassar.cmpu203.vassareats.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.vassar.cmpu203.vassareats.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
 import edu.vassar.cmpu203.vassareats.model.DiningStation;
@@ -111,30 +107,56 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
             foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
 
-//            Log.d("MainActivity", "This item liked state: " + foodItem.getFoodId() + likedItems.contains(foodItem.getFoodId()));
-
-            // Check if the item is liked
+            // Dynamically check if the item is liked
             boolean isLiked = likedItems.contains(foodItem.getFoodId());
-
-            // Set initial state
             updateLikeButton(foodItemHolder.likeButton, isLiked);
 
+            // Fetch and display like count dynamically
+            listener.getLikeCount(foodItem.getFoodId(), new FirestoreHelper.FirestoreCallback2() {
+                @Override
+                public void onSuccess(String likedItems) {
+                    foodItemHolder.likesCount.setText(likedItems);
+                }
+
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onFailure(Exception e) {
+                    foodItemHolder.likesCount.setText("Error");
+                }
+            });
+
+            // Click listener for the like button
             foodItemHolder.likeButton.setOnClickListener((buttonView) -> {
                 boolean newState = !likedItems.contains(foodItem.getFoodId());
+
+                // Update likedItems set
                 if (newState) {
                     likedItems.add(foodItem.getFoodId());
                 } else {
                     likedItems.remove(foodItem.getFoodId());
                 }
 
+                // Notify MainActivity
+                listener.updateLikedItems(foodItem.getFoodId(), newState);
+                listener.updateLikeCount(foodItem.getFoodId(), newState);
+
                 // Update button visuals
                 updateLikeButton(foodItemHolder.likeButton, newState);
 
-                // Notify MainActivity
-                listener.updateLikedItems(foodItem.getFoodId(), newState);
+                // Fetch and update the like count again
+                listener.getLikeCount(foodItem.getFoodId(), new FirestoreHelper.FirestoreCallback2() {
+                    @Override
+                    public void onSuccess(String likedItems) {
+                        foodItemHolder.likesCount.setText(likedItems);
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onFailure(Exception e) {
+                        foodItemHolder.likesCount.setText("Error");
+                    }
+                });
             });
-
-
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
             MealTypeSection mealTypeSection = (MealTypeSection) items.get(position);
             MealTypeSectionViewHolder childHolder = (MealTypeSectionViewHolder) holder;
@@ -184,12 +206,13 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     static class FoodItemViewHolder extends RecyclerView.ViewHolder {
         TextView foodItemName;
         TextView likeButton;
+        TextView likesCount;
 
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
             foodItemName = itemView.findViewById(R.id.foodItemName);
             likeButton = itemView.findViewById(R.id.likeButton);
-//            dislikeButton = itemView.findViewById(R.id.dislikeButton);
+            likesCount = itemView.findViewById(R.id.likesCount);
         }
     }
 

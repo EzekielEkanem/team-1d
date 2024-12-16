@@ -9,27 +9,19 @@ import android.util.Log;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import org.json.JSONException;
 
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.view.IExpandableRecylerViewAdapter;
-import edu.vassar.cmpu203.vassareats.view.ParentItem;
 import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.IMenuView;
@@ -39,9 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import android.content.Context;
-import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity implements IMenuView.Listener, IExpandableRecylerViewAdapter.Listener {
 //    Initialize variable
@@ -147,6 +136,13 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 //        Log.d("MainActivity", "Liked items on save: " + likedItems);
     }
 
+    public void updateLikeCount(String foodId, boolean isLiked) {
+        firestoreHelper.updateLikesCount(foodId, isLiked);
+    }
+
+    public void getLikeCount(String foodId, FirestoreHelper.FirestoreCallback2 firestoreCallback) {
+        firestoreHelper.getLikeCount(foodId, firestoreCallback);
+    }
 
 
     @Override
