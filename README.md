@@ -6,24 +6,20 @@
 VassarEats is a robust, highly interactive dining application that aids users (Vassar students, staff, and visitors) to
 make informed dining decisions quicker. It pulls all the dining information from [Vassar dining website](https://vassar.cafebonappetit.com/).
 It is a better alternative to this website because it adds important features which are not in the website. Some of these
-features are:
-
-1. It can allow customers to like or dislike dining options.
-2. It recommends dining options to customers based on their preferences (both present day and future recommendations).
-3. It provides a comment section for each food item where customers can give real time feedback to other users and dining
-administrators.
+features are allowing customers to like or dislike dining options and view total likes for each food item.
 
 ## How to run the prototype
-Run the main method contained in the Main Class. When the program is run, it will welcome you to Vassar Eats and ask you to choose your preferences with their respective numbers. Input
-a number or comma separated numbers between 1 and 8 inclusive to select you preferences.
+Run the app on Android Studio. When the program is run, it will welcome you to Vassar Eats and display the food menu for 
+Gordon Commons as the default food menu. You can choose your dietary preferences, dates, and different dining locations 
+and the food menu will be adjusted accordingly.
 
 ## Functionality
-We have a prototype that prints out all the food menu, including their mealType (e.g. Breakfast, Lunch, etc.),
-mealTypeSection (e.g. Specials, additional favorites, etc.) and diningSection (e.g. Stocks, Root, etc.). More so, we have been 
-able to filter the food menu based on dietary preferences (e.g. vegan, vegetarian, etc.). Presently, we are limiting users'
-food options to Gordon Commons menu, and the user can only view the menu options for October 31st, 2024. The user cannot 
-unselect preferences. The program has to restart to be able to reselect preferences. All these are issues that will be 
-resolved in the next iteration.
+We have a prototype that displays all the food menu in an expandable recycler view format. The food menu displayed includes
+mealType (e.g. Breakfast, Lunch, etc.), mealTypeSection (e.g. Specials, additional favorites, etc.) and diningSection (e.g.
+Stocks, Root, etc.). More so, the food menu can be filtered based on dietary preferences (e.g. vegan, vegetarian, etc.). 
+A user can also view food items up to seven days from the current day. Moreover, different dining locations (e.g., Express,
+Street Eats) can be selected to view the food menu for that day in those dining locations. Another cool functionality we've
+added is to enable users to like each food item and see the total likes for each food item.
 
 ## Authors and acknowledgment
 Special acknowledgment to Aly Camara and Ezekiel Ekanem, authors of the project.

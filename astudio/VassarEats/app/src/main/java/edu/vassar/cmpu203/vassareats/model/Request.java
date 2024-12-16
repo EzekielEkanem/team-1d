@@ -28,18 +28,27 @@ import java.util.regex.Pattern;
 
 public class Request {
     private String html;
-    private String baseURL = "https://vassar.cafebonappetit.com/cafe/gordon/";
+    private String baseURL = "https://vassar.cafebonappetit.com/cafe/";
+    private HashMap<Integer, String> diningLocations;
 
 
-    public Request() {}
+    public Request() {
+        this.diningLocations = new HashMap<Integer, String>();
+        this.diningLocations.put(0, "gordon");
+        this.diningLocations.put(1, "express");
+        this.diningLocations.put(2, "food-truck");
+    }
 
     // The parameter should later be changed to date instead of url completely
-    public List<MealType> getJavaMenu(LocalDate date) throws JSONException, ParseException {
+    public List<MealType> getJavaMenu(LocalDate date, Integer diningLocation) throws JSONException, ParseException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = date.format(formatter);
 
+        // get the dining location
+        String location = diningLocations.get(diningLocation);
+
         // Construct the full URL
-        String fullURL = baseURL + formattedDate + "/";
+        String fullURL = baseURL + location + "/" + formattedDate + "/";
 
         getWebPage(fullURL);
         JSONObject jsonMenuObject = getJsonMenu();
@@ -54,6 +63,7 @@ public class Request {
         mealTypeNames.put(739, "Light Lunch");
         mealTypeNames.put(4, "Dinner");
         mealTypeNames.put(7, "Late Night");
+        mealTypeNames.put(752, "Express");
 
         for (Object key : mealDayParts.keySet()) {
             // Loop for creating  new MealTypes
@@ -106,61 +116,63 @@ public class Request {
                 // Loop for creating new MealTypeSections
 
                 String tierStr = String.valueOf(tier);
-                HashSet<HashMap<String, JSONObject>> foodItems = mealTypeSection.get(tierStr);
-                HashMap<String, HashSet<HashMap<String, JSONObject>>> diningSectionHashMap = new HashMap<>();
+                if (mealTypeSection.containsKey(tierStr)){
+                    HashSet<HashMap<String, JSONObject>> foodItems = mealTypeSection.get(tierStr);
+                    HashMap<String, HashSet<HashMap<String, JSONObject>>> diningSectionHashMap = new HashMap<>();
 
-                // The new MealTypeSection object is created here
-                MealTypeSection newMealTypeSection = new MealTypeSection(sectionNameHashMap.get(tierStr));
+                    // The new MealTypeSection object is created here
+                    MealTypeSection newMealTypeSection = new MealTypeSection(sectionNameHashMap.get(tierStr));
 
-                newMealType.addMealTypeSection(newMealTypeSection);
+                    newMealType.addMealTypeSection(newMealTypeSection);
 
-                if (foodItems != null) {
+                    if (foodItems != null) {
 
-                    for (HashMap<String, JSONObject> someMap : foodItems) {
-                        for (String keyName : someMap.keySet()) {
-                            String station = (String) someMap.get(keyName).get("station");
-                            String[] stationsplit = station.split("@");
-                            String[] stationsplit2 = stationsplit[1].split("<");
+                        for (HashMap<String, JSONObject> someMap : foodItems) {
+                            for (String keyName : someMap.keySet()) {
+                                String station = (String) someMap.get(keyName).get("station");
+                                String[] stationsplit = station.split("@");
+                                String[] stationsplit2 = stationsplit[1].split("<");
 
-                            if (!diningSectionHashMap.containsKey(stationsplit2[0])) {
-                                diningSectionHashMap.put(stationsplit2[0], new HashSet<HashMap<String, JSONObject>>());
-                                diningSectionHashMap.get(stationsplit2[0]).add(someMap);
-                            } else {
-                                diningSectionHashMap.get(stationsplit2[0]).add(someMap);
-                            }
-                        }
-                    }
-
-                }
-
-                for (String stationName : diningSectionHashMap.keySet()) {
-                    // Loop for creating new DiningSections
-
-                    // The new DiningStation object is created here
-                    DiningStation diningStation = new DiningStation(stationName);
-
-                    newMealTypeSection.addDiningStation(diningStation);
-
-                    for (HashMap<String, JSONObject> anotherMap : diningSectionHashMap.get(stationName)) {
-                        for (String keyName : anotherMap.keySet()) {
-                            // The new FoodItem object is created here
-
-                            HashSet<String> dietLabels = new HashSet<String>();
-
-                            if (anotherMap.get(keyName).get("cor_icon") instanceof JSONObject) {
-                                JSONObject icons = (JSONObject) anotherMap.get(keyName).get("cor_icon");
-
-                                for (Iterator<String> it = icons.keys(); it.hasNext();) {
-                                    Object dietLabel = it.next();
-
-                                    dietLabels.add((String) icons.get((String) dietLabel));
+                                if (!diningSectionHashMap.containsKey(stationsplit2[0])) {
+                                    diningSectionHashMap.put(stationsplit2[0], new HashSet<HashMap<String, JSONObject>>());
+                                    diningSectionHashMap.get(stationsplit2[0]).add(someMap);
+                                } else {
+                                    diningSectionHashMap.get(stationsplit2[0]).add(someMap);
                                 }
                             }
+                        }
 
-                            // The new FoodItem object is created here
-                            FoodItem newFood = new FoodItem((String) anotherMap.get(keyName).get("label"), keyName, dietLabels);
+                    }
 
-                            diningStation.addFoodItem(newFood);
+                    for (String stationName : diningSectionHashMap.keySet()) {
+                        // Loop for creating new DiningSections
+
+                        // The new DiningStation object is created here
+                        DiningStation diningStation = new DiningStation(stationName);
+
+                        newMealTypeSection.addDiningStation(diningStation);
+
+                        for (HashMap<String, JSONObject> anotherMap : diningSectionHashMap.get(stationName)) {
+                            for (String keyName : anotherMap.keySet()) {
+                                // The new FoodItem object is created here
+
+                                HashSet<String> dietLabels = new HashSet<String>();
+
+                                if (anotherMap.get(keyName).get("cor_icon") instanceof JSONObject) {
+                                    JSONObject icons = (JSONObject) anotherMap.get(keyName).get("cor_icon");
+
+                                    for (Iterator<String> it = icons.keys(); it.hasNext();) {
+                                        Object dietLabel = it.next();
+
+                                        dietLabels.add((String) icons.get((String) dietLabel));
+                                    }
+                                }
+
+                                // The new FoodItem object is created here
+                                FoodItem newFood = new FoodItem((String) anotherMap.get(keyName).get("label"), keyName, dietLabels);
+
+                                diningStation.addFoodItem(newFood);
+                            }
                         }
                     }
                 }
@@ -227,7 +239,7 @@ public class Request {
 
     public HashMap<Integer, JSONObject> getMealDayParts() throws ParseException, JSONException {
         // Make a list that contain dayparts indices
-        int[] daypartsIndices = {1, 2, 3, 739, 4, 7};
+        int[] daypartsIndices = {1, 2, 3, 739, 4, 7, 752};
 
         // Make a hashmap that maps dayparts to its json object
         HashMap<Integer, JSONObject> mealDayParts = new HashMap<>();
