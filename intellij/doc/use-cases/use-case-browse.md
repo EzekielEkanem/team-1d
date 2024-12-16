@@ -136,6 +136,24 @@ menu -> controller : return menu
 controller -> ui : return menu
 ui -> user : Display menu
 
+user -> ui : Clicks dining location
+ui -> controller : changeDiningLocation(Location)
+controller -> menu : changeDiningLocation(Location)
+menu -> request : requestLocation(Location)
+request -> menu : return menu
+loop i in 0..menu.size-1
+    menu -> meal_t : createMealType(preferences)
+end
+meal_t -> meal_t_s : createMealTypeSection(preferences)
+meal_t_s -> d_s : createDiningSection(preferences)
+d_s -> food_item : createFoodItem(preferences)
+food_item -> d_s : return food item
+d_s -> meal_t_s : return dining section
+meal_t_s -> meal_t : return meal type section
+meal_t -> menu : return meal type
+menu -> controller : return menu
+controller -> ui : return menu
+ui -> user : Display menu
 
 
 
