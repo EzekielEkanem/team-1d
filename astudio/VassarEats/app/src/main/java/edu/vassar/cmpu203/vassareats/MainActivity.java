@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
+import android.view.View;
+import android.view.MotionEvent;
+import android.view.GestureDetector;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     private static final String UNIQUE_ID_KEY = "uniqueId";
 
     FirestoreHelper firestoreHelper;
+
+    private GestureDetector gestureDetector;
 
 
     public MainActivity() throws JSONException, ParseException {
@@ -93,15 +99,28 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
             throw new RuntimeException(e);
         }
 
+        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+
         menuView = new MenuView(this, this);
         setContentView(menuView.getRootView());
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
         recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
+
+        // Initialize the GestureDetector
+        gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
+
+        // Attach the detector to the RecyclerView's touch events
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Let the gesture detector handle the touch event
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
     }
 
 
@@ -169,9 +188,6 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         recylerViewAdapter.setLikedItems(likedItems);
     }
 
-
-
-
     @Override
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
@@ -188,5 +204,93 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     public void updateLocation(Integer diningLocation) throws JSONException, ParseException {
         menu.updateLocation(diningLocation);
         recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+    }
+
+    @Override
+    public void onHomeIconClick() {
+        menu.resetFilters();
+
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+
+        if (menuView instanceof MenuView) {
+            ((MenuView) menuView).resetFilters();
+        }
+    }
+
+    /**
+     * Inner class to handle swipe gesture detection.
+     */
+    private class OnSwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // e1 is the starting touch event, e2 is the ending touch event
+            if (e1 == null || e2 == null) return false;
+
+            float diffX = e2.getX() - e1.getX();
+            float diffY = e2.getY() - e1.getY();
+
+            // Check if it's a horizontal swipe
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Check if the swipe is significant enough
+                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffX > 0) {
+                        // Right Swipe (Previous Day)
+                        onSwipeRight();
+                    } else {
+                        // Left Swipe (Next Day)
+                        onSwipeLeft();
+                    }
+                    return true; // The event is consumed
+                }
+            }
+            return false;
+        }
+
+        // It's good practice to override onDown to return true,
+        // which tells the detector you're interested in gesture events.
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+    }
+
+    /**
+     * Handles the logic for a left swipe (Go to next day).
+     */
+    private void onSwipeLeft() {
+        try {
+            menu.goToNextDay(); // Tell the model to update
+            updateViewAfterDateChange(); // Refresh the UI
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error on swiping left", e);
+        }
+    }
+
+    /**
+     * Handles the logic for a right swipe (Go to previous day).
+     */
+    private void onSwipeRight() {
+        try {
+            menu.goToPreviousDay(); // Tell the model to update
+            updateViewAfterDateChange(); // Refresh the UI
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error on swiping right", e);
+        }
+    }
+
+    /**
+     * A central method to update the view after any date change.
+     */
+    private void updateViewAfterDateChange() {
+        // Refresh the RecyclerView with new data from the model
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+
+        // Tell the MenuView to update the date text
+        if (menuView instanceof MenuView) {
+            ((MenuView) menuView).updateDateDisplay(menu.getCurrentDate());
+        }
     }
 }

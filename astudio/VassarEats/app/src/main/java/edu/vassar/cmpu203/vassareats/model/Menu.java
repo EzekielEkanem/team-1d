@@ -181,4 +181,30 @@ public class Menu {
 
         return returnString;
     }
+
+    public void resetFilters() {
+        preference.clearPreferences();
+        filteredMenu = originalMenu;
+    }
+
+    /**
+     * Moves the current date forward by one day.
+     */
+    public void goToNextDay() throws JSONException, ParseException {
+        this.updateDate(this.currentDate.plusDays(1));
+    }
+
+    /**
+     * Moves the current date back by one day.
+     */
+    public void goToPreviousDay() throws JSONException, ParseException {
+        this.updateDate(this.currentDate.minusDays(1));
+    }
+
+    /**
+     * Public getter for the controller to access the current date.
+     */
+    public LocalDate getCurrentDate() {
+        return this.currentDate;
+    }
 }

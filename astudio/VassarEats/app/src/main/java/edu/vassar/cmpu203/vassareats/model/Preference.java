@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Preference {
     private List<Preferences> preferences;
+
     public enum Preferences {
         Vegetarian("Vegetarian"),
         Vegan("Vegan"),
@@ -52,5 +53,9 @@ public class Preference {
             preferencesString.add(preference.toString());
         }
         return preferencesString;
+    }
+
+    public void clearPreferences() {
+        preferences.clear();
     }
 }

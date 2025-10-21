@@ -18,6 +18,7 @@ recyclerview = "1.3.2"
 rules = "1.6.1"
 rulesVersion = "1.5.0"
 firebaseFirestore = "25.1.1"
+glance = "1.1.1"
 
 [libraries]
 core = { module = "androidx.test:core", version.ref = "rulesVersion" }
@@ -42,6 +43,7 @@ recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "r
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 rules-v150 = { module = "androidx.test:rules", version.ref = "rulesVersion" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.app.Activity;
+import android.widget.ImageView;
 
 import org.json.JSONException;
 
@@ -12,16 +14,18 @@ import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.format.TextStyle;
+import java.time.LocalDate;
+import java.util.Locale;
 
 import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 
-import java.time.LocalDate;
-
 public class MenuView implements IMenuView {
-
+    
     ActivityMainBinding binding;
     Listener listener;
+    private ImageView homeIcon;
     boolean[] selectedPreference;
     boolean[] selectedPreferenceTemp;
     String[] preferenceArray;
@@ -80,6 +84,30 @@ public class MenuView implements IMenuView {
         locationList[2] = "STREET EATS";
 
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
+        this.homeIcon = this.binding.homeIcon;
+
+        // Set the initial default state of the view
+        resetFilters();
+
+        // Inform the controller to load the initial data based on these defaults
+        try {
+            listener.updateLocation(locationItem);
+            listener.updateDate(localDateList.get(dateItem));
+        } catch (JSONException | ParseException e) {
+            throw new RuntimeException("Failed to load initial data on startup", e);
+        }
+
+
+        this.homeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    listener.onHomeIconClick();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         // Logic for the Dining Location UI
 
@@ -308,6 +336,45 @@ public class MenuView implements IMenuView {
         }
     }
 
+    public void resetFilters() {
+        // Reset preferences
+        preferences.clear();
+        preferencesTemp.clear();
+        for (int i = 0; i < selectedPreference.length; i++) {
+            selectedPreference[i] = false;
+            selectedPreferenceTemp[i] = false;
+        }
+        binding.preference.setText("");
+
+        // Reset location
+        locationItem = 0;
+        tempLocationItem = locationItem;
+        binding.diningLocation.setText(locationList[locationItem]);
+
+        // Reset date
+        dateItem = 0;
+        tempDateItem = dateItem;
+        binding.date.setText(dateList[dateItem]);
+    }
+
+    /**
+     * Called by the controller to update the date TextView
+     * after a swipe or other date change event.
+     */
+    public void updateDateDisplay(LocalDate date) {
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+        String month = date.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
+        int dayOfMonth = date.getDayOfMonth();
+
+        String dateString = String.format("%s, %s %d%s", dayOfWeek, month, dayOfMonth, getOrdinalSuffix(dayOfMonth));
+
+        // Check if it's today
+        if (date.isEqual(LocalDate.now())) {
+            dateString = "Today";
+        }
+
+        binding.date.setText(dateString);
+    }
 
     @Override
     public View getRootView() {

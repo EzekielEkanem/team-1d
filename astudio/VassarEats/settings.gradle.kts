@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Vassar Eats"
 include(":app")
- 

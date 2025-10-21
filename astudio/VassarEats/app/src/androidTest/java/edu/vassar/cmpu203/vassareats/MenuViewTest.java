@@ -16,7 +16,7 @@ public class MenuViewTest {
     @Test
     public void testMenuCreationAndDisplay() {
         // Launch the activity using ActivityScenario
-        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+        try (ActivityScenario<edu.vassar.cmpu203.vassareats.MainActivity> scenario = ActivityScenario.launch(edu.vassar.cmpu203.vassareats.MainActivity.class)) {
 
             Espresso.onView(ViewMatchers.withId(R.id.preference)).perform(ViewActions.click());
 
