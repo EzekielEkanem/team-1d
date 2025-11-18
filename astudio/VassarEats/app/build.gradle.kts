@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+<<<<<<< HEAD
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.activity:activity:1.8.0")
@@ -56,4 +57,26 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore-ktx")
+=======
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
+    implementation(libs.firebase.firestore)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.mockito.core)
+    implementation(libs.json)
+    androidTestImplementation(libs.espresso.core.v361)
+    androidTestImplementation(libs.junit.v121)
+    androidTestImplementation(libs.rules.v150)
+    androidTestImplementation(libs.core)
+    testImplementation(libs.junit)
+    implementation(libs.recyclerview)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore.ktx)
+
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 }

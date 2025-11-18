@@ -14,3 +14,4 @@ pluginManagement {
 
 rootProject.name = "Vassar Eats"
 include(":app")
+ 

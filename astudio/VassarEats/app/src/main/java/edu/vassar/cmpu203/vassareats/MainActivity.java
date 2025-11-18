@@ -3,11 +3,15 @@ package edu.vassar.cmpu203.vassareats;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+<<<<<<< HEAD
 import android.view.View;
 import android.view.MotionEvent;
 import android.view.GestureDetector;
 import android.content.Intent;
 import android.content.Intent;
+=======
+
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 
@@ -43,8 +47,11 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     public IMenuView menuView;
     Menu menu;
 
+<<<<<<< HEAD
     private GestureDetector gestureDetector;
     private MealTimeAdapter mealTimeAdapter; // keep a reference so we can refresh
+=======
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 
     public MainActivity() throws JSONException, ParseException {
     }
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
         mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+<<<<<<< HEAD
         // Create the data for the meal cards using filtered meal types
         List<MealTime> mealTimes = generateMealTimeData();
 
@@ -88,6 +96,11 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
                 v.performClick();
         });
             return handled;
+=======
+        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
+        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
     }
 
 
@@ -157,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         return list;
     }
 
+
+
+
     @Override
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
@@ -185,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         }
 //        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
     }
+<<<<<<< HEAD
 
     @Override
     public void onHomeIconClick() {
@@ -281,4 +298,6 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
             ((MenuView) menuView).updateDateDisplay(menu.getCurrentDate());
         }
     }
+=======
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 }

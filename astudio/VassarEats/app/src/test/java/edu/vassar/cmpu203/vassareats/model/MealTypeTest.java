@@ -22,16 +22,13 @@ public class MealTypeTest extends TestCase {
         FoodItem foodItem = new FoodItem("oatmeal", "27444491", dietLabels);
         diningStation.addFoodItem(foodItem);
 
-        String expectedValue1 = "                               " + "Breakfast" + "                                 \n" +
-                "**************************************************************************\n";
-        String expectedValue2 = expectedValue1 + "              " + "Breakfast Specials" + "                          \n" +
-                "***********************************************************\n" + "          " + "Stocks" + "                   \n" +
-                "********************************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" +
-                "********************************************\n" + "***********************************************************\n";
+        String expectedValue1 = "              " + "Breakfast" + "                          \n" +
+                "***********************************************************\n";
+        String expectedValue2 = expectedValue1 + "              " + "Breakfast Specials" + "                          \n" + "          " + "Stocks" + "                   \n" +
+                "********************************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" + "********************************************\n";
 
         assertEquals(expectedValue1, mealType.toString());
 
-        mealTypeSection.addDiningStation(diningStation);
         mealType.addMealTypeSection(mealTypeSection);
 
         assertEquals(expectedValue2, mealType.toString());
@@ -51,23 +48,20 @@ public class MealTypeTest extends TestCase {
         FoodItem foodItem = new FoodItem("oatmeal", "27444491", dietLabels);
         diningStation.addFoodItem(foodItem);
 
-        String expectedValue1 = "                               " + "Breakfast" + "                                 \n" +
-                "**************************************************************************\n";
-        String expectedmeal = "              " + "Breakfast Specials" + "                          \n" +
-                "***********************************************************\n" + "          " + "Stocks" + "                   \n" +
-                "********************************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" +
-                "********************************************\n" + "***********************************************************\n";
-        String expectedValue2 = expectedValue1 + expectedmeal;
-        String expectedValue3 = expectedValue2 + expectedmeal;
+        String expectedValue1 = "              " + "Breakfast" + "                          \n" +
+                "***********************************************************\n";
+        String expectedValue2 = expectedValue1 + "              " + "Breakfast Specials" + "                          \n" + "          " + "Stocks" + "                   \n" +
+                "********************************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" + "********************************************\n";
+        String expectedValue3 = expectedValue1 + "              " + "Breakfast Specials" + "                          \n" + "          " + "Stocks" + "                   \n" +
+                "********************************************\n" + "Food id: " + "27444491" + "\n" + "Food name: " + "oatmeal" + "\n" + "Dietary labels: " + "[Vegan]" + "\n" + "*****************************\n" + "********************************************\n" + "***********************************************************\n" + "              " + "Breakfast Specials" + "                          \n" + "          " + "Stocks" + "                   \n" +
+                "********************************************\n";
 
         assertEquals(expectedValue1, mealType.toString());
 
-        mealTypeSection.addDiningStation(diningStation);
         mealType.addMealTypeSection(mealTypeSection);
 
         assertEquals(expectedValue2, mealType.toString());
 
-        mealTypeSection2.addDiningStation(diningStation);
         mealType.addMealTypeSection(mealTypeSection2);
 
         assertEquals(expectedValue3, mealType.toString());

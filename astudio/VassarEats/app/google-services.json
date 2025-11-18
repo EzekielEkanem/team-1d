@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "694099306251",
-    "project_id": "vassar-eats-d619a",
-    "storage_bucket": "vassar-eats-d619a.firebasestorage.app"
+    "project_number": "897047262329",
+    "project_id": "vassar-eats",
+    "storage_bucket": "vassar-eats.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:694099306251:android:0a48171a3dda6fd675e40e",
+        "mobilesdk_app_id": "1:897047262329:android:398f872946fefba88e10a8",
         "android_client_info": {
           "package_name": "edu.vassar.cmpu203.vassareats"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB9AVpi1uQ3x7d8-1NbiYwiUgL3vXq1gu0"
+          "current_key": "AIzaSyAT3NLO9MASf1GLoDItwC3-WZr_nJQeLAc"
         }
       ],
       "services": {

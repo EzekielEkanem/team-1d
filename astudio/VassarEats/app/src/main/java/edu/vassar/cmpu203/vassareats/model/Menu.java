@@ -185,6 +185,7 @@ public class Menu {
 
         return returnString;
     }
+<<<<<<< HEAD
 
     public void resetFilters() {
         preference.clearPreferences();
@@ -234,4 +235,6 @@ public class Menu {
     public Integer getCurrentLocation() {
         return diningLocation;
     }
+=======
+>>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 }
