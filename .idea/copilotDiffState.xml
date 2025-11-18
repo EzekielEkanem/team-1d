@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/astudio/VassarEats/build.gradle.kts">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/astudio/VassarEats/build.gradle.kts" />
+              <option name="originalContent" value="// Top-level build file where you can add configuration options common to all sub-projects/modules.&#10;buildscript {&#10;    repositories {&#10;        google()&#10;        mavenCentral()&#10;    }&#10;    dependencies {&#10;        classpath(&quot;com.android.tools.build:gradle:4.2.2&quot;)&#10;        classpath(&quot;com.google.gms:google-services:4.4.4&quot;)&#10;    }&#10;}&#10;&#10;allprojects {&#10;    repositories {&#10;        google()&#10;        mavenCentral()&#10;    }&#10;}" />
+              <option name="updatedContent" value="// Top-level build file where you can add configuration options common to all sub-projects/modules.&#10;buildscript {&#10;    repositories {&#10;        google()&#10;        mavenCentral()&#10;    }&#10;    dependencies {&#10;        classpath(&quot;com.android.tools.build:gradle:4.2.2&quot;)&#10;        classpath(&quot;com.google.gms:google-services:4.3.15&quot;)&#10;    }&#10;}&#10;&#10;allprojects {&#10;    repositories {&#10;        google()&#10;        mavenCentral()&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
