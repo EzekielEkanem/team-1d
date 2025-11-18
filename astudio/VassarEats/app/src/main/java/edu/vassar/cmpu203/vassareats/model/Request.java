@@ -83,6 +83,10 @@ public class Request {
 
             HashMap<String, HashSet<HashMap<String, JSONObject>>> mealTypeSection = new HashMap<String, HashSet<HashMap<String, JSONObject>>>();
 
+            if (value.get("time_formatted") instanceof String mealTime) {
+                newMealType.setMealTypeTime(mealTime);
+            }
+
             if (value.get("stations") instanceof JSONArray stations) {
                 for (int i = 0; i < stations.length(); i++) {
                     Object stationKey = stations.get(i);

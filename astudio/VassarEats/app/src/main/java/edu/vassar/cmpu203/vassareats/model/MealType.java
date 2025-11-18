@@ -6,6 +6,7 @@ import java.util.List;
 public class MealType {
     private List<MealTypeSection> mealTypeSections = new ArrayList<edu.vassar.cmpu203.vassareats.model.MealTypeSection>();
     private String mealTypeName;
+    private String mealTypeTime;
 
     /**
      * MealType constructor instantiates name of the mealType (e.g. Breakfast)
@@ -39,6 +40,8 @@ public class MealType {
         return mealTypeName;
     }
 
+    public String getMealTypeTime() { return mealTypeTime;}
+
     /**
      * toString method returns a string representation of meal type
      * @return String: a string representation of meal type
@@ -55,5 +58,9 @@ public class MealType {
         }
 
         return returnString;
+    }
+
+    public void setMealTypeTime(String mealTime) {
+        this.mealTypeTime = mealTime;
     }
 }

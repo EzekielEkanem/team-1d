@@ -52,6 +52,10 @@ public class Menu {
         return originalMenu;
     }
 
+    public List<MealType> getFilteredMealTypes() {
+        return filteredMenu;
+    }
+
     private void updateFilteredMenu() {
         List<String> preferencesList = preference.getPreferences();
 
@@ -206,5 +210,28 @@ public class Menu {
      */
     public LocalDate getCurrentDate() {
         return this.currentDate;
+    }
+
+
+    /**
+     * Filters and returns only the ParentItems that match a specific meal type.
+     * @param mealName The name of the meal to filter by (e.g., "Breakfast").
+     * @return A list containing only the matching ParentItem.
+     */
+    public ArrayList<ParentItem> getItemsForMealType(String mealName) {
+        ArrayList<ParentItem> allItems = (ArrayList<ParentItem>) getFilteredMenuParentItems(); // Gets all items for the day/location
+        ArrayList<ParentItem> result = new ArrayList<>();
+
+        for (ParentItem parent : allItems) {
+            if (parent.getTitle().equalsIgnoreCase(mealName)) {
+                result.add(parent);
+                break; // Assuming meal names are unique, we can stop once found
+            }
+        }
+        return result;
+    }
+
+    public Integer getCurrentLocation() {
+        return diningLocation;
     }
 }

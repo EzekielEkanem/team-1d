@@ -1,55 +1,160 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:id="@+id/main"-->
+<!--    android:orientation="vertical">-->
+
+<!--    &lt;!&ndash; Header Section using a RelativeLayout for easy positioning of the logo &ndash;&gt;-->
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp">-->
+
+<!--        &lt;!&ndash; Vassar Logo - Clickable Home Icon &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/homeIcon"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:src="@drawable/vassar_logo"-->
+<!--            android:contentDescription="@string/home_icon_description"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:background="?attr/selectableItemBackgroundBorderless" /> &lt;!&ndash; Ripple effect on click &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Welcome Label - Now more colorful &ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:id="@+id/welcomeLabel"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/welcome"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="#800000" /> &lt;!&ndash; Vassar's Burgundy Color &ndash;&gt;-->
+
+<!--    </RelativeLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/filter_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:gravity="center_horizontal">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/diningLocation"-->
+<!--            android:layout_width="282dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:background="@android:drawable/editbox_background"-->
+<!--            android:drawableEnd="@android:drawable/arrow_down_float"-->
+<!--            android:drawablePadding="8dp"-->
+<!--            android:hint="Select Dining Location" />-->
+
+<!--    </LinearLayout>-->
+
+<!--    &lt;!&ndash; Horizontal LinearLayout for preference and date &ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:gravity="center_horizontal">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/date"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Select Date"-->
+<!--            android:drawablePadding="16dp"-->
+<!--            android:drawableEnd="@android:drawable/arrow_down_float"-->
+<!--            android:background="@android:drawable/editbox_background" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/preference"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:hint="Select Preference"-->
+<!--            android:drawablePadding="16dp"-->
+<!--            android:drawableEnd="@android:drawable/arrow_down_float"-->
+<!--            android:background="@android:drawable/editbox_background" />-->
+<!--    </LinearLayout>-->
+
+<!--    &lt;!&ndash; The RecyclerView for our new meal time cards &ndash;&gt;-->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/mealTimeRecyclerView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/filter_bar"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        tools:listitem="@layout/item_meal_time" />-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/main"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- Header Section using a RelativeLayout for easy positioning of the logo -->
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <!-- Header Section -->
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/home_icon_description"
+        android:focusable="true"
+        android:src="@drawable/vassar_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/welcomeLabel"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:text="@string/welcome"
+        android:textColor="#800000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/homeIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/homeIcon" />
 
-        <!-- Vassar Logo - Clickable Home Icon -->
-        <ImageView
-            android:id="@+id/homeIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/vassar_logo"
-            android:contentDescription="@string/home_icon_description"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless" /> <!-- Ripple effect on click -->
-
-        <!-- Welcome Label - Now more colorful -->
-        <TextView
-            android:id="@+id/welcomeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome"
-            android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#800000" /> <!-- Vassar's Burgundy Color -->
-
-    </RelativeLayout>
-
+    <!-- We need to give the filter containers IDs to constrain the RecyclerView -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/filter_bar_location"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/homeIcon">
 
         <TextView
             android:id="@+id/diningLocation"
             android:layout_width="282dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:background="@android:drawable/editbox_background"
             android:drawableEnd="@android:drawable/arrow_down_float"
             android:drawablePadding="8dp"
@@ -57,22 +162,25 @@
 
     </LinearLayout>
 
-    <!-- Horizontal LinearLayout for preference and date -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/filter_bar_date_pref"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filter_bar_location">
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Select Date"
-            android:drawablePadding="16dp"
+            android:background="@android:drawable/editbox_background"
             android:drawableEnd="@android:drawable/arrow_down_float"
-            android:background="@android:drawable/editbox_background" />
+            android:drawablePadding="16dp"
+            android:hint="Select Date" />
 
         <TextView
             android:id="@+id/preference"
@@ -80,17 +188,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:hint="Select Preference"
-            android:drawablePadding="16dp"
+            android:background="@android:drawable/editbox_background"
             android:drawableEnd="@android:drawable/arrow_down_float"
-            android:background="@android:drawable/editbox_background" />
+            android:drawablePadding="16dp"
+            android:hint="Select Preference" />
     </LinearLayout>
 
-    <!-- RecyclerView for Dynamic List -->
+    <!-- The RecyclerView for our new meal time cards -->
+    <!-- Now the constraint attributes will work correctly! -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+        android:id="@+id/mealTimeRecyclerView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filter_bar_date_pref"
+        tools:listitem="@layout/item_meal_time" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,12 +34,15 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     Set<String> likedItems;
 
     private List<Object> items;
+    private List<ParentItem> parentItemList;
 
-    public ExpandableRecyclerViewAdapter(Context context, Listener listener, Set<String> likedItems) {
+    public ExpandableRecyclerViewAdapter(Context context, List<ParentItem> parentItemList, Listener listener, Set<String> likedItems) {
         this.context = context;
-        this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
+//        this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
         this.listener = listener;
         this.likedItems = likedItems;
+        this.parentItemList = parentItemList;
+        setParentItems(parentItemList);
     }
 
     public void setParentItems(List<ParentItem> parentItems) {
@@ -111,52 +114,61 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             boolean isLiked = likedItems.contains(foodItem.getFoodId());
             updateLikeButton(foodItemHolder.likeButton, isLiked);
 
-            // Fetch and display like count dynamically
-            listener.getLikeCount(foodItem.getFoodId(), new FirestoreHelper.FirestoreCallback2() {
-                @Override
-                public void onSuccess(String likedItems) {
-                    foodItemHolder.likesCount.setText(likedItems);
-                }
+            // 2. Click listener for the like button
+            foodItemHolder.likeButton.setOnClickListener(buttonView -> {
+                // Determine the new state
+                boolean isNowLiked = !likedItems.contains(foodItem.getFoodId());
 
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onFailure(Exception e) {
-                    foodItemHolder.likesCount.setText("Error");
-                }
-            });
-
-            // Click listener for the like button
-            foodItemHolder.likeButton.setOnClickListener((buttonView) -> {
-                boolean newState = !likedItems.contains(foodItem.getFoodId());
-
-                // Update likedItems set
-                if (newState) {
+                // Update the local set immediately for instant UI feedback
+                if (isNowLiked) {
                     likedItems.add(foodItem.getFoodId());
                 } else {
                     likedItems.remove(foodItem.getFoodId());
                 }
 
-                // Notify MainActivity
-                listener.updateLikedItems(foodItem.getFoodId(), newState);
-                listener.updateLikeCount(foodItem.getFoodId(), newState);
+                // Update the button's appearance instantly
+                updateLikeButton(foodItemHolder.likeButton, isNowLiked);
 
-                // Update button visuals
-                updateLikeButton(foodItemHolder.likeButton, newState);
-
-                // Fetch and update the like count again
-                listener.getLikeCount(foodItem.getFoodId(), new FirestoreHelper.FirestoreCallback2() {
-                    @Override
-                    public void onSuccess(String likedItems) {
-                        foodItemHolder.likesCount.setText(likedItems);
-                    }
-
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onFailure(Exception e) {
-                        foodItemHolder.likesCount.setText("Error");
-                    }
-                });
+                // 3. Notify the Activity (FoodMenuActivity) using the SINGLE listener method
+                // This is the only listener call needed.
+                listener.onLikeClicked(foodItem.getFoodId(), isNowLiked);
             });
+
+
+            foodItemHolder.likesCount.setText("");
+
+//            // Click listener for the like button
+//            foodItemHolder.likeButton.setOnClickListener((buttonView) -> {
+//                boolean newState = !likedItems.contains(foodItem.getFoodId());
+//
+//                // Update likedItems set
+//                if (newState) {
+//                    likedItems.add(foodItem.getFoodId());
+//                } else {
+//                    likedItems.remove(foodItem.getFoodId());
+//                }
+//
+//                // Notify MainActivity
+//                listener.updateLikedItems(foodItem.getFoodId(), newState);
+//                listener.updateLikeCount(foodItem.getFoodId(), newState);
+//
+//                // Update button visuals
+//                updateLikeButton(foodItemHolder.likeButton, newState);
+//
+//                // Fetch and update the like count again
+//                listener.getLikeCount(foodItem.getFoodId(), new FirestoreHelper.FirestoreCallback2() {
+//                    @Override
+//                    public void onSuccess(String likedItems) {
+//                        foodItemHolder.likesCount.setText(likedItems);
+//                    }
+//
+//                    @SuppressLint("SetTextI18n")
+//                    @Override
+//                    public void onFailure(Exception e) {
+//                        foodItemHolder.likesCount.setText("Error");
+//                    }
+//                });
+//            });
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
             MealTypeSection mealTypeSection = (MealTypeSection) items.get(position);
             MealTypeSectionViewHolder childHolder = (MealTypeSectionViewHolder) holder;

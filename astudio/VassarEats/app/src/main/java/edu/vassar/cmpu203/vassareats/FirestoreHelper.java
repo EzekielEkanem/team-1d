@@ -3,6 +3,8 @@ package edu.vassar.cmpu203.vassareats;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -47,14 +49,31 @@ public class FirestoreHelper {
                 });
     }
 
-    public void updateLikesCount(String foodId, boolean isLiked) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("likesCount", isLiked ? FieldValue.increment(1) : FieldValue.increment(-1));
+    public void updateLikesCount(String foodId, long change, final CompletionCallback callback) {
+        DocumentReference foodDocRef = db.collection("foods").document(foodId);
 
-        db.collection("foodItems").document(foodId)
-                .set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Likes count updated for food: " + foodId))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error updating likes count", e));
+        db.runTransaction(transaction -> {
+            DocumentSnapshot snapshot = transaction.get(foodDocRef);
+            long newLikes = 0;
+            if (snapshot.exists() && snapshot.getLong("likes") != null) {
+                newLikes = snapshot.getLong("likes") + change;
+            } else {
+                // If the document or field doesn't exist, start the count
+                newLikes = (change > 0) ? 1 : 0;
+            }
+            // Ensure likes don't go below zero
+            if (newLikes < 0) {
+                newLikes = 0;
+            }
+            transaction.update(foodDocRef, "likes", newLikes);
+            return null; // A transaction must return something, null is fine here
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("FirestoreHelper", "Likes count transaction successful for " + foodId);
+            callback.onComplete(true, null); // Call onComplete with success
+        }).addOnFailureListener(e -> {
+            Log.e("FirestoreHelper", "Likes count transaction failed for " + foodId, e);
+            callback.onComplete(false, e); // Call onComplete with failure
+        });
     }
 
 
@@ -88,5 +107,12 @@ public class FirestoreHelper {
         void onSuccess(String likedItems);
 
         void onFailure(Exception e);
+    }
+
+    /**
+     * A simple callback for Firestore operations that do not return data.
+     */
+    public interface CompletionCallback {
+        void onComplete(boolean success, Exception e);
     }
 }

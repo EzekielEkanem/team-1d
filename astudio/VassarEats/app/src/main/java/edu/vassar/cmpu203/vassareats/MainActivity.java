@@ -1,59 +1,50 @@
 package edu.vassar.cmpu203.vassareats;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.Toast;
 import android.view.View;
 import android.view.MotionEvent;
 import android.view.GestureDetector;
-
+import android.content.Intent;
+import android.content.Intent;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.annotation.NonNull;
 import org.json.JSONException;
 
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
+import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.view.IExpandableRecylerViewAdapter;
 import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 import edu.vassar.cmpu203.vassareats.model.Preference;
 import edu.vassar.cmpu203.vassareats.view.IMenuView;
 import edu.vassar.cmpu203.vassareats.view.MenuView;
+import edu.vassar.cmpu203.vassareats.view.MealTimeAdapter;
+import edu.vassar.cmpu203.vassareats.view.FoodMenuActivity;
+import edu.vassar.cmpu203.vassareats.model.MealTime;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends AppCompatActivity implements IMenuView.Listener, IExpandableRecylerViewAdapter.Listener {
+public class MainActivity extends AppCompatActivity implements IMenuView.Listener, MealTimeAdapter.Listener {
 //    Initialize variable
     public IMenuView menuView;
     Menu menu;
-    public IExpandableRecylerViewAdapter recylerViewAdapter;
-
-    private static final String LIKED_ITEMS_KEY = "likedItems";
-    private Set<String> likedItems = new HashSet<>();
-
-    private FirebaseFirestore firestore;
-
-    private static final String PREFS_NAME = "AppPreferences";
-    private static final String UNIQUE_ID_KEY = "uniqueId";
-
-    FirestoreHelper firestoreHelper;
 
     private GestureDetector gestureDetector;
-
+    private MealTimeAdapter mealTimeAdapter; // keep a reference so we can refresh
 
     public MainActivity() throws JSONException, ParseException {
     }
@@ -66,32 +57,6 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        firestore = FirebaseFirestore.getInstance();
-        firestoreHelper = new FirestoreHelper();
-
-        String userId = getUniqueId(this);
-
-        // Load liked items from Firestore
-        firestoreHelper.loadUserLikedItems(userId, new FirestoreHelper.FirestoreCallback() {
-            @Override
-            public void onSuccess(List<String> likedItemsFromFirestore) {
-                if (likedItemsFromFirestore != null) {
-                    likedItems = new HashSet<>(likedItemsFromFirestore);
-                    Log.d("MainActivity", "Liked items loaded from Firestore: " + likedItems);
-
-                    // Notify adapter of loaded liked items
-                    if (recylerViewAdapter != null) {
-                        recylerViewAdapter.setLikedItems(likedItems);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e("MainActivity", "Failed to load liked items from Firestore", e);
-            }
-        });
-
         // Initialize menu and views
         try {
             menu = new Menu();
@@ -99,121 +64,138 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
             throw new RuntimeException(e);
         }
 
-        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-
         menuView = new MenuView(this, this);
         setContentView(menuView.getRootView());
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
+        mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
+        // Create the data for the meal cards using filtered meal types
+        List<MealTime> mealTimes = generateMealTimeData();
+
+        // Create and set the new adapter (store as field so we can update later)
+        mealTimeAdapter = new MealTimeAdapter(mealTimes, this);
+        mealTimeRecyclerView.setAdapter(mealTimeAdapter);
 
         // Initialize the GestureDetector
         gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
 
         // Attach the detector to the RecyclerView's touch events
-        recyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Let the gesture detector handle the touch event
-                return gestureDetector.onTouchEvent(event);
-            }
+        menuView.getRootView().setOnTouchListener(new View.OnTouchListener() {
+        menuView.getRootView().setOnTouchListener((v, event) -> {
+            boolean handled = gestureDetector.onTouchEvent(event);
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
         });
+            return handled;
     }
 
 
-    public static String getUniqueId(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String uniqueId = sharedPreferences.getString(UNIQUE_ID_KEY, null);
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        // Convert liked items to a list for serialization
+//        outState.putStringArrayList(LIKED_ITEMS_KEY, new ArrayList<>(likedItems));
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
+//        prefs.edit().putStringSet(LIKED_ITEMS_KEY, likedItems).apply();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
+//        likedItems = new HashSet<>(prefs.getStringSet(LIKED_ITEMS_KEY, new HashSet<>()));
+//
+//        // Notify the adapter of the updated likedItems
+//        recylerViewAdapter.setLikedItems(likedItems);
+//    }
 
-        if (uniqueId == null) {
-            // Generate a new UUID
-            uniqueId = UUID.randomUUID().toString();
-            sharedPreferences.edit().putString(UNIQUE_ID_KEY, uniqueId).apply();
+    /**
+     * This is the callback from the new MealTimeAdapter.Listener.
+     * It's called when a "View Menu" button is clicked.
+     */
+    @Override
+    public void onMealTimeClick(MealTime mealTime) {
+        Intent intent = new Intent(this, FoodMenuActivity.class);
+
+        // Pass the name of the meal (e.g., "Breakfast") to the new activity.
+        intent.putExtra(FoodMenuActivity.EXTRA_MEAL_NAME, mealTime.getMealName());
+
+        // We also need to pass the currently selected date and location!
+        intent.putExtra("SELECTED_DATE", menu.getCurrentDate().toString());
+        intent.putExtra("SELECTED_LOCATION", menu.getCurrentLocation());
+
+        startActivity(intent);
+    }
+
+    private HashMap<String, Integer> mealTimeBgMap() {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("Breakfast", R.drawable.breakfast_bg);
+        map.put("Brunch", R.drawable.brunch_bg);
+        map.put("Light Lunch", R.drawable.light_lunch_bg);
+        map.put("Lunch", R.drawable.lunch_bg);
+        map.put("Dinner", R.drawable.dinner_bg);
+        map.put("Late Night", R.drawable.late_night_bg);
+        map.put("Express", R.drawable.express_bg);
+        return map;
+    }
+
+    private List<MealTime> generateMealTimeData() {
+        List<MealTime> list = new ArrayList<>();
+        List<MealType> mealTypes = menu.getFilteredMealTypes(); // use filtered list
+        HashMap<String, Integer> bgMap = mealTimeBgMap();
+        for (MealType mealType : mealTypes) {
+            Integer bg = bgMap.get(mealType.getMealTypeName());
+            int drawableId = (bg != null) ? bg : R.drawable.breakfast_bg;
+            list.add(new MealTime(mealType.getMealTypeName(), mealType.getMealTypeTime(), drawableId));
         }
-
-        return uniqueId;
-    }
-
-    public void updateLikedItems(String foodId, boolean isLiked) {
-        if (isLiked) {
-            likedItems.add(foodId);
-        } else {
-            likedItems.remove(foodId);
-        }
-
-        // Save updated likedItems to SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-        prefs.edit().putStringSet(LIKED_ITEMS_KEY, likedItems).apply();
-
-        // Save updated likedItems to Firestore
-        String userId = getUniqueId(this);
-        firestoreHelper.saveUserLikedItems(this, userId, new ArrayList<>(likedItems));
-
-//        Log.d("MainActivity", "Liked items on save: " + likedItems);
-    }
-
-    public void updateLikeCount(String foodId, boolean isLiked) {
-        firestoreHelper.updateLikesCount(foodId, isLiked);
-    }
-
-    public void getLikeCount(String foodId, FirestoreHelper.FirestoreCallback2 firestoreCallback) {
-        firestoreHelper.getLikeCount(foodId, firestoreCallback);
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // Convert liked items to a list for serialization
-        outState.putStringArrayList(LIKED_ITEMS_KEY, new ArrayList<>(likedItems));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-        prefs.edit().putStringSet(LIKED_ITEMS_KEY, likedItems).apply();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-        likedItems = new HashSet<>(prefs.getStringSet(LIKED_ITEMS_KEY, new HashSet<>()));
-
-        // Notify the adapter of the updated likedItems
-        recylerViewAdapter.setLikedItems(likedItems);
+        return list;
     }
 
     @Override
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        // Refresh meal time cards to reflect changed filters
+        if (mealTimeAdapter != null) {
+            mealTimeAdapter.setMealTimes(generateMealTimeData());
+        }
     }
 
     @Override
     public void updateDate(LocalDate date) throws JSONException, ParseException {
         menu.updateDate(date);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        // Refresh meal time cards to reflect new date
+        if (mealTimeAdapter != null) {
+            mealTimeAdapter.setMealTimes(generateMealTimeData());
+        }
+//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
     }
 
     @Override
     public void updateLocation(Integer diningLocation) throws JSONException, ParseException {
         menu.updateLocation(diningLocation);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        // Refresh meal time cards to reflect new location
+        if (mealTimeAdapter != null) {
+            mealTimeAdapter.setMealTimes(generateMealTimeData());
+        }
+//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
     }
 
     @Override
     public void onHomeIconClick() {
         menu.resetFilters();
 
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-
         if (menuView instanceof MenuView) {
             ((MenuView) menuView).resetFilters();
+        }
+        // Refresh displayed mealTimes after resetting filters
+        if (mealTimeAdapter != null) {
+            mealTimeAdapter.setMealTimes(generateMealTimeData());
         }
     }
 
@@ -243,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
                         // Left Swipe (Next Day)
                         onSwipeLeft();
                     }
-                    return true; // The event is consumed
+        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
                 }
             }
             return false;
@@ -264,10 +246,13 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         try {
             menu.goToNextDay(); // Tell the model to update
             updateViewAfterDateChange(); // Refresh the UI
+            if (mealTimeAdapter != null) {
+                mealTimeAdapter.setMealTimes(generateMealTimeData());
+            }
         } catch (Exception e) {
             Log.e("MainActivity", "Error on swiping left", e);
         }
-    }
+        public boolean onDown(@NonNull MotionEvent e) {
 
     /**
      * Handles the logic for a right swipe (Go to previous day).
@@ -276,6 +261,9 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         try {
             menu.goToPreviousDay(); // Tell the model to update
             updateViewAfterDateChange(); // Refresh the UI
+            if (mealTimeAdapter != null) {
+                mealTimeAdapter.setMealTimes(generateMealTimeData());
+            }
         } catch (Exception e) {
             Log.e("MainActivity", "Error on swiping right", e);
         }
@@ -285,8 +273,8 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
      * A central method to update the view after any date change.
      */
     private void updateViewAfterDateChange() {
-        // Refresh the RecyclerView with new data from the model
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+//        // Refresh the RecyclerView with new data from the model
+//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
 
         // Tell the MenuView to update the date text
         if (menuView instanceof MenuView) {
