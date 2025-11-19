@@ -53,4 +53,8 @@ public class Preference {
         }
         return preferencesString;
     }
+
+    public void clearPreferences() {
+        preferences.clear();
+    }
 }
