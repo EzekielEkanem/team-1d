@@ -24,6 +24,7 @@ import java.util.List;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.model.Menu;
+import edu.vassar.cmpu203.vassareats.model.Preference;
 
 public class FoodMenuActivity extends AppCompatActivity implements IExpandableRecylerViewAdapter.Listener {
 
@@ -103,6 +104,25 @@ public class FoodMenuActivity extends AppCompatActivity implements IExpandableRe
             Menu menu = new Menu();
             menu.updateDate(selectedDate);       // Apply the date from MainActivity
             menu.updateLocation(location);     // Apply the location from MainActivity
+
+            ArrayList<String> preferences = getIntent().getStringArrayListExtra("SELECTED_PREFERENCES");
+
+            // If preferences were passed, apply them to the menu model
+            if (preferences != null && !preferences.isEmpty()) {
+                // Convert the String list back to the Enum list that changePreferences expects
+                List<Preference.Preferences> preferenceEnums = new ArrayList<>();
+                for (String prefString : preferences) {
+                    try {
+                        // This converts a string like "VEGAN" or "HALAL" into the corresponding enum
+                        preferenceEnums.add(Preference.Preferences.valueOf(prefString));
+                    } catch (IllegalArgumentException e) {
+                        Log.w("FoodMenuActivity", "Received an invalid preference string: " + prefString);
+                    }
+                }
+                // This call will trigger the filtering logic inside Menu model
+                menu.changePreferences(preferenceEnums);
+                Log.d("FoodMenuActivity", "Applied preferences: " + preferenceEnums);
+            }
 
             // Validate that the requested mealName exists in the filtered menu for this date/location.
             List<edu.vassar.cmpu203.vassareats.model.MealType> available = menu.getFilteredMealTypes();

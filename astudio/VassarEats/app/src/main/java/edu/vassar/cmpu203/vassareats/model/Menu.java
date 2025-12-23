@@ -242,9 +242,9 @@ public class Menu {
      */
     public ArrayList<String> getAvailableMealNames() {
         ArrayList<String> availableMealNames = new ArrayList<>();
-        if (this.originalMenu == null) {
+        if (this.filteredMenu == null) {
             // Safety check: if there's no menu data, return an empty list.
-            Log.d("Menu.java", "originalMenu is empty. No meals available.");
+            Log.d("Menu.java", "filteredMenu is empty. No meals available.");
             return availableMealNames;
         }
 
@@ -252,7 +252,7 @@ public class Menu {
         boolean isWeekend = dayOfWeek.equals("SATURDAY") || dayOfWeek.equals("SUNDAY");
 
         // Loop through the meal types loaded for the current day and location.
-        for (MealType mealType : this.originalMenu) {
+        for (MealType mealType : this.filteredMenu) {
             String mealName = mealType.getMealTypeName();
 
             // Check if we are at Gordon Commons (diningLocation == 0)
@@ -270,8 +270,8 @@ public class Menu {
                 }
             } else {
                 // For all other locations (Express, Street Eats, etc.),
-                // their availability is already determined by the data loaded into originalMenu.
-                // So, if it's in originalMenu, it's available.
+                // their availability is already determined by the data loaded into filteredMenu.
+                // So, if it's in filteredMenu, it's available.
                 availableMealNames.add(mealName);
             }
         }

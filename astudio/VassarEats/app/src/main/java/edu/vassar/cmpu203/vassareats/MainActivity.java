@@ -94,13 +94,14 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     @Override
     public void onMealTimeClick(MealTime mealTime) {
         Intent intent = new Intent(this, FoodMenuActivity.class);
-
+        ArrayList<String> currentPreferences = (ArrayList<String>) menu.getPreferences();
         // Pass the name of the meal (e.g., "Breakfast") to the new activity.
         intent.putExtra(FoodMenuActivity.EXTRA_MEAL_NAME, mealTime.getMealName());
 
         // We also need to pass the currently selected date and location!
         intent.putExtra("SELECTED_DATE", menu.getCurrentDate().toString());
         intent.putExtra("SELECTED_LOCATION", menu.getCurrentLocation());
+        intent.putStringArrayListExtra("SELECTED_PREFERENCES", currentPreferences);
 
         startActivity(intent);
     }
