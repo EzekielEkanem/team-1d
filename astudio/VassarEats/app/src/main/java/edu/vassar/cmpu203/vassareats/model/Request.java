@@ -37,6 +37,7 @@ public class Request {
         this.diningLocations.put(0, "gordon");
         this.diningLocations.put(1, "express");
         this.diningLocations.put(2, "food-truck");
+//        this.diningLocations.put(3, "the-retreat");
     }
 
     // The parameter should later be changed to date instead of url completely

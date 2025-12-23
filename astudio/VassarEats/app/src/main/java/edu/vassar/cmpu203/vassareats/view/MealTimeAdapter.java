@@ -57,6 +57,7 @@ public class MealTimeAdapter extends RecyclerView.Adapter<MealTimeAdapter.MealTi
         return mealTimes.size();
     }
 
+
     public static class MealTimeViewHolder extends RecyclerView.ViewHolder {
         private final ImageView mealBackground;
         private final TextView mealTypeName;

@@ -231,6 +231,50 @@ public class Menu {
         return result;
     }
 
+    // In edu/vassar/cmpu203/vassareats/model/Menu.java
+
+    /**
+     * Gets a list of meal names available for the currently selected dining location and date,
+     * based on the data in originalMenu.
+     * @return An ArrayList of strings containing the names of available meals.
+     */
+    public ArrayList<String> getAvailableMealNames() {
+        ArrayList<String> availableMealNames = new ArrayList<>();
+        if (this.originalMenu == null) {
+            // Safety check: if there's no menu data, return an empty list.
+            return availableMealNames;
+        }
+
+        String dayOfWeek = this.currentDate.getDayOfWeek().name().toUpperCase();
+        boolean isWeekend = dayOfWeek.equals("SATURDAY") || dayOfWeek.equals("SUNDAY");
+
+        // Loop through the meal types loaded for the current day and location.
+        for (MealType mealType : this.originalMenu) {
+            String mealName = mealType.getMealTypeName();
+
+            // Check if we are at Gordon Commons (diningLocation == 0)
+            if (this.diningLocation == 0) {
+                if (isWeekend) {
+                    // On weekends, ONLY "Brunch" and "Dinner" are shown.
+                    if (mealName.equals("Brunch") || mealName.equals("Dinner")) {
+                        availableMealNames.add(mealName);
+                    }
+                } else {
+                    // On weekdays, everything EXCEPT "Brunch" is shown.
+                    if (!mealName.equals("Brunch")) {
+                        availableMealNames.add(mealName);
+                    }
+                }
+            } else {
+                // For all other locations (Express, Street Eats, etc.),
+                // their availability is already determined by the data loaded into originalMenu.
+                // So, if it's in originalMenu, it's available.
+                availableMealNames.add(mealName);
+            }
+        }
+        return availableMealNames;
+    }
+
     public Integer getCurrentLocation() {
         return diningLocation;
     }

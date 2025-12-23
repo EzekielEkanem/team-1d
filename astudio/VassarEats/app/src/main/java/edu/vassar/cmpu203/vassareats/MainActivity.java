@@ -1,135 +1,94 @@
 package edu.vassar.cmpu203.vassareats;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-<<<<<<< HEAD
-import android.view.View;
-import android.view.MotionEvent;
 import android.view.GestureDetector;
-import android.content.Intent;
-import android.content.Intent;
-=======
+import android.view.MotionEvent;
+import android.view.View;
 
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.annotation.NonNull;
 import org.json.JSONException;
 
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import edu.vassar.cmpu203.vassareats.model.MealTime;
 import edu.vassar.cmpu203.vassareats.model.MealType;
 import edu.vassar.cmpu203.vassareats.model.Menu;
-import edu.vassar.cmpu203.vassareats.view.IExpandableRecylerViewAdapter;
-import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 import edu.vassar.cmpu203.vassareats.model.Preference;
-import edu.vassar.cmpu203.vassareats.view.IMenuView;
-import edu.vassar.cmpu203.vassareats.view.MenuView;
-import edu.vassar.cmpu203.vassareats.view.MealTimeAdapter;
 import edu.vassar.cmpu203.vassareats.view.FoodMenuActivity;
-import edu.vassar.cmpu203.vassareats.model.MealTime;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.firestore.FirebaseFirestore;
+import edu.vassar.cmpu203.vassareats.view.IMenuView;
+import edu.vassar.cmpu203.vassareats.view.MealTimeAdapter;
+import edu.vassar.cmpu203.vassareats.view.MenuView;
 
 public class MainActivity extends AppCompatActivity implements IMenuView.Listener, MealTimeAdapter.Listener {
-//    Initialize variable
-    public IMenuView menuView;
-    Menu menu;
 
-<<<<<<< HEAD
+    private IMenuView menuView;
+    private Menu menu;
+
     private GestureDetector gestureDetector;
     private MealTimeAdapter mealTimeAdapter; // keep a reference so we can refresh
-=======
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 
-    public MainActivity() throws JSONException, ParseException {
-    }
+    // The constructor is not needed for an Activity, it's safer to remove it.
+    // public MainActivity() throws JSONException, ParseException {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        // EdgeToEdge.enable(this); // Can be removed if not being used extensively.
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         // Initialize menu and views
         try {
-            menu = new Menu();
+            this.menu = new Menu();
         } catch (ParseException | JSONException e) {
-            throw new RuntimeException(e);
+            // It's better to log the error and show a message than to crash.
+            Log.e("MainActivity", "Failed to initialize Menu model", e);
+            // In a real app, you might show an error screen here.
+            return; // Exit onCreate if menu fails to load.
         }
 
-        menuView = new MenuView(this, this);
+        this.menuView = new MenuView(this, this);
         setContentView(menuView.getRootView());
 
         RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
         mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-<<<<<<< HEAD
         // Create the data for the meal cards using filtered meal types
         List<MealTime> mealTimes = generateMealTimeData();
 
         // Create and set the new adapter (store as field so we can update later)
-        mealTimeAdapter = new MealTimeAdapter(mealTimes, this);
+        this.mealTimeAdapter = new MealTimeAdapter(mealTimes, this);
         mealTimeRecyclerView.setAdapter(mealTimeAdapter);
 
         // Initialize the GestureDetector
-        gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
+        this.gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
 
-        // Attach the detector to the RecyclerView's touch events
-        menuView.getRootView().setOnTouchListener(new View.OnTouchListener() {
-        menuView.getRootView().setOnTouchListener((v, event) -> {
+        // Attach the touch listener to the root view of your layout.
+        View rootView = menuView.getRootView();
+        rootView.setOnTouchListener((v, event) -> {
+            // Pass the event to the gesture detector
             boolean handled = gestureDetector.onTouchEvent(event);
-            if (event.getAction() == MotionEvent.ACTION_UP) {
+            // We also need to allow clicks to work, so performClick on ACTION_UP.
+            if (!handled && event.getAction() == MotionEvent.ACTION_UP) {
                 v.performClick();
+            }
+            return true; // Return true to indicate we've handled the touch event.
         });
-            return handled;
-=======
-        recylerViewAdapter = new ExpandableRecyclerViewAdapter(this, this, likedItems);
-        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-        recyclerView.setAdapter((RecyclerView.Adapter) recylerViewAdapter);
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
     }
 
-
-//    @Override
-//    protected void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        // Convert liked items to a list for serialization
-//        outState.putStringArrayList(LIKED_ITEMS_KEY, new ArrayList<>(likedItems));
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-//        prefs.edit().putStringSet(LIKED_ITEMS_KEY, likedItems).apply();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        SharedPreferences prefs = getSharedPreferences("AppState", MODE_PRIVATE);
-//        likedItems = new HashSet<>(prefs.getStringSet(LIKED_ITEMS_KEY, new HashSet<>()));
-//
-//        // Notify the adapter of the updated likedItems
-//        recylerViewAdapter.setLikedItems(likedItems);
-//    }
-
     /**
-     * This is the callback from the new MealTimeAdapter.Listener.
+     * This is the callback from the MealTimeAdapter.Listener.
      * It's called when a "View Menu" button is clicked.
      */
     @Override
@@ -160,60 +119,55 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
     private List<MealTime> generateMealTimeData() {
         List<MealTime> list = new ArrayList<>();
-        List<MealType> mealTypes = menu.getFilteredMealTypes(); // use filtered list
+        // FIX: Use getAvailableMealNames to get meal types for the specific location/day
+        ArrayList<String> availableMealNames = menu.getAvailableMealNames();
         HashMap<String, Integer> bgMap = mealTimeBgMap();
-        for (MealType mealType : mealTypes) {
-            Integer bg = bgMap.get(mealType.getMealTypeName());
-            int drawableId = (bg != null) ? bg : R.drawable.breakfast_bg;
-            list.add(new MealTime(mealType.getMealTypeName(), mealType.getMealTypeTime(), drawableId));
+
+        for (String mealName : availableMealNames) {
+            // You can enhance this to get specific times if your model supports it
+            String time = "View Menu";
+            Integer bg = bgMap.get(mealName);
+            int drawableId = (bg != null) ? bg : R.drawable.breakfast_bg; // Default background
+            list.add(new MealTime(mealName, time, drawableId));
         }
         return list;
     }
 
-
-
+    // A central method to refresh the meal cards RecyclerView
+    private void refreshMealTimeView() {
+        if (mealTimeAdapter != null) {
+            List<MealTime> newMealTimes = generateMealTimeData();
+            mealTimeAdapter.setMealTimes(newMealTimes); // This should call notifyDataSetChanged() inside the adapter
+        }
+    }
 
     @Override
     public void updatePreferences(List<Preference.Preferences> preferenceList) {
         menu.changePreferences(preferenceList);
-        // Refresh meal time cards to reflect changed filters
-        if (mealTimeAdapter != null) {
-            mealTimeAdapter.setMealTimes(generateMealTimeData());
-        }
+        refreshMealTimeView();
     }
 
     @Override
     public void updateDate(LocalDate date) throws JSONException, ParseException {
         menu.updateDate(date);
-        // Refresh meal time cards to reflect new date
-        if (mealTimeAdapter != null) {
-            mealTimeAdapter.setMealTimes(generateMealTimeData());
-        }
-//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        refreshMealTimeView();
     }
+
+
 
     @Override
     public void updateLocation(Integer diningLocation) throws JSONException, ParseException {
         menu.updateLocation(diningLocation);
-        // Refresh meal time cards to reflect new location
-        if (mealTimeAdapter != null) {
-            mealTimeAdapter.setMealTimes(generateMealTimeData());
-        }
-//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
+        refreshMealTimeView();
     }
-<<<<<<< HEAD
 
     @Override
     public void onHomeIconClick() {
         menu.resetFilters();
-
         if (menuView instanceof MenuView) {
             ((MenuView) menuView).resetFilters();
         }
-        // Refresh displayed mealTimes after resetting filters
-        if (mealTimeAdapter != null) {
-            mealTimeAdapter.setMealTimes(generateMealTimeData());
-        }
+        refreshMealTimeView();
     }
 
     /**
@@ -225,34 +179,24 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            // e1 is the starting touch event, e2 is the ending touch event
             if (e1 == null || e2 == null) return false;
-
             float diffX = e2.getX() - e1.getX();
-            float diffY = e2.getY() - e1.getY();
 
-            // Check if it's a horizontal swipe
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                // Check if the swipe is significant enough
-                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffX > 0) {
-                        // Right Swipe (Previous Day)
-                        onSwipeRight();
-                    } else {
-                        // Left Swipe (Next Day)
-                        onSwipeLeft();
-                    }
-        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+            // Check for a significant horizontal swipe
+            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX > 0) {
+                    onSwipeRight(); // Previous Day
+                } else {
+                    onSwipeLeft(); // Next Day
                 }
+                return true; // The fling was handled
             }
             return false;
         }
 
-        // It's good practice to override onDown to return true,
-        // which tells the detector you're interested in gesture events.
         @Override
         public boolean onDown(MotionEvent e) {
-            return true;
+            return true; // Necessary to tell the system we want to handle gestures
         }
     }
 
@@ -261,43 +205,33 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
      */
     private void onSwipeLeft() {
         try {
-            menu.goToNextDay(); // Tell the model to update
-            updateViewAfterDateChange(); // Refresh the UI
-            if (mealTimeAdapter != null) {
-                mealTimeAdapter.setMealTimes(generateMealTimeData());
-            }
+            menu.goToNextDay();
+            updateViewAfterDateChange();
+            refreshMealTimeView();
         } catch (Exception e) {
             Log.e("MainActivity", "Error on swiping left", e);
         }
-        public boolean onDown(@NonNull MotionEvent e) {
+    }
 
     /**
      * Handles the logic for a right swipe (Go to previous day).
      */
     private void onSwipeRight() {
         try {
-            menu.goToPreviousDay(); // Tell the model to update
-            updateViewAfterDateChange(); // Refresh the UI
-            if (mealTimeAdapter != null) {
-                mealTimeAdapter.setMealTimes(generateMealTimeData());
-            }
+            menu.goToPreviousDay();
+            updateViewAfterDateChange();
+            refreshMealTimeView();
         } catch (Exception e) {
             Log.e("MainActivity", "Error on swiping right", e);
         }
     }
 
     /**
-     * A central method to update the view after any date change.
+     * A central method to update the view's date text after a swipe.
      */
     private void updateViewAfterDateChange() {
-//        // Refresh the RecyclerView with new data from the model
-//        recylerViewAdapter.setParentItems(menu.getFilteredMenuParentItems());
-
-        // Tell the MenuView to update the date text
         if (menuView instanceof MenuView) {
             ((MenuView) menuView).updateDateDisplay(menu.getCurrentDate());
         }
     }
-=======
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
 }

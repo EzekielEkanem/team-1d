@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 <!--    xmlns:tools="http://schemas.android.com/tools"-->
@@ -108,126 +107,109 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-=======
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent">
 
-<<<<<<< HEAD
-    <!-- Header Section -->
-    <ImageView
-        android:id="@+id/homeIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/home_icon_description"
-        android:focusable="true"
-        android:src="@drawable/vassar_logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main"
+        android:orientation="horizontal" />
 
-    <TextView
-        android:id="@+id/welcomeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/welcome"
-        android:textColor="#800000"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/homeIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/homeIcon" />
-=======
-    <TextView
-        android:id="@+id/welcomeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/welcome"
-        android:layout_gravity="center_horizontal" />
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)
-
-    <!-- We need to give the filter containers IDs to constrain the RecyclerView -->
-    <LinearLayout
-        android:id="@+id/filter_bar_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/homeIcon">
+        <!-- Header Section -->
+        <ImageView
+            android:id="@+id/homeIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/home_icon_description"
+            android:focusable="true"
+            android:src="@drawable/vassar_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/diningLocation"
-            android:layout_width="282dp"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background"
-            android:drawableEnd="@android:drawable/arrow_down_float"
-            android:drawablePadding="8dp"
-            android:hint="Select Dining Location" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/filter_bar_date_pref"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filter_bar_location">
-
-        <TextView
-            android:id="@+id/date"
+            android:id="@+id/welcomeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background"
-            android:drawableEnd="@android:drawable/arrow_down_float"
-            android:drawablePadding="16dp"
-            android:hint="Select Date" />
+            android:text="@string/welcome"
+            android:textColor="#800000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/homeIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/homeIcon" />
 
-        <TextView
-            android:id="@+id/preference"
-            android:layout_width="wrap_content"
+        <!-- We need to give the filter containers IDs to constrain the RecyclerView -->
+        <LinearLayout
+            android:id="@+id/filter_bar_location"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@android:drawable/editbox_background"
-            android:drawableEnd="@android:drawable/arrow_down_float"
-            android:drawablePadding="16dp"
-            android:hint="Select Preference" />
-    </LinearLayout>
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homeIcon">
 
-    <!-- The RecyclerView for our new meal time cards -->
-    <!-- Now the constraint attributes will work correctly! -->
-    <androidx.recyclerview.widget.RecyclerView
-<<<<<<< HEAD
-        android:id="@+id/mealTimeRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filter_bar_date_pref"
-        tools:listitem="@layout/item_meal_time" />
+            <TextView
+                android:id="@+id/diningLocation"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:drawablePadding="8dp"
+                android:hint="Select Dining Location" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/filter_bar_date_pref"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filter_bar_location">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:hint="Select Date" />
+
+            <TextView
+                android:id="@+id/preference"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@android:drawable/editbox_background"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:hint="Select Preference" />
+        </LinearLayout>
+
+        <!-- The RecyclerView for our new meal time cards -->
+        <!-- Now the constraint attributes will work correctly! -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mealTimeRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filter_bar_date_pref"
+            tools:listitem="@layout/item_meal_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-=======
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
->>>>>>> parent of c4e9599 (Added Home page icon, made Gordon Commons the default dining restaurant, and implemented the swiping feature)

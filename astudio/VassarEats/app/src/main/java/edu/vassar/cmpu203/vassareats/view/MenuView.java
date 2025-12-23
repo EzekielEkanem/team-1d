@@ -10,6 +10,7 @@ import org.json.JSONException;
 
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -306,6 +307,49 @@ public class MenuView implements IMenuView {
             case 3: return "rd"; // 3rd, 23rd, etc.
             default: return "th"; // All other days
         }
+    }
+
+    // In MenuView.java
+
+    public void updateDateDisplay(LocalDate date) {
+        // Format the date to a user-friendly string (e.g., "Nov 20, 2025")
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+        String formattedDate = date.format(formatter);
+
+        // Update the text of your date TextView
+        this.binding.date.setText(formattedDate);
+    }
+
+    // Add this method to your MenuView.java file
+
+    /**
+     * Resets the visual filter components (TextViews) and their underlying state
+     * within this view to their default values.
+     */
+    public void resetFilters() {
+        // 1. Reset the Dining Location
+        this.locationItem = 0; // Reset the selected index to the default (0)
+        this.tempLocationItem = 0;
+        this.binding.diningLocation.setText(this.locationList[0]); // Update UI text to "GORDON COMMONS"
+
+        // 2. Reset the Date
+        this.dateItem = 0; // Reset selected date index to the default (0 for TODAY)
+        this.tempDateItem = 0;
+        this.binding.date.setText(this.dateList[0]); // Update UI text to "TODAY"
+
+        // 3. Reset the Preferences
+        // Clear the lists that hold the selected preference objects
+        this.preferences.clear();
+        this.preferencesTemp.clear();
+
+        // Reset the boolean arrays that track checked items in the dialog
+        for (int i = 0; i < this.selectedPreference.length; i++) {
+            this.selectedPreference[i] = false;
+            this.selectedPreferenceTemp[i] = false;
+        }
+
+        // Update the UI text to be empty or show a default hint
+        this.binding.preference.setText("Select Preference"); // Or use an empty string: ""
     }
 
 
