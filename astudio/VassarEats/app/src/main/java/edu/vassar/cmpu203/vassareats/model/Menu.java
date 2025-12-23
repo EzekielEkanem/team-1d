@@ -1,5 +1,7 @@
 package edu.vassar.cmpu203.vassareats.model;
 
+import android.util.Log;
+
 import org.json.JSONException;
 
 import java.text.ParseException;
@@ -242,6 +244,7 @@ public class Menu {
         ArrayList<String> availableMealNames = new ArrayList<>();
         if (this.originalMenu == null) {
             // Safety check: if there's no menu data, return an empty list.
+            Log.d("Menu.java", "originalMenu is empty. No meals available.");
             return availableMealNames;
         }
 

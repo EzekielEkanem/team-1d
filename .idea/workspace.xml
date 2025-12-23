@@ -72,12 +72,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/AndroidProjectSystem.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/migrations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -296,12 +290,12 @@
       <map>
         <entry key="edu.vassar.cmpu203.vassareats">
           <value>
-            <CheckInfo lastCheckTimestamp="1763528098337" />
+            <CheckInfo lastCheckTimestamp="1766504502660" />
           </value>
         </entry>
         <entry key="edu.vassar.cmpu203.vassareats.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1763528098337" />
+            <CheckInfo lastCheckTimestamp="1766504502658" />
           </value>
         </entry>
       </map>

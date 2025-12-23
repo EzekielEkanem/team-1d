@@ -31,7 +31,7 @@ public class MenuView implements IMenuView {
 
     int locationItem = 0;
     int tempLocationItem = locationItem;
-    String[] locationList = new String[3];
+    String[] locationList = new String[4];
 
     int dateItem = 0;
     int tempDateItem = dateItem;
@@ -79,6 +79,7 @@ public class MenuView implements IMenuView {
         locationList[0] = "GORDON COMMONS";
         locationList[1] = "EXPRESS";
         locationList[2] = "STREET EATS";
+        locationList[3] = "THE RETREAT";
 
         this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,12 +65,11 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
         RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
         mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Create the data for the meal cards using filtered meal types
-        List<MealTime> mealTimes = generateMealTimeData();
-
-        // Create and set the new adapter (store as field so we can update later)
-        this.mealTimeAdapter = new MealTimeAdapter(mealTimes, this);
+        this.mealTimeAdapter = new MealTimeAdapter(new ArrayList<>(), this);
         mealTimeRecyclerView.setAdapter(mealTimeAdapter);
+
+        // 2. Call our new central method to populate the list and set UI visibility.
+        updateMealCardDisplay();
 
         // Initialize the GestureDetector
         this.gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
@@ -135,10 +135,7 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
     // A central method to refresh the meal cards RecyclerView
     private void refreshMealTimeView() {
-        if (mealTimeAdapter != null) {
-            List<MealTime> newMealTimes = generateMealTimeData();
-            mealTimeAdapter.setMealTimes(newMealTimes); // This should call notifyDataSetChanged() inside the adapter
-        }
+        updateMealCardDisplay();
     }
 
     @Override
@@ -232,6 +229,31 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
     private void updateViewAfterDateChange() {
         if (menuView instanceof MenuView) {
             ((MenuView) menuView).updateDateDisplay(menu.getCurrentDate());
+        }
+    }
+
+    private void updateMealCardDisplay() {
+        // Find the views from the layout
+        RecyclerView recyclerView = findViewById(R.id.mealTimeRecyclerView);
+        TextView noMenuTextView = findViewById(R.id.noMenuTextView);
+
+        // Generate the list of meals for the current state
+        List<MealTime> mealTimes = generateMealTimeData();
+
+        // Check if the list is empty and toggle view visibility
+        if (mealTimes.isEmpty()) {
+            // If there's no menu, hide the list and show the "No Menu" message
+            recyclerView.setVisibility(View.GONE);
+            noMenuTextView.setVisibility(View.VISIBLE);
+        } else {
+            // If there is a menu, show the list and hide the "No Menu" message
+            recyclerView.setVisibility(View.VISIBLE);
+            noMenuTextView.setVisibility(View.GONE);
+        }
+
+        // Always update the adapter with the new (potentially empty) list
+        if (mealTimeAdapter != null) {
+            mealTimeAdapter.setMealTimes(mealTimes);
         }
     }
 }

@@ -37,7 +37,7 @@ public class Request {
         this.diningLocations.put(0, "gordon");
         this.diningLocations.put(1, "express");
         this.diningLocations.put(2, "food-truck");
-//        this.diningLocations.put(3, "the-retreat");
+        this.diningLocations.put(3, "the-retreat");
     }
 
     // The parameter should later be changed to date instead of url completely
@@ -53,6 +53,11 @@ public class Request {
 
         getWebPage(fullURL);
         JSONObject jsonMenuObject = getJsonMenu();
+
+        if (jsonMenuObject == null) {
+            System.out.println("No menu found for " + location + " on " + formattedDate);
+            return new ArrayList<>(); // Return an empty list to prevent crashes
+        }
 
         HashMap<Integer, JSONObject> mealDayParts = getMealDayParts();
         ArrayList<MealType> mealTypes = new ArrayList<MealType>();
@@ -227,19 +232,41 @@ public class Request {
     }
 
 
+//    public JSONObject getJsonMenu() throws ParseException, JSONException {
+//        // Isolate JSON String from HTML
+//        String pattern = "Bamco.menu_items = (.*);";
+//        Pattern r = Pattern.compile(pattern);
+//        Matcher matcher = r.matcher(html);
+//        if (matcher.find()) {
+//            // Remove final semicolon from JSON String
+//            String jsonText = matcher.group(1).split(";")[0];
+//
+//            // Parse the jsonText string into a JSON object
+//            JSONObject parser = new JSONObject(jsonText);
+//            return parser;
+//        } else {
+//            // If the pattern is not found, it means there's no menu. Return null.
+//            return null;
+//        }
+//    }
+
     public JSONObject getJsonMenu() throws ParseException, JSONException {
-        // Isolate JSON String from HTML
-        String pattern = "Bamco.menu_items = (.*);";
+        String pattern = "(?s)Bamco\\.menu_items = (\\{.*?\\});";
+
         Pattern r = Pattern.compile(pattern);
         Matcher matcher = r.matcher(html);
-        matcher.find();
 
-        // Remove final semicolon from JSON String
-        String jsonText = matcher.group(1).split(";")[0];
+        if (matcher.find()) {
+            // group(1) now contains the perfect JSON object, including the outer braces.
+            String jsonText = matcher.group(1);
 
-        // Parse the jsonText string into a JSON object
-        JSONObject parser = new JSONObject(jsonText);
-        return parser;
+            // Parse the jsonText string into a JSON object
+            JSONObject parser = new JSONObject(jsonText);
+            return parser;
+        } else {
+            // If the pattern is not found, it means there's no menu. Return null.
+            return null;
+        }
     }
 
     public HashMap<Integer, JSONObject> getMealDayParts() throws ParseException, JSONException {
