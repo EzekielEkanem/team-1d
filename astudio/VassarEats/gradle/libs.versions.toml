@@ -1,6 +1,6 @@
 
 [versions]
-agp = "8.7.2"
+agp = "8.10.0"
 androidxEspressoCore = "3.6.1"
 androidxJunit = "1.1.3"
 androidxJunitVersion = "1.2.1"
@@ -44,6 +44,7 @@ recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "r
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 rules-v150 = { module = "androidx.test:rules", version.ref = "rulesVersion" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
 
 [plugins]

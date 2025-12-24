@@ -8,10 +8,12 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.json.JSONException;
 
@@ -29,14 +31,18 @@ import edu.vassar.cmpu203.vassareats.view.FoodMenuActivity;
 import edu.vassar.cmpu203.vassareats.view.IMenuView;
 import edu.vassar.cmpu203.vassareats.view.MealTimeAdapter;
 import edu.vassar.cmpu203.vassareats.view.MenuView;
+import edu.vassar.cmpu203.vassareats.view.LoginActivity;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements IMenuView.Listener, MealTimeAdapter.Listener {
 
     private IMenuView menuView;
     private Menu menu;
-
     private GestureDetector gestureDetector;
     private MealTimeAdapter mealTimeAdapter; // keep a reference so we can refresh
+    private DrawerLayout drawerLayout;
 
     // The constructor is not needed for an Activity, it's safer to remove it.
     // public MainActivity() throws JSONException, ParseException {}
@@ -61,6 +67,45 @@ public class MainActivity extends AppCompatActivity implements IMenuView.Listene
 
         this.menuView = new MenuView(this, this);
         setContentView(menuView.getRootView());
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ImageView menuIcon = findViewById(R.id.homeIcon); // hamburger icon
+
+        // Open the drawer when the menu icon is clicked
+        menuIcon.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(navigationView)) {
+                drawerLayout.closeDrawer(navigationView);
+            } else {
+                drawerLayout.openDrawer(navigationView);
+            }
+        });
+
+        // Handle clicks on items inside the drawer
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId(); // Get the ID of the clicked item
+
+            if (itemId == R.id.nav_home) {
+                // User chose "Home". Reset filters and refresh.
+                // We can just call the existing onHomeIconClick() method!
+                onHomeIconClick();
+
+            } else if (itemId == R.id.nav_logout) {
+                // User chose the "Logout" item
+                FirebaseAuth.getInstance().signOut();
+
+                // Redirect to LoginActivity
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish(); // Close MainActivity
+            }
+
+
+            // Close the drawer when an item is tapped
+            drawerLayout.closeDrawers();
+            return true;
+        });
 
         RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
         mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));

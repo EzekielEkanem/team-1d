@@ -35,6 +35,11 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/activity_login.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/activity_main.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
@@ -65,13 +70,31 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/nav_header.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/menu/drawer_menu.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/menu/main_menu.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="" />
+    <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +103,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/ezekiel/.android/avd/Pixel_5.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/ezekiel/.android/avd/Pixel_7.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/astudio/VassarEats">
       <ProjectState />
@@ -102,6 +125,14 @@
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="resourceFile" />
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -130,6 +161,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/ezekiel/Desktop/github/VassarEats",
@@ -143,6 +175,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="android.template.-1427265251">
+      <recent name="edu.vassar.cmpu203.vassareats.view" />
+    </key>
+  </component>
   <component name="RunManager" selected="Android App.app">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="Vassar_Eats.app" />
@@ -288,12 +325,12 @@
       <map>
         <entry key="edu.vassar.cmpu203.vassareats">
           <value>
-            <CheckInfo lastCheckTimestamp="1766504502660" />
+            <CheckInfo lastCheckTimestamp="1766602187346" />
           </value>
         </entry>
         <entry key="edu.vassar.cmpu203.vassareats.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1766504502658" />
+            <CheckInfo lastCheckTimestamp="1766602187344" />
           </value>
         </entry>
       </map>
