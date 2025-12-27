@@ -3,359 +3,339 @@ package edu.vassar.cmpu203.vassareats.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView; // Import TextView
 
-import org.json.JSONException;
-
-import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.databinding.ActivityMainBinding;
+import edu.vassar.cmpu203.vassareats.R; // Import R
 import edu.vassar.cmpu203.vassareats.model.Preference;
-
-import java.time.LocalDate;
+import edu.vassar.cmpu203.vassareats.model.Menu;
 
 public class MenuView implements IMenuView {
 
-    ActivityMainBinding binding;
-    Listener listener;
-    boolean[] selectedPreference;
-    boolean[] selectedPreferenceTemp;
-    String[] preferenceArray;
-    List<Preference.Preferences> preferences = new ArrayList<>();
-    List<Preference.Preferences> preferencesTemp = new ArrayList<>();
+    private final View rootView; // This will be the fragment's view
+    private final Listener listener;
 
-    int locationItem = 0;
-    int tempLocationItem = locationItem;
-    String[] locationList = new String[4];
+    // References to the UI widgets
+    private final TextView diningLocationTextView;
+    private final TextView preferenceTextView;
+    private final TextView dateTextView;
 
-    int dateItem = 0;
-    int tempDateItem = dateItem;
-    String[] dateList = new String[7];
-    List<LocalDate> localDateList = new ArrayList<LocalDate>();
+    // State for the preference dialog
+    private final boolean[] selectedPreference;
+    private final boolean[] selectedPreferenceTemp;
+    private final String[] preferenceArray;
+    private final List<Preference.Preferences> preferences = new ArrayList<>();
+    private final List<Preference.Preferences> preferencesTemp = new ArrayList<>();
 
-    public MenuView(Context context, Listener listener) {
+    // State for the location dialog
+    private int locationItem = 0;
+    private int tempLocationItem = 0;
+    private final String[] locationList = new String[4];
+
+    // State for the date dialog
+    private int dateItem = 0;
+    private int tempDateItem = 0;
+    private final String[] dateList = new String[7];
+    private final List<LocalDate> localDateList = new ArrayList<>();
+
+    /**
+     * Constructor for the new fragment-based architecture.
+     * It takes the inflated view from HomeFragment and finds the widgets within it.
+     *
+     * @param context The context, usually from requireContext().
+     * @param view The root view of the fragment (from onCreateView).
+     * @param listener The listener, usually the fragment itself.
+     */
+    public MenuView(Context context, View view, Listener listener) {
+        this.rootView = view;
         this.listener = listener;
+
+        // Find the views within the provided fragment layout
+        this.diningLocationTextView = view.findViewById(R.id.diningLocation);
+        this.preferenceTextView = view.findViewById(R.id.preference);
+        this.dateTextView = view.findViewById(R.id.date);
+
+        // --- ALL DIALOG AND STATE INITIALIZATION LOGIC REMAINS THE SAME ---
 
         //Add the preferences to the preferenceArray
         preferenceArray = new String[Preference.Preferences.values().length];
         int count = 0;
-
         for (Preference.Preferences preference : Preference.Preferences.values()) {
             preferenceArray[count] = preference.toString();
             count++;
         }
 
-
-        //    Initialize selected preference array
+        // Initialize selected preference arrays
         selectedPreference = new boolean[preferenceArray.length];
         selectedPreferenceTemp = new boolean[preferenceArray.length];
 
-        //Fill in the dates into the date list
-
+        // Fill in the dates into the date list
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
-
-        // Fill in the first two days
         dateList[0] = "TODAY";
         localDateList.add(currentDate);
         dateList[1] = "TOMORROW";
         localDateList.add(currentDate.plusDays(1));
-
         for (int i = 2; i < 7; i++) {
             LocalDate date = currentDate.plusDays(i);
             int dayOfMonth = date.getDayOfMonth();
-            String abbreviatedMonth = currentDate.format(monthFormatter).toUpperCase();
-
+            String abbreviatedMonth = date.format(monthFormatter).toUpperCase(); // Use the correct date
             dateList[i] = date.getDayOfWeek().toString() + ", " + abbreviatedMonth + " " + dayOfMonth + getOrdinalSuffix(dayOfMonth);
             localDateList.add(date);
         }
 
-        // Fill in the location days
+        // Fill in the location list
         locationList[0] = "GORDON COMMONS";
         locationList[1] = "EXPRESS";
         locationList[2] = "STREET EATS";
         locationList[3] = "THE RETREAT";
 
-        this.binding = ActivityMainBinding.inflate(LayoutInflater.from(context));
+        // Set initial text
+        this.diningLocationTextView.setText(locationList[0]);
+        this.dateTextView.setText(dateList[0]);
+        this.preferenceTextView.setHint("Select Preference");
 
+        // --- CLICK LISTENER LOGIC ---
         // Logic for the Dining Location UI
+        this.diningLocationTextView.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Select Dining Location");
+            builder.setCancelable(false);
 
-        this.binding.diningLocation.setOnClickListener(new View.OnClickListener() {
+            builder.setSingleChoiceItems(locationList, locationItem, (dialog, which) -> tempLocationItem = which);
 
-            @Override
-            public void onClick(View v) {
-//                Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        context
-                );
-//                Set title
-                builder.setTitle("Select Dining Location");
-//                Set dialog non cancelable
-                builder.setCancelable(false);
+            builder.setPositiveButton("Apply", (dialog, which) -> {
+                locationItem = tempLocationItem;
+                try {
+                    listener.updateLocation(locationItem);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                diningLocationTextView.setText(locationList[locationItem]);
+            });
 
-                builder.setSingleChoiceItems(locationList, locationItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tempLocationItem = which;
-                    }
-                });
-
-                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener(){
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        locationItem = tempLocationItem;
-
-                        try {
-                            listener.updateLocation(locationItem);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        //                        Set text on view
-                        binding.diningLocation.setText(locationList[locationItem]);
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tempLocationItem = locationItem;
-
-//                        Dismiss dialog
-                        dialog.dismiss();
-
-                    }
-                });
-
-//                Show dialog
-                builder.show();
-            }
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                tempLocationItem = locationItem;
+                dialog.dismiss();
+            });
+            builder.show();
         });
 
-        this.binding.preference.setOnClickListener(new View.OnClickListener() {
+        // Logic for the Preference UI
+        this.preferenceTextView.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Select Preference");
+            builder.setCancelable(false);
 
-            @Override
-            public void onClick(View v) {
-//                Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        context
-                );
-//                Set title
-                builder.setTitle("Select Preference");
-//                Set dialog non cancelable
-                builder.setCancelable(false);
+            builder.setMultiChoiceItems(preferenceArray, selectedPreference, (dialog, which, isChecked) -> {
+                if (isChecked) {
+                    preferencesTemp.add(Preference.Preferences.getPreference(preferenceArray[which]));
+                } else {
+                    preferencesTemp.remove(Preference.Preferences.getPreference(preferenceArray[which]));
+                }
+            });
 
-                builder.setMultiChoiceItems(preferenceArray, selectedPreference, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-//                        Check condition
+            builder.setPositiveButton("Apply", (dialog, which) -> {
+                StringBuilder stringBuilder = new StringBuilder();
+                preferences.clear();
+                preferences.addAll(preferencesTemp);
+                System.arraycopy(selectedPreference, 0, selectedPreferenceTemp, 0, selectedPreference.length);
 
-                        if (isChecked) {
-//                            When checkbox is selected, add the enum to the preferences list
-                            preferencesTemp.add(Preference.Preferences.getPreference(preferenceArray[which]));
-                        } else {
-//                            When checkbox is unselected, remove position from preferenceList
-                            preferencesTemp.remove(Preference.Preferences.getPreference(preferenceArray[which]));
-                        }
+                for (int i = 0; i < preferences.size(); i++) {
+                    stringBuilder.append(preferences.get(i).toString());
+                    if (i != preferences.size() - 1) {
+                        stringBuilder.append(", ");
                     }
-                });
+                }
+                listener.updatePreferences(preferences);
+                preferenceTextView.setText(stringBuilder.toString());
+                if (preferences.isEmpty()) {
+                    preferenceTextView.setText("");
+                    preferenceTextView.setHint("Select Preference");
+                }
+            });
 
-                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener(){
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                preferencesTemp.clear();
+                preferencesTemp.addAll(preferences);
+                System.arraycopy(selectedPreferenceTemp, 0, selectedPreference, 0, selectedPreference.length);
+                dialog.dismiss();
+            });
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        Initialize string builder
-                        StringBuilder stringBuilder = new StringBuilder();
-//                        Use for loop
-                        for (int i = 0; i < preferencesTemp.size(); i++) {
-//                            Concatenate array value
-                            stringBuilder.append(preferencesTemp.get(i).toString());
-//                            Check condition
-                            if (i != preferencesTemp.size() - 1) {
-//                                When we've not gotten to the end of the list, add a comma
-                                stringBuilder.append(", ");
-                            }
-                        }
-
-                        preferences = preferencesTemp;
-
-                        for (int i = 0; i < selectedPreference.length; i++) {
-                            selectedPreferenceTemp[i] = selectedPreference[i];
-                        }
-
-                        listener.updatePreferences(preferences);
-
-
-//                        Set text on view
-                        binding.preference.setText(stringBuilder.toString());
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        preferencesTemp.clear();
-
-                        preferencesTemp.addAll(preferences);
-
-                        for (int i = 0; i < selectedPreferenceTemp.length; i++) {
-                            selectedPreference[i] = selectedPreferenceTemp[i];
-                        }
-
-//                        Dismiss dialog
-                        dialog.dismiss();
-
-                    }
-                });
-
-                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        Use for loop
-                        for (int i = 0; i < selectedPreference.length; i++) {
-//                            Remove all selection
-                            selectedPreference[i] = false;
-                            selectedPreferenceTemp[i] = false;
-                        }
-
-                        preferences.clear();
-                        preferencesTemp.clear();
-
-//                            Clear preference value
-                        binding.preference.setText("");
-
-                        listener.updatePreferences(preferences);
-                    }
-                });
-//                Show dialog
-                builder.show();
-            }
+            builder.setNeutralButton("Clear All", (dialog, which) -> {
+                for (int i = 0; i < selectedPreference.length; i++) {
+                    selectedPreference[i] = false;
+                    selectedPreferenceTemp[i] = false;
+                }
+                preferences.clear();
+                preferencesTemp.clear();
+                preferenceTextView.setText("");
+                preferenceTextView.setHint("Select Preference");
+                listener.updatePreferences(preferences);
+            });
+            builder.show();
         });
 
-        // Logic for the Data UI
-
-        this.binding.date.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-//                Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        context
-                );
-//                Set title
-                builder.setTitle("Select Date");
-//                Set dialog non cancelable
-                builder.setCancelable(false);
-
-                builder.setSingleChoiceItems(dateList, dateItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tempDateItem = which;
-                    }
-                });
-
-                builder.setPositiveButton("Apply", new DialogInterface.OnClickListener(){
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dateItem = tempDateItem;
-
-                        try {
-                            listener.updateDate(localDateList.get(dateItem));
-
-                            //                        Set text on view
-                            binding.date.setText(dateList[dateItem]);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tempDateItem = dateItem;
-
-//                        Dismiss dialog
-                        dialog.dismiss();
-
-                    }
-                });
-
-//                Show dialog
-                builder.show();
-            }
+        // Logic for the Date UI
+        this.dateTextView.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Select Date");
+            builder.setCancelable(false);
+            builder.setSingleChoiceItems(dateList, dateItem, (dialog, which) -> tempDateItem = which);
+            builder.setPositiveButton("Apply", (dialog, which) -> {
+                dateItem = tempDateItem;
+                try {
+                    listener.updateDate(localDateList.get(dateItem));
+                    dateTextView.setText(dateList[dateItem]);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                tempDateItem = dateItem;
+                dialog.dismiss();
+            });
+            builder.show();
         });
     }
 
     private static String getOrdinalSuffix(int day) {
-        if (day >= 11 && day <= 13) {
-            return "th"; // Special case for 11th, 12th, 13th
-        }
+        if (day >= 11 && day <= 13) return "th";
         switch (day % 10) {
-            case 1: return "st"; // 1st, 21st, etc.
-            case 2: return "nd"; // 2nd, 22nd, etc.
-            case 3: return "rd"; // 3rd, 23rd, etc.
-            default: return "th"; // All other days
+            case 1: return "st";
+            case 2: return "nd";
+            case 3: return "rd";
+            default: return "th";
         }
     }
-
-    // In MenuView.java
 
     public void updateDateDisplay(LocalDate date) {
-        // Format the date to a user-friendly string (e.g., "Nov 20, 2025")
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
-        String formattedDate = date.format(formatter);
-
-        // Update the text of your date TextView
-        this.binding.date.setText(formattedDate);
+        // Find the index of the date in our list to keep the dialog selection in sync
+        int index = localDateList.indexOf(date);
+        if (index != -1) {
+            dateItem = index;
+            tempDateItem = index;
+            dateTextView.setText(dateList[index]);
+        } else {
+            // If the date is not in our pre-defined list, just format it
+            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+            dateTextView.setText(date.format(formatter));
+        }
     }
 
-    // Add this method to your MenuView.java file
-
-    /**
-     * Resets the visual filter components (TextViews) and their underlying state
-     * within this view to their default values.
-     */
     public void resetFilters() {
-        // 1. Reset the Dining Location
-        this.locationItem = 0; // Reset the selected index to the default (0)
+        this.locationItem = 0;
         this.tempLocationItem = 0;
-        this.binding.diningLocation.setText(this.locationList[0]); // Update UI text to "GORDON COMMONS"
+        this.diningLocationTextView.setText(this.locationList[0]);
 
-        // 2. Reset the Date
-        this.dateItem = 0; // Reset selected date index to the default (0 for TODAY)
+        this.dateItem = 0;
         this.tempDateItem = 0;
-        this.binding.date.setText(this.dateList[0]); // Update UI text to "TODAY"
+        this.dateTextView.setText(this.dateList[0]);
 
-        // 3. Reset the Preferences
-        // Clear the lists that hold the selected preference objects
         this.preferences.clear();
         this.preferencesTemp.clear();
-
-        // Reset the boolean arrays that track checked items in the dialog
         for (int i = 0; i < this.selectedPreference.length; i++) {
             this.selectedPreference[i] = false;
             this.selectedPreferenceTemp[i] = false;
         }
-
-        // Update the UI text to be empty or show a default hint
-        this.binding.preference.setText("Select Preference"); // Or use an empty string: ""
+        this.preferenceTextView.setText("");
+        this.preferenceTextView.setHint("Select Preference");
     }
+
+    // java
+    public void syncFromModel(Menu menu) {
+        if (menu == null || this.rootView == null) return;
+
+        this.rootView.post(() -> {
+            // 1) Date
+            try {
+                updateDateDisplay(menu.getCurrentDate());
+            } catch (Exception e) {
+                Log.w("MenuView", "Failed to set date display from model", e);
+            }
+
+            // 2) Location
+            try {
+                int location = menu.getCurrentLocation();
+                if (location >= 0 && location < locationList.length) {
+                    this.locationItem = location;
+                    this.tempLocationItem = location;
+                    this.diningLocationTextView.setText(this.locationList[location]);
+                } else {
+                    Log.w("MenuView", "Model returned out-of-range location: " + location);
+                }
+            } catch (Exception e) {
+                Log.w("MenuView", "Failed to set location selection from model", e);
+            }
+
+            // 3) Preferences -- read strings from Menu and convert to enum list
+            try {
+                List<String> prefStrings = menu.getPreferences();
+                if (prefStrings == null) prefStrings = new java.util.ArrayList<>();
+
+                // Convert strings to Preference.Preferences enums
+                this.preferences.clear();
+                for (String s : prefStrings) {
+                    if (s == null) continue;
+                    Preference.Preferences p = null;
+                    try {
+                        p = Preference.Preferences.valueOf(s);
+                    } catch (IllegalArgumentException ignored) {
+                        // Try helper if valueOf fails (some projects provide a utility)
+                        try {
+                            p = Preference.Preferences.getPreference(s);
+                        } catch (Exception ignore) { /* skip invalid */ }
+                    }
+                    if (p != null) this.preferences.add(p);
+                }
+
+                // Reset selection arrays
+                java.util.Arrays.fill(this.selectedPreference, false);
+                java.util.Arrays.fill(this.selectedPreferenceTemp, false);
+
+                // Mark matching indices in the boolean arrays based on preferenceArray
+                for (Preference.Preferences p : this.preferences) {
+                    if (p == null) continue;
+                    String name = p.toString();
+                    for (int i = 0; i < this.preferenceArray.length; i++) {
+                        if (this.preferenceArray[i].equals(name)) {
+                            this.selectedPreference[i] = true;
+                            this.selectedPreferenceTemp[i] = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Update preference TextView text/hint
+                if (this.preferences.isEmpty()) {
+                    this.preferenceTextView.setText("");
+                    this.preferenceTextView.setHint("Select Preference");
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < this.preferences.size(); i++) {
+                        sb.append(this.preferences.get(i).toString());
+                        if (i != this.preferences.size() - 1) sb.append(", ");
+                    }
+                    this.preferenceTextView.setText(sb.toString());
+                }
+            } catch (Exception e) {
+                Log.w("MenuView", "Failed to set preferences from model", e);
+            }
+        });
+    }
+
 
 
     @Override
     public View getRootView() {
-        return this.binding.getRoot();
+        return this.rootView;
     }
 }
+

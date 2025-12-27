@@ -4,302 +4,146 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.ImageView;
+import android.view.MenuItem;
+import android.view.View; // Import View
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import org.json.JSONException;
-
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import edu.vassar.cmpu203.vassareats.model.MealTime;
-import edu.vassar.cmpu203.vassareats.model.MealType;
-import edu.vassar.cmpu203.vassareats.model.Menu;
-import edu.vassar.cmpu203.vassareats.model.Preference;
-import edu.vassar.cmpu203.vassareats.view.FoodMenuActivity;
-import edu.vassar.cmpu203.vassareats.view.IMenuView;
-import edu.vassar.cmpu203.vassareats.view.MealTimeAdapter;
-import edu.vassar.cmpu203.vassareats.view.MenuView;
-import edu.vassar.cmpu203.vassareats.view.LoginActivity;
-
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements IMenuView.Listener, MealTimeAdapter.Listener {
+import org.json.JSONException;
+import java.text.ParseException;
 
-    private IMenuView menuView;
-    private Menu menu;
-    private GestureDetector gestureDetector;
-    private MealTimeAdapter mealTimeAdapter; // keep a reference so we can refresh
+import edu.vassar.cmpu203.vassareats.model.Menu;
+import edu.vassar.cmpu203.vassareats.view.FoodMenuFragment;
+import edu.vassar.cmpu203.vassareats.view.HomeFragment;
+import edu.vassar.cmpu203.vassareats.view.LoginActivity;
+
+public class MainActivity extends AppCompatActivity {
+
     private DrawerLayout drawerLayout;
-
-    // The constructor is not needed for an Activity, it's safer to remove it.
-    // public MainActivity() throws JSONException, ParseException {}
+    private Menu menu;
+    private MaterialToolbar topAppBar;
+    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // EdgeToEdge.enable(this); // Can be removed if not being used extensively.
+        setContentView(R.layout.activity_main);
 
+        // Standard setup
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        // Initialize menu and views
         try {
             this.menu = new Menu();
         } catch (ParseException | JSONException e) {
-            // It's better to log the error and show a message than to crash.
             Log.e("MainActivity", "Failed to initialize Menu model", e);
-            // In a real app, you might show an error screen here.
-            return; // Exit onCreate if menu fails to load.
+            return;
         }
 
-        this.menuView = new MenuView(this, this);
-        setContentView(menuView.getRootView());
-
+        // --- TOOLBAR AND DRAWER INITIALIZATION ---
+        topAppBar = findViewById(R.id.topAppBar);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        ImageView menuIcon = findViewById(R.id.homeIcon); // hamburger icon
 
-        // Open the drawer when the menu icon is clicked
-        menuIcon.setOnClickListener(v -> {
-            if (drawerLayout.isDrawerOpen(navigationView)) {
-                drawerLayout.closeDrawer(navigationView);
-            } else {
-                drawerLayout.openDrawer(navigationView);
-            }
-        });
+        // Set the toolbar as the activity's action bar. This is still crucial.
+        setSupportActionBar(topAppBar);
 
-        // Handle clicks on items inside the drawer
+        // Attach a DrawerToggle and always keep the hamburger indicator active.
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, topAppBar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        // Ensure nav icon always opens the drawer (never act like Up/back).
+        topAppBar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        // Navigation view item clicks
         navigationView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId(); // Get the ID of the clicked item
-
+            int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
-                // User chose "Home". Reset filters and refresh.
-                // We can just call the existing onHomeIconClick() method!
-                onHomeIconClick();
-
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getMenu().resetFilters();
+                replaceFragment(new HomeFragment(), false);
+                topAppBar.setTitle("Vassar Eats");
             } else if (itemId == R.id.nav_logout) {
-                // User chose the "Logout" item
                 FirebaseAuth.getInstance().signOut();
-
-                // Redirect to LoginActivity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                finish(); // Close MainActivity
+                finish();
             }
-
-
-            // Close the drawer when an item is tapped
             drawerLayout.closeDrawers();
             return true;
         });
 
-        RecyclerView mealTimeRecyclerView = findViewById(R.id.mealTimeRecyclerView);
-        mealTimeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        this.mealTimeAdapter = new MealTimeAdapter(new ArrayList<>(), this);
-        mealTimeRecyclerView.setAdapter(mealTimeAdapter);
-
-        // 2. Call our new central method to populate the list and set UI visibility.
-        updateMealCardDisplay();
-
-        // Initialize the GestureDetector
-        this.gestureDetector = new GestureDetector(this, new OnSwipeGestureListener());
-
-        // Attach the touch listener to the root view of your layout.
-        View rootView = menuView.getRootView();
-        rootView.setOnTouchListener((v, event) -> {
-            // Pass the event to the gesture detector
-            boolean handled = gestureDetector.onTouchEvent(event);
-            // We also need to allow clicks to work, so performClick on ACTION_UP.
-            if (!handled && event.getAction() == MotionEvent.ACTION_UP) {
-                v.performClick();
-            }
-            return true; // Return true to indicate we've handled the touch event.
-        });
-    }
-
-    /**
-     * This is the callback from the MealTimeAdapter.Listener.
-     * It's called when a "View Menu" button is clicked.
-     */
-    @Override
-    public void onMealTimeClick(MealTime mealTime) {
-        Intent intent = new Intent(this, FoodMenuActivity.class);
-        ArrayList<String> currentPreferences = (ArrayList<String>) menu.getPreferences();
-        // Pass the name of the meal (e.g., "Breakfast") to the new activity.
-        intent.putExtra(FoodMenuActivity.EXTRA_MEAL_NAME, mealTime.getMealName());
-
-        // We also need to pass the currently selected date and location!
-        intent.putExtra("SELECTED_DATE", menu.getCurrentDate().toString());
-        intent.putExtra("SELECTED_LOCATION", menu.getCurrentLocation());
-        intent.putStringArrayListExtra("SELECTED_PREFERENCES", currentPreferences);
-
-        startActivity(intent);
-    }
-
-    private HashMap<String, Integer> mealTimeBgMap() {
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put("Breakfast", R.drawable.breakfast_bg);
-        map.put("Brunch", R.drawable.brunch_bg);
-        map.put("Light Lunch", R.drawable.light_lunch_bg);
-        map.put("Lunch", R.drawable.lunch_bg);
-        map.put("Dinner", R.drawable.dinner_bg);
-        map.put("Late Night", R.drawable.late_night_bg);
-        map.put("Express", R.drawable.express_bg);
-        return map;
-    }
-
-    private List<MealTime> generateMealTimeData() {
-        List<MealTime> list = new ArrayList<>();
-        // FIX: Use getAvailableMealNames to get meal types for the specific location/day
-        ArrayList<String> availableMealNames = menu.getAvailableMealNames();
-        HashMap<String, Integer> bgMap = mealTimeBgMap();
-
-        for (String mealName : availableMealNames) {
-            // You can enhance this to get specific times if your model supports it
-            String time = "View Menu";
-            Integer bg = bgMap.get(mealName);
-            int drawableId = (bg != null) ? bg : R.drawable.breakfast_bg; // Default background
-            list.add(new MealTime(mealName, time, drawableId));
+        if (savedInstanceState == null) {
+            replaceFragment(new HomeFragment(), false);
         }
-        return list;
-    }
 
-    // A central method to refresh the meal cards RecyclerView
-    private void refreshMealTimeView() {
-        updateMealCardDisplay();
+        setNavigationDrawerHalfWidth();
     }
 
     @Override
-    public void updatePreferences(List<Preference.Preferences> preferenceList) {
-        menu.changePreferences(preferenceList);
-        refreshMealTimeView();
-    }
-
-    @Override
-    public void updateDate(LocalDate date) throws JSONException, ParseException {
-        menu.updateDate(date);
-        refreshMealTimeView();
-    }
-
-
-
-    @Override
-    public void updateLocation(Integer diningLocation) throws JSONException, ParseException {
-        menu.updateLocation(diningLocation);
-        refreshMealTimeView();
-    }
-
-    @Override
-    public void onHomeIconClick() {
-        menu.resetFilters();
-        if (menuView instanceof MenuView) {
-            ((MenuView) menuView).resetFilters();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Let the drawer toggle handle its own menu clicks.
+        if (drawerToggle != null && drawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
-        refreshMealTimeView();
+        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Inner class to handle swipe gesture detection.
-     */
-    private class OnSwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (e1 == null || e2 == null) return false;
-            float diffX = e2.getX() - e1.getX();
-
-            // Check for a significant horizontal swipe
-            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                if (diffX > 0) {
-                    onSwipeRight(); // Previous Day
-                } else {
-                    onSwipeLeft(); // Next Day
-                }
-                return true; // The fling was handled
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true; // Necessary to tell the system we want to handle gestures
-        }
+    public void navigateToFoodMenu(String mealName) {
+        FoodMenuFragment foodMenuFragment = FoodMenuFragment.newInstance(mealName);
+        replaceFragment(foodMenuFragment, true);
+        topAppBar.setTitle(mealName);
     }
 
-    /**
-     * Handles the logic for a left swipe (Go to next day).
-     */
-    private void onSwipeLeft() {
-        try {
-            menu.goToNextDay();
-            updateViewAfterDateChange();
-            refreshMealTimeView();
-        } catch (Exception e) {
-            Log.e("MainActivity", "Error on swiping left", e);
+    private void replaceFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.replace(R.id.fragment_container_view, fragment);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
         }
+        fragmentTransaction.commit();
     }
 
-    /**
-     * Handles the logic for a right swipe (Go to previous day).
-     */
-    private void onSwipeRight() {
-        try {
-            menu.goToPreviousDay();
-            updateViewAfterDateChange();
-            refreshMealTimeView();
-        } catch (Exception e) {
-            Log.e("MainActivity", "Error on swiping right", e);
-        }
-    }
+    private void setNavigationDrawerHalfWidth() {
+        NavigationView navView = findViewById(R.id.nav_view);
+        if (navView == null) return;
 
-    /**
-     * A central method to update the view's date text after a swipe.
-     */
-    private void updateViewAfterDateChange() {
-        if (menuView instanceof MenuView) {
-            ((MenuView) menuView).updateDateDisplay(menu.getCurrentDate());
-        }
-    }
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int drawerWidth = screenWidth / 2; // half the screen
 
-    private void updateMealCardDisplay() {
-        // Find the views from the layout
-        RecyclerView recyclerView = findViewById(R.id.mealTimeRecyclerView);
-        TextView noMenuTextView = findViewById(R.id.noMenuTextView);
-
-        // Generate the list of meals for the current state
-        List<MealTime> mealTimes = generateMealTimeData();
-
-        // Check if the list is empty and toggle view visibility
-        if (mealTimes.isEmpty()) {
-            // If there's no menu, hide the list and show the "No Menu" message
-            recyclerView.setVisibility(View.GONE);
-            noMenuTextView.setVisibility(View.VISIBLE);
+        // Ensure we update DrawerLayout.LayoutParams (safe cast)
+        ViewGroup.LayoutParams lp = navView.getLayoutParams();
+        if (lp instanceof DrawerLayout.LayoutParams) {
+            DrawerLayout.LayoutParams dlp = (DrawerLayout.LayoutParams) lp;
+            dlp.width = drawerWidth;
+            navView.setLayoutParams(dlp);
         } else {
-            // If there is a menu, show the list and hide the "No Menu" message
-            recyclerView.setVisibility(View.VISIBLE);
-            noMenuTextView.setVisibility(View.GONE);
+            lp.width = drawerWidth;
+            navView.setLayoutParams(lp);
         }
+    }
 
-        // Always update the adapter with the new (potentially empty) list
-        if (mealTimeAdapter != null) {
-            mealTimeAdapter.setMealTimes(mealTimes);
-        }
+    public Menu getMenu() {
+        return this.menu;
     }
 }
+
+
+
+

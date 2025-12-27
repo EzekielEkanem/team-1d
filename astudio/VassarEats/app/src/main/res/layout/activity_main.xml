@@ -1,151 +1,14 @@
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:openDrawer="start"> <!-- This previews the drawer in the editor -->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!-- Header Section -->
-        <ImageView
-            android:id="@+id/homeIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:contentDescription="@string/home_icon_description"
-            android:focusable="true"
-            android:padding="8dp"
-            android:src="@drawable/ic_menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#800000" /> <!-- Hamburger Menu Icon -->
-
-        <TextView
-            android:id="@+id/welcomeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome"
-            android:textColor="#800000"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/homeIcon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/homeIcon" />
-
-        <!-- Filter Bars -->
-        <LinearLayout
-            android:id="@+id/filter_bar_location"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/homeIcon">
-            <!-- Your TextView for diningLocation -->
-            <TextView
-                android:id="@+id/diningLocation"
-                android:layout_width="282dp"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background"
-                android:drawableEnd="@android:drawable/arrow_down_float"
-                android:drawablePadding="8dp"
-                android:hint="Select Dining Location" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/filter_bar_date_pref"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/filter_bar_location">
-            <!-- Your TextViews for date and preference -->
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background"
-                android:drawableEnd="@android:drawable/arrow_down_float"
-                android:drawablePadding="16dp"
-                android:hint="Select Date" />
-
-            <TextView
-                android:id="@+id/preference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@android:drawable/editbox_background"
-                android:drawableEnd="@android:drawable/arrow_down_float"
-                android:drawablePadding="16dp"
-                android:hint="Select Preference" />
-        </LinearLayout>
-
-        <!-- RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mealTimeRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:visibility="visible"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/filter_bar_date_pref"
-            tools:listitem="@layout/item_meal_time" />
-
-        <!-- No Menu TextView -->
-        <TextView
-            android:id="@+id/noMenuTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No menu available for this day."
-            android:textSize="18sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- 2. YOUR NAVIGATION DRAWER VIEW -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
-
-
-
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 <!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:id="@+id/drawer_layout"-->
+<!--    android:layout_width="match_parent"-->
 <!--    android:layout_height="match_parent"-->
-<!--    android:layout_width="match_parent">-->
+<!--    tools:openDrawer="start"> &lt;!&ndash; This previews the drawer in the editor &ndash;&gt;-->
 
-<!--    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/main"-->
-<!--        android:orientation="horizontal" />-->
+<!--        android:layout_height="match_parent">-->
 
 <!--        &lt;!&ndash; Header Section &ndash;&gt;-->
 <!--        <ImageView-->
@@ -158,9 +21,11 @@
 <!--            android:clickable="true"-->
 <!--            android:contentDescription="@string/home_icon_description"-->
 <!--            android:focusable="true"-->
-<!--            android:src="@drawable/vassar_logo"-->
+<!--            android:padding="8dp"-->
+<!--            android:src="@drawable/ic_menu"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:tint="#800000" /> &lt;!&ndash; Hamburger Menu Icon &ndash;&gt;-->
 
 <!--        <TextView-->
 <!--            android:id="@+id/welcomeLabel"-->
@@ -175,7 +40,7 @@
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toTopOf="@id/homeIcon" />-->
 
-<!--        &lt;!&ndash; We need to give the filter containers IDs to constrain the RecyclerView &ndash;&gt;-->
+<!--        &lt;!&ndash; Filter Bars &ndash;&gt;-->
 <!--        <LinearLayout-->
 <!--            android:id="@+id/filter_bar_location"-->
 <!--            android:layout_width="0dp"-->
@@ -186,7 +51,7 @@
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toBottomOf="@id/homeIcon">-->
-
+<!--            &lt;!&ndash; Your TextView for diningLocation &ndash;&gt;-->
 <!--            <TextView-->
 <!--                android:id="@+id/diningLocation"-->
 <!--                android:layout_width="282dp"-->
@@ -195,7 +60,6 @@
 <!--                android:drawableEnd="@android:drawable/arrow_down_float"-->
 <!--                android:drawablePadding="8dp"-->
 <!--                android:hint="Select Dining Location" />-->
-
 <!--        </LinearLayout>-->
 
 <!--        <LinearLayout-->
@@ -208,7 +72,7 @@
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toBottomOf="@id/filter_bar_location">-->
-
+<!--            &lt;!&ndash; Your TextViews for date and preference &ndash;&gt;-->
 <!--            <TextView-->
 <!--                android:id="@+id/date"-->
 <!--                android:layout_width="wrap_content"-->
@@ -222,28 +86,28 @@
 <!--                android:id="@+id/preference"-->
 <!--                android:layout_width="wrap_content"-->
 <!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginEnd="16dp"-->
+<!--                android:layout_marginStart="8dp"-->
 <!--                android:background="@android:drawable/editbox_background"-->
 <!--                android:drawableEnd="@android:drawable/arrow_down_float"-->
 <!--                android:drawablePadding="16dp"-->
 <!--                android:hint="Select Preference" />-->
 <!--        </LinearLayout>-->
 
-<!--        &lt;!&ndash; The RecyclerView for our new meal time cards &ndash;&gt;-->
-<!--        &lt;!&ndash; Now the constraint attributes will work correctly! &ndash;&gt;-->
+<!--        &lt;!&ndash; RecyclerView &ndash;&gt;-->
 <!--        <androidx.recyclerview.widget.RecyclerView-->
 <!--            android:id="@+id/mealTimeRecyclerView"-->
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="0dp"-->
 <!--            android:layout_marginTop="8dp"-->
+<!--            android:visibility="visible"-->
 <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toBottomOf="@id/filter_bar_date_pref"-->
-<!--            tools:listitem="@layout/item_meal_time"-->
-<!--            android:visibility="visible" />-->
+<!--            tools:listitem="@layout/item_meal_time" />-->
 
+<!--        &lt;!&ndash; No Menu TextView &ndash;&gt;-->
 <!--        <TextView-->
 <!--            android:id="@+id/noMenuTextView"-->
 <!--            android:layout_width="wrap_content"-->
@@ -251,9 +115,74 @@
 <!--            android:text="No menu available for this day."-->
 <!--            android:textSize="18sp"-->
 <!--            android:visibility="gone"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    &lt;!&ndash; 2. YOUR NAVIGATION DRAWER VIEW &ndash;&gt;-->
+<!--    <com.google.android.material.navigation.NavigationView-->
+<!--        android:id="@+id/nav_view"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="start"-->
+<!--        app:headerLayout="@layout/nav_header"-->
+<!--        app:menu="@menu/drawer_menu" />-->
+
+<!--</androidx.drawerlayout.widget.DrawerLayout>-->
+
+
+
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:openDrawer="start">
+
+    <!-- THIS IS THE MAIN CONTENT AREA -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- CUSTOM HEADER / TOOLBAR -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_menu"
+                app:title="Vassar Eats"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- 2. YOUR FRAGMENT CONTAINER (No changes here) -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <!-- YOUR NAVIGATION DRAWER VIEW (No changes here) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+
+
