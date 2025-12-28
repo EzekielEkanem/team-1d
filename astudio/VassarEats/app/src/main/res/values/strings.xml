@@ -8,4 +8,10 @@
     <string name="home_icon_description">Home page icon</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="like_button">Like button</string>
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
+    <string name="dislike_button">Dislike button</string>
+    <string name="dislike">DisLike</string>
+    <string name="undislike">Undislike</string>
 </resources>

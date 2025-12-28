@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,5 +115,30 @@ public class FirestoreHelper {
      */
     public interface CompletionCallback {
         void onComplete(boolean success, Exception e);
+    }
+
+    public void loadUserDislikedItems(String userId, final FirestoreCallback callback) {
+        if (userId == null) {
+            callback.onSuccess(new ArrayList<>());
+            return;
+        }
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener((DocumentSnapshot documentSnapshot) -> {
+                    List<String> disliked = documentSnapshot.get("dislikedItems") instanceof List
+                            ? (List<String>) documentSnapshot.get("dislikedItems")
+                            : new ArrayList<>();
+                    callback.onSuccess(disliked);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e));
+    }
+
+    public void saveUserDislikedItems(Context context, String userId, List<String> dislikedItems) {
+        if (userId == null) return;
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("dislikedItems", dislikedItems != null ? dislikedItems : new ArrayList<>());
+        db.collection("users").document(userId)
+                .set(updates, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("FirestoreHelper", "Saved disliked items"))
+                .addOnFailureListener(e -> Log.e("FirestoreHelper", "Failed saving disliked items", e));
     }
 }

@@ -12,6 +12,7 @@ public interface IExpandableRecylerViewAdapter {
 //        void getLikeCount(String foodId, FirestoreHelper.FirestoreCallback2 firestoreCallback);
 
         void onLikeClicked(String foodId, boolean isNowLiked);
+        void onDislikeClicked(String foodId, boolean isDisliked);
     }
 
     void setParentItems(List<ParentItem> parentItems);

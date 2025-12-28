@@ -35,6 +35,7 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
     private ExpandableRecyclerViewAdapter adapter;
     private FirestoreHelper firestoreHelper;
     private Set<String> likedItems = new HashSet<>();
+    private Set<String> dislikedItems = new HashSet<>();
     private String userId;
 
     /**
@@ -111,6 +112,24 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
                     Log.e("FoodMenuFragment", "Failed to load liked items", e);
                 }
             });
+            // load disliked items (new)
+            firestoreHelper.loadUserDislikedItems(userId, new FirestoreHelper.FirestoreCallback() {
+                @Override
+                public void onSuccess(List<String> dislikedFromFirestore) {
+                    if (dislikedFromFirestore != null) {
+                        dislikedItems.addAll(dislikedFromFirestore);
+                        if (adapter != null) {
+                            try {
+                                // call adapter.setDislikedItems if available (safe via reflection)
+                                adapter.getClass().getMethod("setDislikedItems", Set.class).invoke(adapter, dislikedItems);
+                            } catch (Exception ignored) { /* adapter may not have this method yet */ }
+                        }
+                    }
+                }
+                @Override public void onFailure(Exception e) {
+                    Log.e("FoodMenuFragment", "Failed to load disliked items", e);
+                }
+            });
         }
 
         // Set up RecyclerView
@@ -122,6 +141,11 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
             this.adapter = new ExpandableRecyclerViewAdapter(requireContext(), menuItems, this, likedItems);
             recyclerView.setAdapter(this.adapter);
 
+            if (!dislikedItems.isEmpty()) {
+                try {
+                    adapter.getClass().getMethod("setDislikedItems", Set.class).invoke(adapter, dislikedItems);
+                } catch (Exception ignored) { }
+            }
         } catch (Exception e) {
             Log.e("FoodMenuFragment", "Error initializing menu items", e);
             Toast.makeText(requireContext(), "Error loading menu.", Toast.LENGTH_SHORT).show();
@@ -139,6 +163,21 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
         long change = isLiked ? 1 : -1;
         firestoreHelper.updateLikesCount(foodId, change, (success, e) -> {
             if (!success) Log.e("FoodMenuFragment", "Failed to update likes count", e);
+        });
+    }
+
+    @Override
+    public void onDislikeClicked(String foodId, boolean isDisliked) {
+        if (userId == null || firestoreHelper == null) return;
+
+        // update local disliked set and persist it (mirror of likes)
+        if (isDisliked) dislikedItems.add(foodId); else dislikedItems.remove(foodId);
+
+        firestoreHelper.saveUserDislikedItems(requireContext(), userId, new ArrayList<>(dislikedItems));
+
+        long change = isDisliked ? -1 : 1;
+        firestoreHelper.updateLikesCount(foodId, change, (success, e) -> {
+            if (!success) Log.e("FoodMenuFragment", "Failed to update likes count on dislike action", e);
         });
     }
 }

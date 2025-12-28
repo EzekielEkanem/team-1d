@@ -40,6 +40,31 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/drawable/ic_thumb_down_filled.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/drawable/ic_thumb_down_outline.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/drawable/ic_thumb_up.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/drawable/ic_thumb_up_filled.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/drawable/ic_thumb_up_outline.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/activity_login.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
@@ -107,9 +132,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -146,9 +168,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="resourceFile" />
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>

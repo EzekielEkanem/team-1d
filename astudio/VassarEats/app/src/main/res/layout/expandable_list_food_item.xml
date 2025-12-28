@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Food Item Name -->
     <TextView
         android:id="@+id/foodItemName"
         android:layout_width="match_parent"
@@ -14,7 +14,6 @@
         android:textColor="@android:color/darker_gray"
         android:padding="4dp" />
 
-    <!-- Buttons for actions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,14 +21,24 @@
         android:layout_marginTop="8dp"
         android:gravity="center_vertical">
 
-        <TextView
+        <ImageButton
             android:id="@+id/likeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Like"
-            android:background="@drawable/button_selector"
-            android:textColor="@android:color/white"
-            android:padding="8dp" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_thumb_up_outline"
+            app:tint="?attr/colorOnSurface"
+            android:contentDescription="@string/like_button" />
+
+        <ImageButton
+            android:id="@+id/dislikeButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_thumb_down_outline"
+            app:tint="?attr/colorOnSurface"
+            android:contentDescription="@string/dislike_button" />
 
         <TextView
             android:id="@+id/likesCount"
@@ -41,24 +50,4 @@
             android:textSize="14sp" />
 
     </LinearLayout>
-
-
-    <!-- Additional TextViews -->
-<!--    <TextView-->
-<!--        android:id="@+id/childTextView2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="16sp"-->
-<!--        android:text="extra"-->
-<!--        android:textColor="@android:color/darker_gray"-->
-<!--        android:padding="4dp" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/childTextView3"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="16sp"-->
-<!--        android:text="extra"-->
-<!--        android:textColor="@android:color/darker_gray"-->
-<!--        android:padding="4dp" />-->
 </LinearLayout>
