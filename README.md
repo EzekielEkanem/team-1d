@@ -6,7 +6,13 @@
 VassarEats is a robust, highly interactive dining application that aids users (Vassar students, staff, and visitors) to
 make informed dining decisions quicker. It pulls all the dining information from [Vassar dining website](https://vassar.cafebonappetit.com/).
 It is a better alternative to this website because it adds important features which are not in the website. Some of these
-features are allowing customers to like or dislike dining options and view total likes for each food item.
+features are allowing customers to like or dislike dining options and view images of food items. This enhances user experience
+as users can make dining decisions based on the preferences of other users and also view images of food items to know
+what to expect.
+
+## Live Demo:
+Below is a video walkthrough of the VassarEats prototype, showing its current main features and functionalities.
+<img src='./VassarEatsPresentation.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 ## How to run the prototype
 Run the app on Android Studio. When the program is run, it will welcome you to Vassar Eats and display the food menu for 
@@ -18,8 +24,9 @@ We have a prototype that displays all the food menu in an expandable recycler vi
 mealType (e.g. Breakfast, Lunch, etc.), mealTypeSection (e.g. Specials, additional favorites, etc.) and diningSection (e.g.
 Stocks, Root, etc.). More so, the food menu can be filtered based on dietary preferences (e.g. vegan, vegetarian, etc.). 
 A user can also view food items up to seven days from the current day. Moreover, different dining locations (e.g., Express,
-Street Eats) can be selected to view the food menu for that day in those dining locations. Another cool functionality we've
-added is to enable users to like each food item and see the total likes for each food item.
+Street Eats) can be selected to view the food menu for that day in those dining locations. We've enabled users
+to like/dislike each food item. Another cool functionality we've added is the ability to view images of each
+food items.
 
 ## Authors and acknowledgment
 Special acknowledgment to Aly Camara and Ezekiel Ekanem, authors of the project.
