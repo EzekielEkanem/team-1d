@@ -3,11 +3,14 @@ package edu.vassar.cmpu203.vassareats.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,9 +18,13 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.bumptech.glide.Glide;
 
 import edu.vassar.cmpu203.vassareats.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.R;
@@ -32,6 +39,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private static final int TYPE_FOOD_ITEM = 3;
     private static final int TYPE_MEAL_TYPE_SECTION = 1;
     private static final int TYPE_DINING_STATION = 2;
+    private final Map<String, String> imageUrls = new HashMap<>();
 
     ActivityMainBinding binding;
     Listener listener;
@@ -42,6 +50,9 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private List<Object> items;
     private List<ParentItem> parentItemList;
 
+    private final Map<String, byte[]> imageBytesMap = new HashMap<>();
+
+
     public ExpandableRecyclerViewAdapter(Context context, List<ParentItem> parentItemList, Listener listener, Set<String> likedItems) {
         this.context = context;
         this.listener = listener;
@@ -49,6 +60,28 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         this.dislikedItems = (dislikedItems != null) ? dislikedItems : new HashSet<>();
         this.parentItemList = parentItemList;
         setParentItems(parentItemList);
+    }
+
+    private int findPositionByFoodId(String foodId) {
+        for (int i = 0; i < items.size(); i++) {
+            Object item = items.get(i);
+            if (item instanceof FoodItem && foodId.equals(((FoodItem) item).getFoodId())) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
+    @Override
+    public void setImageBytes(String foodId, byte[] imageBytes) {
+        if (foodId == null || imageBytes == null) return;
+
+        imageBytesMap.put(foodId, imageBytes);
+
+        int position = findPositionByFoodId(foodId);
+        if (position == RecyclerView.NO_POSITION) return;
+
+        notifyItemChanged(position, imageBytes);
     }
 
     public void setParentItems(List<ParentItem> parentItems) {
@@ -109,6 +142,27 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
 
     @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty() && holder instanceof FoodItemViewHolder) {
+            Object payload = payloads.get(0);
+            if (payload instanceof byte[]) {
+                byte[] imageBytes = (byte[]) payload;
+
+                Object item = items.get(position);
+                if (item instanceof FoodItem) {
+                    imageBytesMap.put(((FoodItem) item).getFoodId(), imageBytes);
+                }
+
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                ((FoodItemViewHolder) holder).imageViewFood.setImageBitmap(bitmap);
+                return; // Image updated, no need for full rebind
+            }
+        }
+        // Fallback to full rebind
+        super.onBindViewHolder(holder, position, payloads);
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_MEAL_TYPE) {
             ParentItem parentItem = (ParentItem) items.get(position);
@@ -123,6 +177,15 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             FoodItem foodItem = (FoodItem) items.get(position);
             FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
             foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
+
+            // Set image if available, otherwise placeholder
+            byte[] imageBytes = imageBytesMap.get(foodItem.getFoodId());
+            if (imageBytes != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                foodItemHolder.imageViewFood.setImageBitmap(bitmap);
+            } else {
+                foodItemHolder.imageViewFood.setImageResource(R.drawable.ic_image_placeholder);
+            }
 
             // Dynamically check if the item is liked (safe against null)
             boolean isLiked = likedItems != null && likedItems.contains(foodItem.getFoodId());
@@ -193,6 +256,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
     }
 
+
     private void updateLikeButton(ImageButton likeButton, boolean isLiked) {
         int drawableRes = isLiked ? R.drawable.ic_thumb_up_filled : R.drawable.ic_thumb_up_outline;
         likeButton.setImageResource(drawableRes);
@@ -256,6 +320,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
 
     static class FoodItemViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageViewFood;
         TextView foodItemName;
         ImageButton likeButton;
         ImageButton dislikeButton;
@@ -267,6 +332,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             likeButton = itemView.findViewById(R.id.likeButton);
             dislikeButton = itemView.findViewById(R.id.dislikeButton);
             likesCount = itemView.findViewById(R.id.likesCount);
+            imageViewFood = itemView.findViewById(R.id.imageViewFood);
         }
     }
 
@@ -286,5 +352,88 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             super(itemView);
             diningStationName = itemView.findViewById(R.id.diningStationName);
         }
+    }
+
+    public void bindChild(FoodItemViewHolder holder, FoodItem child) {
+        if (holder == null || child == null) return;
+
+        // Text
+        holder.foodItemName.setText(child.getFoodItemName());
+
+        // Image
+        String url = imageUrls.get(child.getFoodId());
+        if (url != null && !url.isEmpty()) {
+            try {
+                Glide.with(context)
+                        .load(url)
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .into((android.widget.ImageView) ((View) holder.itemView).findViewById(R.id.imageViewFood));
+            } catch (Exception e) {
+                // Glide might not be available during some IDE inspections; fallback to placeholder
+                android.widget.ImageView iv = ((View) holder.itemView).findViewById(R.id.imageViewFood);
+                if (iv != null) iv.setImageResource(R.drawable.ic_image_placeholder);
+            }
+        } else {
+            android.widget.ImageView iv = ((View) holder.itemView).findViewById(R.id.imageViewFood);
+            if (iv != null) iv.setImageResource(R.drawable.ic_image_placeholder);
+        }
+
+        // Visual like/dislike state
+        boolean isLiked = likedItems != null && likedItems.contains(child.getFoodId());
+        boolean isDisliked = dislikedItems != null && dislikedItems.contains(child.getFoodId());
+        updateLikeButton(holder.likeButton, isLiked);
+        updateDislikeButton(holder.dislikeButton, isDisliked);
+
+        // Likes count (keep existing behavior)
+        if (holder.likesCount != null) {
+            holder.likesCount.setText("");
+        }
+
+        // Click handlers (mirror logic used elsewhere in adapter)
+        holder.likeButton.setOnClickListener(v -> {
+            if (likedItems == null) likedItems = new HashSet<>();
+            if (dislikedItems == null) dislikedItems = new HashSet<>();
+
+            boolean nowLiked = !likedItems.contains(child.getFoodId());
+            if (nowLiked) {
+                likedItems.add(child.getFoodId());
+                if (dislikedItems.remove(child.getFoodId())) {
+                    updateDislikeButton(holder.dislikeButton, false);
+                    if (listener != null) {
+                        try { listener.onDislikeClicked(child.getFoodId(), false); } catch (NoSuchMethodError ignored) {}
+                    }
+                }
+            } else {
+                likedItems.remove(child.getFoodId());
+            }
+
+            updateLikeButton(holder.likeButton, nowLiked);
+            if (listener != null) {
+                try { listener.onLikeClicked(child.getFoodId(), nowLiked); } catch (NoSuchMethodError ignored) {}
+            }
+        });
+
+        holder.dislikeButton.setOnClickListener(v -> {
+            if (likedItems == null) likedItems = new HashSet<>();
+            if (dislikedItems == null) dislikedItems = new HashSet<>();
+
+            boolean nowDisliked = !dislikedItems.contains(child.getFoodId());
+            if (nowDisliked) {
+                dislikedItems.add(child.getFoodId());
+                if (likedItems.remove(child.getFoodId())) {
+                    updateLikeButton(holder.likeButton, false);
+                    if (listener != null) {
+                        try { listener.onLikeClicked(child.getFoodId(), false); } catch (NoSuchMethodError ignored) {}
+                    }
+                }
+            } else {
+                dislikedItems.remove(child.getFoodId());
+            }
+
+            updateDislikeButton(holder.dislikeButton, nowDisliked);
+            if (listener != null) {
+                try { listener.onDislikeClicked(child.getFoodId(), nowDisliked); } catch (NoSuchMethodError ignored) {}
+            }
+        });
     }
 }

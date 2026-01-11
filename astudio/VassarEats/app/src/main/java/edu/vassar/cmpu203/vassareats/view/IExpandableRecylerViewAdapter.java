@@ -6,6 +6,8 @@ import java.util.Set;
 import edu.vassar.cmpu203.vassareats.FirestoreHelper;
 
 public interface IExpandableRecylerViewAdapter {
+    void setImageBytes(String foodId, byte[] imageBytes);
+
     interface Listener {
 //        void updateLikedItems(String foodItemName, boolean isLiked);
 //        void updateLikeCount(String foodId, boolean isLiked);

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- rounded background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F2F2F2"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+
+    <!-- inset vector icon (mountains + sun) -->
+    <item android:top="6dp" android:bottom="6dp" android:left="6dp" android:right="6dp">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+
+            <!-- mountains -->
+            <path
+                android:fillColor="#BDBDBD"
+                android:pathData="M3,17 L8,10 L12,15 L16,9 L21,17 L21,20 L3,20 Z" />
+
+            <!-- sun -->
+            <path
+                android:fillColor="#BDBDBD"
+                android:pathData="M17,7 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+        </vector>
+    </item>
+</layer-list>

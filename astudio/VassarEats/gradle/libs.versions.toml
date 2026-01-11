@@ -20,6 +20,10 @@ rules = "1.6.1"
 rulesVersion = "1.5.0"
 firebaseFirestore = "25.1.1"
 glance = "1.1.1"
+okhttp = "4.12.0"
+glide = "4.15.1"
+genai = "1.20.0"
+grpc = "1.62.2"
 
 [libraries]
 core = { module = "androidx.test:core", version.ref = "rulesVersion" }
@@ -46,6 +50,11 @@ rules-v150 = { module = "androidx.test:rules", version.ref = "rulesVersion" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
+squareup-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+google-genai = { group = "com.google.genai", name = "google-genai", version.ref = "genai" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-android = { group = "io.grpc", name = "grpc-android", version.ref = "grpc" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

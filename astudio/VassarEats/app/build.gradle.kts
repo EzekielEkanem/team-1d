@@ -1,7 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
 }
+
+val properties = Properties()
+val localPropertiesFile = File(rootProject.rootDir, "local.properties")
+if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+    localPropertiesFile.inputStream().use{
+        properties.load(it)
+    }
+}
+val apiKey = properties.getProperty("NANOBANANA_API_KEY") ?: ""
 
 android {
     namespace = "edu.vassar.cmpu203.vassareats"
@@ -24,6 +35,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Expose the API key as a build variable
+            buildConfigField("String", "NANOBANANA_API_KEY", "\"$apiKey\"")
+        }
+        debug {
+            // Expose the API key as a build variable
+            buildConfigField("String", "NANOBANANA_API_KEY", "\"$apiKey\"")
         }
     }
 
@@ -34,10 +51,18 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     testOptions {
         animationsDisabled = true
+    }
+
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+        }
     }
 }
 
@@ -67,4 +92,23 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.auth)
+    implementation(libs.glide)
+    implementation(libs.google.genai) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
+    implementation(libs.grpc.okhttp)
+    implementation(libs.grpc.android)
 }
+
+configurations.all {
+    resolutionStrategy {
+        force(
+            "io.grpc:grpc-api:1.62.2",
+            "io.grpc:grpc-core:1.62.2",
+            "io.grpc:grpc-okhttp:1.62.2",
+            "io.grpc:grpc-android:1.62.2",
+            "io.grpc:grpc-context:1.62.2"
+        )
+    }
+}
+
