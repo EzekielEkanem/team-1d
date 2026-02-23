@@ -1,4 +1,4 @@
-package edu.vassar.cmpu203.vassareats.view;
+package edu.vassar.cmpu203.vassareats.model;
 
 import java.util.List;
 

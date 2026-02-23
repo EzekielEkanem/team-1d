@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.vassar.cmpu203.vassareats.view.ParentItem;
-
 public class Menu {
     private Preference preference;
     private List<MealType> originalMenu;

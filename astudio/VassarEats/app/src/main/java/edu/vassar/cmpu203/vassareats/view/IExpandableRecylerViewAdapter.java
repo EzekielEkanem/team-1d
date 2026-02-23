@@ -3,20 +3,16 @@ package edu.vassar.cmpu203.vassareats.view;
 import java.util.List;
 import java.util.Set;
 
-import edu.vassar.cmpu203.vassareats.FirestoreHelper;
-
 public interface IExpandableRecylerViewAdapter {
     void setImageBytes(String foodId, byte[] imageBytes);
 
     interface Listener {
-//        void updateLikedItems(String foodItemName, boolean isLiked);
-//        void updateLikeCount(String foodId, boolean isLiked);
-//        void getLikeCount(String foodId, FirestoreHelper.FirestoreCallback2 firestoreCallback);
-
-        void onLikeClicked(String foodId, boolean isNowLiked);
-        void onDislikeClicked(String foodId, boolean isDisliked);
+        void onLikeClicked(String foodId);
+        void onDislikeClicked(String foodId);
+        void onParentToggle(String parentId);
     }
 
-    void setParentItems(List<ParentItem> parentItems);
+    void setFlatItems(List<Object> flatItems);
     void setLikedItems(Set<String> likedItems);
+    void setDislikedItems(Set<String> dislikedItems);
 }

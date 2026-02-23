@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View; // Import View
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,17 +22,36 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONException;
 import java.text.ParseException;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.view.FoodMenuFragment;
+import edu.vassar.cmpu203.vassareats.model.ParentItem;
 import edu.vassar.cmpu203.vassareats.view.HomeFragment;
 import edu.vassar.cmpu203.vassareats.view.LoginActivity;
+import edu.vassar.cmpu203.vassareats.view.NavigationDrawer;
+import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ExpandableRecyclerViewAdapter.Listener {
 
     private DrawerLayout drawerLayout;
     private Menu menu;
     private MaterialToolbar topAppBar;
     private ActionBarDrawerToggle drawerToggle;
+
+    // Controller-owned state
+    private final Set<String> likedItems = new HashSet<>();
+    private final Set<String> dislikedItems = new HashSet<>();
+    private final Map<String, byte[]> imageBytesMap = new HashMap<>();
+    private List<ParentItem> controllerParentItems = new ArrayList<>();
+
+    // Adapter reference (register from fragment or wherever adapter is created)
+    private ExpandableRecyclerViewAdapter registeredAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +108,101 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(new HomeFragment(), false);
         }
 
-        setNavigationDrawerHalfWidth();
+        NavigationDrawer.setHalfWidth(this);
+    }
+
+    public void setControllerParentItems(List<ParentItem> parentItems) {
+        this.controllerParentItems = (parentItems != null) ? new ArrayList<>(parentItems) : new ArrayList<>();
+        pushFlatListToAdapter();
+    }
+
+    private void pushFlatListToAdapter() {
+        if (registeredAdapter == null || controllerParentItems == null) return;
+        List<Object> flat = new ArrayList<>();
+        for (ParentItem p : controllerParentItems) {
+            flat.add(p);
+            if (p.isExpanded()) {
+                flat.addAll(p.getChildItems());
+            }
+        }
+        registeredAdapter.setFlatItems(flat);
+    }
+
+    @Override
+    public void onParentToggle(String parentId) {
+        if (parentId == null || controllerParentItems == null) return;
+        for (ParentItem p : controllerParentItems) {
+            if (parentId.equals(p.getTitle())) {
+                p.setExpanded(!p.isExpanded());
+                break;
+            }
+        }
+        pushFlatListToAdapter();
+    }
+
+    // Provide a way for the fragment (or wherever adapter is created) to register the adapter
+    public void registerAdapter(ExpandableRecyclerViewAdapter adapter) {
+        this.registeredAdapter = adapter;
+        if (registeredAdapter != null) {
+            registeredAdapter.setLikedItems(likedItems);
+            registeredAdapter.setDislikedItems(dislikedItems);
+            // push any already-fetched images
+            for (Map.Entry<String, byte[]> e : imageBytesMap.entrySet()) {
+                registeredAdapter.setImageBytes(e.getKey(), e.getValue());
+            }
+        }
+        pushFlatListToAdapter();
+    }
+
+
+    // Listener callbacks invoked by the adapter (view) — controller handles state changes
+    @Override
+    public void onLikeClicked(String foodId) {
+        if (foodId == null) return;
+
+        boolean nowLiked = likedItems.contains(foodId) ? false : true;
+        if (nowLiked) {
+            likedItems.add(foodId);
+            // remove dislike if present
+            dislikedItems.remove(foodId);
+        } else {
+            likedItems.remove(foodId);
+        }
+
+        // Push updated sets into adapter so it can re-render
+        if (registeredAdapter != null) {
+            registeredAdapter.setLikedItems(likedItems);
+            registeredAdapter.setDislikedItems(dislikedItems);
+        }
+        // Optionally persist to model/backend here
+    }
+
+    @Override
+    public void onDislikeClicked(String foodId) {
+        if (foodId == null) return;
+
+        boolean nowDisliked = dislikedItems.contains(foodId) ? false : true;
+        if (nowDisliked) {
+            dislikedItems.add(foodId);
+            likedItems.remove(foodId);
+        } else {
+            dislikedItems.remove(foodId);
+        }
+
+        if (registeredAdapter != null) {
+            registeredAdapter.setLikedItems(likedItems);
+            registeredAdapter.setDislikedItems(dislikedItems);
+        }
+        // Optionally persist to model/backend here
+    }
+
+    // When image bytes are fetched by the controller (e.g., network or cache), push them to the adapter
+    public void onImageFetched(String foodId, byte[] imageBytes) {
+        if (foodId == null || imageBytes == null) return;
+        imageBytesMap.put(foodId, imageBytes);
+        if (registeredAdapter != null) {
+            registeredAdapter.setImageBytes(foodId, imageBytes);
+        }
     }
 
     @Override
@@ -118,25 +229,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
-    }
-
-    private void setNavigationDrawerHalfWidth() {
-        NavigationView navView = findViewById(R.id.nav_view);
-        if (navView == null) return;
-
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int drawerWidth = screenWidth / 2; // half the screen
-
-        // Ensure we update DrawerLayout.LayoutParams (safe cast)
-        ViewGroup.LayoutParams lp = navView.getLayoutParams();
-        if (lp instanceof DrawerLayout.LayoutParams) {
-            DrawerLayout.LayoutParams dlp = (DrawerLayout.LayoutParams) lp;
-            dlp.width = drawerWidth;
-            navView.setLayoutParams(dlp);
-        } else {
-            lp.width = drawerWidth;
-            navView.setLayoutParams(lp);
-        }
     }
 
     public Menu getMenu() {

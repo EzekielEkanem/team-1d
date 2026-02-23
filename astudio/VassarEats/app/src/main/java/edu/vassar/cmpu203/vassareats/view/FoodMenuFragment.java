@@ -21,13 +21,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.vassar.cmpu203.vassareats.FirestoreHelper;
+import edu.vassar.cmpu203.vassareats.model.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.MainActivity;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
+import edu.vassar.cmpu203.vassareats.model.ParentItem;
 
-public class FoodMenuFragment extends Fragment implements IExpandableRecylerViewAdapter.Listener {
+public class FoodMenuFragment extends Fragment {
 
     private static final String ARG_MEAL_NAME = "MEAL_NAME";
 
@@ -129,14 +130,34 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
             RecyclerView recyclerView = view.findViewById(R.id.foodMenuRecyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-            this.adapter = new ExpandableRecyclerViewAdapter(requireContext(), menuItems, this, likedItems);
+            List<Object> initialFlat = new ArrayList<>();
+            if (menuItems != null) {
+                initialFlat.addAll(menuItems);
+                for (ParentItem p : menuItems) {
+                    if (p != null && p.isExpanded()) {
+                        List<?> children = p.getChildItems();
+                        if (children != null) initialFlat.addAll(children);
+                    }
+                }
+            }
+
+            IExpandableRecylerViewAdapter.Listener activityListener = null;
+            if (requireActivity() instanceof IExpandableRecylerViewAdapter.Listener) {
+                activityListener = (IExpandableRecylerViewAdapter.Listener) requireActivity();
+            } else {
+                Log.w("FoodMenuFragment", "Activity does not implement IExpandableRecylerViewAdapter.Listener");
+            }
+
+            // Adapter now expects a flat List<Object> and both liked/disliked sets
+            this.adapter = new ExpandableRecyclerViewAdapter(requireContext(), initialFlat, activityListener, likedItems, dislikedItems);
             recyclerView.setAdapter(this.adapter);
 
-            // Apply disliked items if already loaded
-            if (!dislikedItems.isEmpty()) {
-                try {
-                    adapter.setDislikedItems(dislikedItems);
-                } catch (Exception ignored) { }
+            // Register adapter with MainActivity (controller) so controller can push updates and flatten the list
+            if (requireActivity() instanceof MainActivity) {
+                MainActivity ma = (MainActivity) requireActivity();
+                ma.registerAdapter(this.adapter);
+                // Give the controller the canonical parent list so it can manage expansion and rebuild the flat list
+                ma.setControllerParentItems(menuItems);
             }
 
             // Request image urls for all food children (safe against mixed child types)
@@ -158,34 +179,6 @@ public class FoodMenuFragment extends Fragment implements IExpandableRecylerView
             Log.e("FoodMenuFragment", "Error initializing menu items", e);
             Toast.makeText(requireContext(), "Error loading menu.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onLikeClicked(String foodId, boolean isLiked) {
-        if (userId == null || firestoreHelper == null) return;
-
-        if (isLiked) likedItems.add(foodId); else likedItems.remove(foodId);
-
-        firestoreHelper.saveUserLikedItems(requireContext(), userId, new ArrayList<>(likedItems));
-
-        long change = isLiked ? 1 : -1;
-        firestoreHelper.updateLikesCount(foodId, change, (success, e) -> {
-            if (!success) Log.e("FoodMenuFragment", "Failed to update likes count", e);
-        });
-    }
-
-    @Override
-    public void onDislikeClicked(String foodId, boolean isDisliked) {
-        if (userId == null || firestoreHelper == null) return;
-
-        if (isDisliked) dislikedItems.add(foodId); else dislikedItems.remove(foodId);
-
-        firestoreHelper.saveUserDislikedItems(requireContext(), userId, new ArrayList<>(dislikedItems));
-
-        long change = isDisliked ? -1 : 1;
-        firestoreHelper.updateLikesCount(foodId, change, (success, e) -> {
-            if (!success) Log.e("FoodMenuFragment", "Failed to update likes count on dislike action", e);
-        });
     }
 
     private String buildNanobananaPrompt(String foodName, @Nullable String diningContext) {

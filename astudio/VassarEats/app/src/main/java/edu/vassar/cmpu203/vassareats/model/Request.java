@@ -231,25 +231,6 @@ public class Request {
         this.html = html;
     }
 
-
-//    public JSONObject getJsonMenu() throws ParseException, JSONException {
-//        // Isolate JSON String from HTML
-//        String pattern = "Bamco.menu_items = (.*);";
-//        Pattern r = Pattern.compile(pattern);
-//        Matcher matcher = r.matcher(html);
-//        if (matcher.find()) {
-//            // Remove final semicolon from JSON String
-//            String jsonText = matcher.group(1).split(";")[0];
-//
-//            // Parse the jsonText string into a JSON object
-//            JSONObject parser = new JSONObject(jsonText);
-//            return parser;
-//        } else {
-//            // If the pattern is not found, it means there's no menu. Return null.
-//            return null;
-//        }
-//    }
-
     public JSONObject getJsonMenu() throws ParseException, JSONException {
         String pattern = "(?s)Bamco\\.menu_items = (\\{.*?\\});";
 

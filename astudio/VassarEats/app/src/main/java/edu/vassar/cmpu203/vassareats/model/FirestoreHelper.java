@@ -1,4 +1,4 @@
-package edu.vassar.cmpu203.vassareats;
+package edu.vassar.cmpu203.vassareats.model;
 
 import android.content.Context;
 import android.util.Base64;
@@ -10,7 +10,6 @@ import com.google.genai.Client;
 import com.google.common.collect.ImmutableList;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.genai.ResponseStream;
@@ -25,9 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import org.json.JSONObject;
+import edu.vassar.cmpu203.vassareats.BuildConfig;
 
 public class FirestoreHelper {
     private final FirebaseFirestore db;
@@ -38,7 +36,7 @@ public class FirestoreHelper {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void saveUserLikedItems(Context context, String userId, List<String> likedItems) {
+    public void saveUserLikedItems(String userId, List<String> likedItems) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("likedItems", likedItems);
 
