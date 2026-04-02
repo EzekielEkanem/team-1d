@@ -25,6 +25,7 @@ import edu.vassar.cmpu203.vassareats.model.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.MainActivity;
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.model.FoodItem;
+import edu.vassar.cmpu203.vassareats.model.ImageCacheManager;
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.model.ParentItem;
 
@@ -163,14 +164,15 @@ public class FoodMenuFragment extends Fragment {
             // Request image urls for all food children (safe against mixed child types)
             if (menuItems != null && firestoreHelper != null) {
                 for (ParentItem parent : menuItems) {
-                    if (parent == null) continue;
                     List<?> children = parent.getChildItems();
-                    if (children == null) continue;
-                    for (Object childObj : children) {
-                        if (childObj instanceof FoodItem) {
-                            FoodItem child = (FoodItem) childObj;
-                            String prompt = buildNanobananaPrompt(child.getFoodItemName(), "Vassar College dining hall");
-                            ensureImageForFood(child.getFoodId(), prompt);
+                    if (children != null) {
+                        for (Object childObj : children) {
+                            if (childObj instanceof FoodItem) {
+                                FoodItem child = (FoodItem) childObj;
+                                String prompt = buildNanobananaPrompt(child.getFoodItemName(), null);
+                                ensureImageForFood(child.getFoodId(), prompt);
+                                preloadImageForFood(child.getFoodId());
+                            }
                         }
                     }
                 }
@@ -179,6 +181,25 @@ public class FoodMenuFragment extends Fragment {
             Log.e("FoodMenuFragment", "Error initializing menu items", e);
             Toast.makeText(requireContext(), "Error loading menu.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void preloadImageForFood(String foodId) {
+        if (firestoreHelper == null || foodId == null) return;
+
+        firestoreHelper.db.collection("food_images")
+                .document(foodId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String imageUrl = doc.getString("imageUrl");
+                        if (imageUrl != null && !imageUrl.isEmpty()) {
+                            ImageCacheManager preloader = new ImageCacheManager(
+                                    requireContext(), 400, 300
+                            );
+                            preloader.preloadImage(imageUrl);
+                        }
+                    }
+                });
     }
 
     private String buildNanobananaPrompt(String foodName, @Nullable String diningContext) {
@@ -200,19 +221,18 @@ public class FoodMenuFragment extends Fragment {
     private void ensureImageForFood(String foodId, String prompt) {
         if (firestoreHelper == null || foodId == null || adapter == null) return;
 
-        firestoreHelper.loadImageForFood(foodId, new FirestoreHelper.FirestoreImageCallback() {
+        firestoreHelper.loadImageForFood(foodId, requireContext(), new FirestoreHelper.FirestoreImageCallback() {
             @Override
             public void onSuccess(byte[] imageBytes) {
                 if (imageBytes != null) {
                     // Image already exists → display it
                     requireActivity().runOnUiThread(() -> {
-                        try {
-                            adapter.setImageBytes(foodId, imageBytes);
-                        } catch (Exception e) {
-                            Log.w("FoodMenuFragment", "Failed to set image bytes on adapter", e);
-                        }
+                        adapter.setImageLoading(foodId, false);
+                        adapter.setImageBytes(foodId, imageBytes);
                     });
                 } else {
+                    // start shimmer before generation
+                    requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, true));
                     // No image → generate with Nanobanana
                     firestoreHelper.generateNanobananaImage(prompt, new FirestoreHelper.FirestoreImageCallback() {
                         @Override
@@ -223,18 +243,18 @@ public class FoodMenuFragment extends Fragment {
 
                                 // Update UI
                                 requireActivity().runOnUiThread(() -> {
-                                    try {
-                                        adapter.setImageBytes(foodId, generatedBytes);
-                                    } catch (Exception e) {
-                                        Log.w("FoodMenuFragment", "Failed to set generated image bytes on adapter", e);
-                                    }
+                                    adapter.setImageLoading(foodId, false);
+                                    adapter.setImageBytes(foodId, generatedBytes);
                                 });
+                            } else {
+                                requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, false));
                             }
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             Log.e("FoodMenuFragment", "Image generation failed", e);
+                            requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, false));
                         }
                     });
                 }
@@ -243,6 +263,7 @@ public class FoodMenuFragment extends Fragment {
             @Override
             public void onFailure(Exception e) {
                 Log.e("FoodMenuFragment", "Failed to load image bytes", e);
+                requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, false));
             }
         });
     }

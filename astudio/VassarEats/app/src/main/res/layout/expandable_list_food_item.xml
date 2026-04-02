@@ -6,6 +6,20 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/imageShimmer"
+        android:layout_width="96dp"
+        android:layout_height="72dp"
+        android:visibility="gone"
+        app:shimmer_auto_start="false"
+        app:shimmer_duration="1000">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <ImageView
         android:id="@+id/imageViewFood"
         android:layout_width="match_parent"
@@ -47,6 +61,17 @@
             app:srcCompat="@drawable/ic_thumb_down_outline"
             app:tint="?attr/colorOnSurface"
             android:contentDescription="@string/dislike_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reportImageButton"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/report_image"
+            app:icon="@drawable/ic_flag_outline"
+            app:iconTint="?attr/colorOnSurface"
+            app:rippleColor="?attr/colorControlHighlight" />
 
         <TextView
             android:id="@+id/likesCount"

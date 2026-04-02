@@ -12,6 +12,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.genai.ResponseStream;
 import com.google.genai.types.Blob;
 import com.google.genai.types.Content;
@@ -24,16 +27,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import edu.vassar.cmpu203.vassareats.BuildConfig;
 
 public class FirestoreHelper {
-    private final FirebaseFirestore db;
-    private static final java.util.concurrent.Semaphore IMAGE_GEN_SEMAPHORE =
-            new java.util.concurrent.Semaphore(2); // Limit to 2 concurrent requests
+    public final FirebaseFirestore db;
+    private final FirebaseStorage storage;
+    private static final Semaphore IMAGE_GEN_SEMAPHORE =
+            new Semaphore(10); // Limit to 2 concurrent requests
 
     public FirestoreHelper() {
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
     }
 
     public void saveUserLikedItems(String userId, List<String> likedItems) {
@@ -162,7 +168,7 @@ public class FirestoreHelper {
                 .addOnFailureListener(e -> Log.e("FirestoreHelper", "Failed saving disliked items", e));
     }
 
-    public void loadImageForFood(String foodId, FirestoreImageCallback callback) {
+    public void loadImageForFood(String foodId, Context context, FirestoreImageCallback callback) {
         if (foodId == null) {
             callback.onSuccess(null);
             return;
@@ -177,18 +183,31 @@ public class FirestoreHelper {
                         return;
                     }
 
-                    String base64Image = doc.getString("imageBase64");
-                    if (base64Image == null || base64Image.isEmpty()) {
+                    String imageUrl = doc.getString("imageUrl");
+                    if (imageUrl == null || imageUrl.isEmpty()) {
                         callback.onSuccess(null);
                         return;
                     }
 
-                    try {
-                        byte[] imageBytes = Base64.decode(base64Image, Base64.NO_WRAP);
-                        callback.onSuccess(imageBytes);
-                    } catch (IllegalArgumentException e) {
-                        callback.onFailure(e);
-                    }
+                    // Use ImageCacheManager for cached loading
+                    ImageCacheManager cacheManager = new ImageCacheManager(
+                            context, // or pass context
+                            400, // target width
+                            300  // target height
+                    );
+
+                    cacheManager.loadImageWithCache(imageUrl, new ImageCacheManager.ImageLoadCallback() {
+                        @Override
+                        public void onSuccess(byte[] imageBytes) {
+                            callback.onSuccess(imageBytes);
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e("FirestoreHelper", "Cache load failed, falling back", e);
+                            callback.onFailure(e);
+                        }
+                    });
                 })
                 .addOnFailureListener(callback::onFailure);
     }
@@ -197,18 +216,69 @@ public class FirestoreHelper {
     public void saveImageForFood(String foodId, byte[] imageBytes) {
         if (foodId == null || imageBytes == null) return;
 
-        String base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+        // Create a reference to Firebase Storage
+        StorageReference imageRef = storage.getReference()
+                .child("food_images")
+                .child(foodId + ".jpg");
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("imageBase64", base64Image);
+        // Upload the image
+        UploadTask uploadTask = imageRef.putBytes(imageBytes);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            // Get the download URL
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String imageUrl = uri.toString();
 
-        db.collection("food_images")
-                .document(foodId)
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener(aVoid ->
-                        Log.d("FirestoreHelper", "Saved image bytes for " + foodId))
+                // Store the URL in Firestore
+                Map<String, Object> data = new HashMap<>();
+                data.put("imageUrl", imageUrl);
+
+                db.collection("food_images")
+                        .document(foodId)
+                        .set(data, SetOptions.merge())
+                        .addOnSuccessListener(aVoid ->
+                                Log.d("FirestoreHelper", "Saved image URL for " + foodId))
+                        .addOnFailureListener(e ->
+                                Log.e("FirestoreHelper", "Failed saving image URL for " + foodId, e));
+            });
+        }).addOnFailureListener(e ->
+                Log.e("FirestoreHelper", "Failed uploading image for " + foodId, e));
+    }
+
+    public void migrateImageToStorage(String foodId) {
+        if (foodId == null) {
+            Log.e("Migration", "foodId is null");
+            return;
+        }
+        db.collection("food_images").document(foodId).get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) {
+                        Log.w("Migration", "Document doesn't exist for: " + foodId);
+                        return;
+                    }
+                    String base64Image = doc.getString("imageBase64");
+                    if (base64Image == null || base64Image.isEmpty()) {
+                        Log.w("Migration", "No imageBase64 field for: " + foodId);
+                        return;
+                    }
+                    try {
+                        byte[] imageBytes = Base64.decode(base64Image, Base64.NO_WRAP);
+                        Log.d("Migration", "Decoded image bytes for: " + foodId + ", size: " + imageBytes.length);
+                        saveImageForFood(foodId, imageBytes);
+
+                        // Remove the old base64 field
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("imageBase64", com.google.firebase.firestore.FieldValue.delete());
+                        doc.getReference().update(updates)
+                                .addOnSuccessListener(aVoid ->
+                                        Log.d("Migration", "Migration complete for: " + foodId))
+                                .addOnFailureListener(e ->
+                                        Log.e("Migration", "Failed updating Firestore for: " + foodId, e));
+                    } catch (IllegalArgumentException e) {
+                        Log.e("Migration", "Failed decoding base64 for: " + foodId, e);
+                    }
+                })
                 .addOnFailureListener(e ->
-                        Log.e("FirestoreHelper", "Failed saving image bytes for " + foodId, e));
+                        Log.e("Migration", "Failed fetching document for: " + foodId, e));
     }
 
     public void generateNanobananaImage(String prompt, FirestoreImageCallback callback) {
@@ -247,7 +317,7 @@ public class FirestoreHelper {
 
                 ResponseStream<GenerateContentResponse> stream =
                         client.models.generateContentStream(
-                                "gemini-3-pro-image-preview",
+                                "gemini-2.5-flash-image",
                                 contents,
                                 config
                         );

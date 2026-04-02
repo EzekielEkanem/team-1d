@@ -10,6 +10,7 @@ public interface IExpandableRecylerViewAdapter {
         void onLikeClicked(String foodId);
         void onDislikeClicked(String foodId);
         void onParentToggle(String parentId);
+        void onReportImageClicked(String foodId);
     }
 
     void setFlatItems(List<Object> flatItems);

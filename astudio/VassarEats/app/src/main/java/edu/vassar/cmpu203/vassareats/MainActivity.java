@@ -1,6 +1,8 @@
 package edu.vassar.cmpu203.vassareats;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -18,6 +20,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 import java.text.ParseException;
@@ -29,6 +33,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
+import edu.vassar.cmpu203.vassareats.model.FirestoreHelper;
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.view.FoodMenuFragment;
 import edu.vassar.cmpu203.vassareats.model.ParentItem;
@@ -67,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
             Log.e("MainActivity", "Failed to initialize Menu model", e);
             return;
         }
+
+        // --- IMAGE MIGRATION ---
+        checkAndMigrateImages();
 
         // --- TOOLBAR AND DRAWER INITIALIZATION ---
         topAppBar = findViewById(R.id.topAppBar);
@@ -202,6 +210,46 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
         imageBytesMap.put(foodId, imageBytes);
         if (registeredAdapter != null) {
             registeredAdapter.setImageBytes(foodId, imageBytes);
+        }
+    }
+
+    private void checkAndMigrateImages() {
+        SharedPreferences prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        boolean migrationDone = prefs.getBoolean("image_migration", false);
+
+        Log.d("Migration", "Migration check started. Already done? " + migrationDone);
+
+        if (!migrationDone) {
+            FirestoreHelper firestoreHelper = new FirestoreHelper();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            Log.d("Migration", "Starting migration - querying food_images collection");
+
+            db.collection("food_images")
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        int totalDocs = querySnapshot.size();
+                        int base64Count = 0;
+
+                        Log.d("Migration", "Found " + totalDocs + " documents in food_images");
+                        for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            Log.d("Migration", "Checking document: " + doc.getId() +
+                                    ", has imageBase64: " + doc.contains("imageBase64") +
+                                    ", has imageUrl: " + doc.contains("imageUrl"));
+                            if (doc.contains("imageBase64")) {
+                                firestoreHelper.migrateImageToStorage(doc.getId());
+                                Log.d("Migration", "Migrating image for: " + doc.getId());
+                            }
+                        }
+                        Log.d("Migration", "Migration completed. Processed " + base64Count + " images");
+                        // Mark migration as complete
+                        prefs.edit().putBoolean("image_migration", true).apply();
+                        Log.d("Migration", "Image migration completed");
+                    })
+                    .addOnFailureListener(e ->
+                            Log.e("Migration", "Failed to fetch food images", e));
+        } else {
+            Log.d("Migration", "Skipping migration - already completed");
         }
     }
 

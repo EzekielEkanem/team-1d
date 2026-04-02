@@ -14,4 +14,5 @@
     <string name="dislike_button">Dislike button</string>
     <string name="dislike">DisLike</string>
     <string name="undislike">Undislike</string>
+    <string name="report_image">Report image</string>
 </resources>

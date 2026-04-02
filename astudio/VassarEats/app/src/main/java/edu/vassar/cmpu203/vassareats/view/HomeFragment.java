@@ -83,6 +83,11 @@ public class HomeFragment extends Fragment implements IMenuView.Listener, MealTi
             gestureDetector.onTouchEvent(event);
             return true;
         });
+
+        mealTimeRecyclerView.setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return false;
+        });
     }
 
     @Override

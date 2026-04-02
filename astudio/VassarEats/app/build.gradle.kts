@@ -98,6 +98,10 @@ dependencies {
     }
     implementation(libs.grpc.okhttp)
     implementation(libs.grpc.android)
+    implementation(libs.firebase.storage)
+    annotationProcessor(libs.glide.compiler)
+    implementation(libs.facebook.shimmer)
+
 }
 
 configurations.all {

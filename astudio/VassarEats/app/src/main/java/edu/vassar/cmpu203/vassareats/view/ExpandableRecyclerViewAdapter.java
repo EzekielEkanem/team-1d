@@ -22,8 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import edu.vassar.cmpu203.vassareats.R;
 import edu.vassar.cmpu203.vassareats.model.DiningStation;
@@ -42,6 +44,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private final Map<String, byte[]> imageBytesMap = new HashMap<>();
     private Set<String> likedItems;
     private Set<String> dislikedItems;
+    private final Set<String> loadingImageIds = ConcurrentHashMap.newKeySet();
 
     Listener listener;
     Context context;
@@ -73,7 +76,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public void setImageBytes(String foodId, byte[] imageBytes) {
         if (foodId == null || imageBytes == null) return;
-
+        loadingImageIds.remove(foodId); // stop shimmer when image arrives
         imageBytesMap.put(foodId, imageBytes);
 
         int position = findPositionByFoodId(foodId);
@@ -140,8 +143,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                     imageBytesMap.put(((FoodItem) item).getFoodId(), imageBytes);
                 }
 
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                ((FoodItemViewHolder) holder).imageViewFood.setImageBitmap(bitmap);
+                bindFoodImage((FoodItemViewHolder) holder, (FoodItem) item);
                 return; // Image updated, no need for full rebind
             }
         }
@@ -167,14 +169,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             FoodItemViewHolder foodItemHolder = (FoodItemViewHolder) holder;
             foodItemHolder.foodItemName.setText(foodItem.getFoodItemName());
 
-            // Set image if available, otherwise placeholder
-            byte[] imageBytes = imageBytesMap.get(foodItem.getFoodId());
-            if (imageBytes != null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                foodItemHolder.imageViewFood.setImageBitmap(bitmap);
-            } else {
-                foodItemHolder.imageViewFood.setImageResource(R.drawable.ic_image_placeholder);
-            }
+            bindFoodImage(foodItemHolder, foodItem);
 
             // Dynamically check if the item is liked (safe against null)
             boolean isLiked = likedItems != null && likedItems.contains(foodItem.getFoodId());
@@ -193,6 +188,12 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             foodItemHolder.dislikeButton.setOnClickListener(buttonView -> {
                 if (listener != null) {
                     try { listener.onDislikeClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
+                }
+            });
+
+            foodItemHolder.reportImageButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    try { listener.onReportImageClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
                 }
             });
 
@@ -257,6 +258,8 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         ImageButton likeButton;
         ImageButton dislikeButton;
         TextView likesCount;
+        ShimmerFrameLayout imageShimmer;
+        ImageButton reportImageButton;
 
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -265,6 +268,8 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             dislikeButton = itemView.findViewById(R.id.dislikeButton);
             likesCount = itemView.findViewById(R.id.likesCount);
             imageViewFood = itemView.findViewById(R.id.imageViewFood);
+            imageShimmer = itemView.findViewById(R.id.imageShimmer);
+            reportImageButton = itemView.findViewById(R.id.reportImageButton);
         }
     }
 
@@ -333,5 +338,41 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 try { listener.onDislikeClicked(child.getFoodId()); } catch (NoSuchMethodError ignored) {}
             }
         });
+    }
+
+    // public API
+    public void setImageLoading(String foodId, boolean isLoading) {
+        if (foodId == null) return;
+        if (isLoading) loadingImageIds.add(foodId);
+        else loadingImageIds.remove(foodId);
+
+        int position = findPositionByFoodId(foodId);
+        if (position != RecyclerView.NO_POSITION) {
+            notifyItemChanged(position, "loading_state");
+        }
+    }
+
+    // helper
+    private void bindFoodImage(FoodItemViewHolder holder, FoodItem foodItem) {
+        byte[] imageBytes = imageBytesMap.get(foodItem.getFoodId());
+        boolean isLoading = loadingImageIds.contains(foodItem.getFoodId());
+
+        if (imageBytes != null) {
+            holder.imageShimmer.stopShimmer();
+            holder.imageShimmer.setVisibility(View.GONE);
+            holder.imageViewFood.setVisibility(View.VISIBLE);
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            holder.imageViewFood.setImageBitmap(bitmap);
+        } else if (isLoading) {
+            holder.imageViewFood.setVisibility(View.INVISIBLE);
+            holder.imageShimmer.setVisibility(View.VISIBLE);
+            holder.imageShimmer.startShimmer();
+        } else {
+            holder.imageShimmer.stopShimmer();
+            holder.imageShimmer.setVisibility(View.GONE);
+            holder.imageViewFood.setVisibility(View.VISIBLE);
+            holder.imageViewFood.setImageResource(R.drawable.ic_image_placeholder);
+        }
     }
 }
