@@ -191,11 +191,11 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 }
             });
 
-            foodItemHolder.reportImageButton.setOnClickListener(v -> {
-                if (listener != null) {
-                    try { listener.onReportImageClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
-                }
-            });
+//            foodItemHolder.reportImageButton.setOnClickListener(v -> {
+//                if (listener != null) {
+//                    try { listener.onReportImageClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
+//                }
+//            });
 
             foodItemHolder.likesCount.setText("");
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
@@ -269,7 +269,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             likesCount = itemView.findViewById(R.id.likesCount);
             imageViewFood = itemView.findViewById(R.id.imageViewFood);
             imageShimmer = itemView.findViewById(R.id.imageShimmer);
-            reportImageButton = itemView.findViewById(R.id.reportImageButton);
+//            reportImageButton = itemView.findViewById(R.id.reportImageButton);
         }
     }
 
