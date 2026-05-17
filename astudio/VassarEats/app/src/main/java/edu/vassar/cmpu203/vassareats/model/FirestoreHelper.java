@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import edu.vassar.cmpu203.vassareats.BuildConfig;
+import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
 
 public class FirestoreHelper {
     public final FirebaseFirestore db;
@@ -166,6 +167,39 @@ public class FirestoreHelper {
                 .set(updates, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Log.d("FirestoreHelper", "Saved disliked items"))
                 .addOnFailureListener(e -> Log.e("FirestoreHelper", "Failed saving disliked items", e));
+    }
+
+    public void saveUserReportedItems(String userId, List<String> reportedItems) {
+        if (userId == null) return;
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("reportedItems", reportedItems != null ? reportedItems : new ArrayList<>());
+
+        // Save or update the user's reported items in Firestore
+        db.collection("users").document(userId)
+                .set(userData, SetOptions.merge()) // Use merge to avoid overwriting other fields
+                .addOnSuccessListener(aVoid -> Log.d("FirestoreHelper", "Reported items saved successfully for user: " + userId))
+                .addOnFailureListener(e -> Log.e("FirestoreHelper", "Error saving reported items", e));
+    }
+
+    public void loadUserReportedItems(String userId, FirestoreCallback callback) {
+        if (userId == null) {
+            callback.onSuccess(new ArrayList<>());
+            return;
+        }
+        db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("reportedItems")) {
+                        List<String> reportedItems = (List<String>) documentSnapshot.get("reportedItems");
+                        callback.onSuccess(reportedItems);
+                    } else {
+                        callback.onSuccess(new ArrayList<>());
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreHelper", "Error loading reported items", e);
+                    callback.onFailure(e);
+                });
     }
 
     public void loadImageForFood(String foodId, Context context, FirestoreImageCallback callback) {
@@ -355,4 +389,164 @@ public class FirestoreHelper {
             }
         }).start();
     }
+
+    public void flagImage(String foodId, String userId, final CompletionCallback callback) {
+        DocumentReference foodDocRef = db.collection("food_images").document(foodId);
+
+        db.runTransaction(transaction -> {
+            DocumentSnapshot snapshot = transaction.get(foodDocRef);
+            long flagCount = 0;
+            List<String> flaggedBy = new ArrayList<>();
+
+            if (snapshot.exists()) {
+                if (snapshot.getLong("flagCount") != null) {
+                    flagCount = snapshot.getLong("flagCount");
+                }
+                if (snapshot.get("flaggedBy") instanceof List) {
+                    flaggedBy = (List<String>) snapshot.get("flaggedBy");
+                }
+            }
+
+            // Check if user already flagged this image
+            if (!flaggedBy.contains(userId)) {
+                flagCount++;
+                flaggedBy.add(userId);
+                long finalFlagCount = flagCount;
+                List<String> finalFlaggedBy = flaggedBy;
+                transaction.set(foodDocRef,
+                        new HashMap<String, Object>() {{
+                            put("flagCount", finalFlagCount);
+                            put("flaggedBy", finalFlaggedBy);
+                        }}, SetOptions.merge());
+            }
+            return flagCount;
+        }).addOnSuccessListener(flagCount -> {
+            Log.d("FirestoreHelper", "Image flagged successfully. Total flags: " + flagCount);
+            callback.onComplete(true, null);
+        }).addOnFailureListener(e -> {
+            Log.e("FirestoreHelper", "Failed to flag image", e);
+            callback.onComplete(false, e);
+        });
+    }
+
+    public void getFlagCount(String foodId, FirestoreCallback2 callback) {
+        db.collection("food_images")
+                .document(foodId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("flagCount")) {
+                        long flagCount = documentSnapshot.getLong("flagCount");
+                        callback.onSuccess(flagCount + " flags");
+                    } else {
+                        callback.onSuccess("0 flags");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreHelper", "Error fetching flag count", e);
+                    callback.onFailure(e);
+                });
+    }
+
+    public void unflagImage(String foodId, String userId, final CompletionCallback callback) {
+        DocumentReference foodDocRef = db.collection("food_images").document(foodId);
+
+        db.runTransaction(transaction -> {
+            DocumentSnapshot snapshot = transaction.get(foodDocRef);
+            long flagCount = 0;
+            List<String> flaggedBy = new ArrayList<>();
+
+            if (snapshot.exists()) {
+                if (snapshot.getLong("flagCount") != null) {
+                    flagCount = snapshot.getLong("flagCount");
+                }
+                if (snapshot.get("flaggedBy") instanceof List) {
+                    flaggedBy = (List<String>) snapshot.get("flaggedBy");
+                }
+            }
+
+            // Remove user from flaggedBy list
+            if (flaggedBy.contains(userId)) {
+                flaggedBy.remove(userId);
+                flagCount = Math.max(0, flagCount - 1);
+                long finalFlagCount = flagCount;
+                List<String> finalFlaggedBy = flaggedBy;
+                transaction.set(foodDocRef,
+                        new HashMap<String, Object>() {{
+                            put("flagCount", finalFlagCount);
+                            put("flaggedBy", finalFlaggedBy);
+                        }}, SetOptions.merge());
+            }
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("FirestoreHelper", "Image unflagged successfully");
+            callback.onComplete(true, null);
+        }).addOnFailureListener(e -> {
+            Log.e("FirestoreHelper", "Failed to unflag image", e);
+            callback.onComplete(false, e);
+        });
+    }
+
+    public void regenerateImageForFood(String foodId, String prompt,
+                                       ExpandableRecyclerViewAdapter adapter, FirestoreImageCallback callback) {
+        if (adapter != null) {
+            adapter.setImageLoading(foodId, true);
+        }
+
+        generateNanobananaImage(prompt, new FirestoreImageCallback() {
+            @Override
+            public void onSuccess(byte[] generatedBytes) {
+                if (generatedBytes != null) {
+                    // Save to Firestore
+                    saveImageForFood(foodId, generatedBytes);
+
+                    // Reset flag metadata
+                    resetImageFlags(foodId, new CompletionCallback() {
+                        @Override
+                        public void onComplete(boolean success, Exception e) {
+                            if (adapter != null) {
+                                adapter.setImageLoading(foodId, false);
+                                adapter.setImageBytes(foodId, generatedBytes);
+                            }
+                            if (callback != null) {
+                                callback.onSuccess(generatedBytes);
+                            }
+                        }
+                    });
+                } else {
+                    if (adapter != null) {
+                        adapter.setImageLoading(foodId, false);
+                    }
+                    if (callback != null) {
+                        callback.onSuccess(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("FirestoreHelper", "Image regeneration failed", e);
+                if (adapter != null) {
+                    adapter.setImageLoading(foodId, false);
+                }
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+        });
+    }
+
+    public void resetImageFlags(String foodId, CompletionCallback callback) {
+        db.collection("food_images")
+                .document(foodId)
+                .update("flagCount", 0, "flaggedBy", new ArrayList<>())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirestoreHelper", "Image flags reset for: " + foodId);
+                    callback.onComplete(true, null);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreHelper", "Failed to reset flags", e);
+                    callback.onComplete(false, e);
+                });
+    }
+
 }

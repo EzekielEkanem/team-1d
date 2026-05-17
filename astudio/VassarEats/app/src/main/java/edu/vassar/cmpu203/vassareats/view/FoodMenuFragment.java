@@ -202,7 +202,7 @@ public class FoodMenuFragment extends Fragment {
                 });
     }
 
-    private String buildNanobananaPrompt(String foodName, @Nullable String diningContext) {
+    public static String buildNanobananaPrompt(String foodName, @Nullable String diningContext) {
         StringBuilder sb = new StringBuilder();
         sb.append("Photorealistic close-up of ").append(foodName);
         if (diningContext != null && !diningContext.isEmpty()) {
@@ -231,32 +231,20 @@ public class FoodMenuFragment extends Fragment {
                         adapter.setImageBytes(foodId, imageBytes);
                     });
                 } else {
-                    // start shimmer before generation
-                    requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, true));
-                    // No image → generate with Nanobanana
-                    firestoreHelper.generateNanobananaImage(prompt, new FirestoreHelper.FirestoreImageCallback() {
-                        @Override
-                        public void onSuccess(byte[] generatedBytes) {
-                            if (generatedBytes != null) {
-                                // Save to Firestore
-                                firestoreHelper.saveImageForFood(foodId, generatedBytes);
-
-                                // Update UI
-                                requireActivity().runOnUiThread(() -> {
-                                    adapter.setImageLoading(foodId, false);
-                                    adapter.setImageBytes(foodId, generatedBytes);
-                                });
-                            } else {
-                                requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, false));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Exception e) {
-                            Log.e("FoodMenuFragment", "Image generation failed", e);
-                            requireActivity().runOnUiThread(() -> adapter.setImageLoading(foodId, false));
-                        }
-                    });
+                    // No image → regenerate (reuses same logic as report flow)
+                    firestoreHelper.regenerateImageForFood(foodId, prompt, adapter,
+                            new FirestoreHelper.FirestoreImageCallback() {
+                                @Override
+                                public void onSuccess(byte[] generatedBytes) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        // UI already updated by regenerateImageForFood
+                                    });
+                                }
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Log.e("FoodMenuFragment", "Image generation failed", e);
+                                }
+                            });
                 }
             }
 

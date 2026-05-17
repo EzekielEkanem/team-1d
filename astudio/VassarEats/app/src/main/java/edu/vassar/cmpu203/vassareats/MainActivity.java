@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
     // Controller-owned state
     private final Set<String> likedItems = new HashSet<>();
     private final Set<String> dislikedItems = new HashSet<>();
+    private final Set<String> reportedItems = new HashSet<>();
     private final Map<String, byte[]> imageBytesMap = new HashMap<>();
     private List<ParentItem> controllerParentItems = new ArrayList<>();
 
@@ -117,6 +119,54 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
         }
 
         NavigationDrawer.setHalfWidth(this);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+
+        if (userId != null) {
+            FirestoreHelper firestoreHelper = new FirestoreHelper();
+            firestoreHelper.loadUserLikedItems(userId, new FirestoreHelper.FirestoreCallback() {
+                @Override
+                public void onSuccess(List<String> items) {
+                    if (items != null) {
+                        likedItems.addAll(items);
+                        if (registeredAdapter != null) registeredAdapter.setLikedItems(likedItems);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("MainActivity", "Failed to load liked items", e);
+                }
+            });
+
+            firestoreHelper.loadUserDislikedItems(userId, new FirestoreHelper.FirestoreCallback() {
+                @Override
+                public void onSuccess(List<String> items) {
+                    if (items != null) {
+                        dislikedItems.addAll(items);
+                        if (registeredAdapter != null) registeredAdapter.setDislikedItems(dislikedItems);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("MainActivity", "Failed to load disliked items", e);
+                }
+            });
+
+            firestoreHelper.loadUserReportedItems(userId, new FirestoreHelper.FirestoreCallback() {
+                @Override
+                public void onSuccess(List<String> items) {
+                    if (items != null) {
+                        reportedItems.addAll(items);
+                        if (registeredAdapter != null) registeredAdapter.setReportedItems(reportedItems);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("MainActivity", "Failed to load reported items", e);
+                }
+            });
+        }
     }
 
     public void setControllerParentItems(List<ParentItem> parentItems) {
@@ -148,12 +198,13 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
         pushFlatListToAdapter();
     }
 
-    // Provide a way for the fragment (or wherever adapter is created) to register the adapter
+    // Provide a way for the fragment to register the adapter
     public void registerAdapter(ExpandableRecyclerViewAdapter adapter) {
         this.registeredAdapter = adapter;
         if (registeredAdapter != null) {
             registeredAdapter.setLikedItems(likedItems);
             registeredAdapter.setDislikedItems(dislikedItems);
+            registeredAdapter.setReportedItems(reportedItems);
             // push any already-fetched images
             for (Map.Entry<String, byte[]> e : imageBytesMap.entrySet()) {
                 registeredAdapter.setImageBytes(e.getKey(), e.getValue());
@@ -163,33 +214,39 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
     }
 
 
-    // Listener callbacks invoked by the adapter (view) — controller handles state changes
     @Override
     public void onLikeClicked(String foodId) {
         if (foodId == null) return;
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (userId == null) return;
 
-        boolean nowLiked = likedItems.contains(foodId) ? false : true;
+        boolean nowLiked = !likedItems.contains(foodId);
         if (nowLiked) {
             likedItems.add(foodId);
-            // remove dislike if present
             dislikedItems.remove(foodId);
         } else {
             likedItems.remove(foodId);
         }
 
-        // Push updated sets into adapter so it can re-render
         if (registeredAdapter != null) {
             registeredAdapter.setLikedItems(likedItems);
             registeredAdapter.setDislikedItems(dislikedItems);
         }
-        // Optionally persist to model/backend here
+
+        FirestoreHelper firestoreHelper = new FirestoreHelper();
+        firestoreHelper.saveUserLikedItems(userId, new ArrayList<>(likedItems));
+        firestoreHelper.saveUserDislikedItems(this, userId, new ArrayList<>(dislikedItems));
     }
 
     @Override
     public void onDislikeClicked(String foodId) {
         if (foodId == null) return;
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (userId == null) return;
 
-        boolean nowDisliked = dislikedItems.contains(foodId) ? false : true;
+        boolean nowDisliked = !dislikedItems.contains(foodId);
         if (nowDisliked) {
             dislikedItems.add(foodId);
             likedItems.remove(foodId);
@@ -201,17 +258,12 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
             registeredAdapter.setLikedItems(likedItems);
             registeredAdapter.setDislikedItems(dislikedItems);
         }
-        // Optionally persist to model/backend here
+
+        FirestoreHelper firestoreHelper = new FirestoreHelper();
+        firestoreHelper.saveUserLikedItems(userId, new ArrayList<>(likedItems));
+        firestoreHelper.saveUserDislikedItems(this, userId, new ArrayList<>(dislikedItems));
     }
 
-    // When image bytes are fetched by the controller (e.g., network or cache), push them to the adapter
-    public void onImageFetched(String foodId, byte[] imageBytes) {
-        if (foodId == null || imageBytes == null) return;
-        imageBytesMap.put(foodId, imageBytes);
-        if (registeredAdapter != null) {
-            registeredAdapter.setImageBytes(foodId, imageBytes);
-        }
-    }
 
     private void checkAndMigrateImages() {
         SharedPreferences prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
@@ -251,6 +303,99 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
         } else {
             Log.d("Migration", "Skipping migration - already completed");
         }
+    }
+
+    @Override
+    public void onReportImageClicked(String foodId) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                : null;
+        if (foodId == null || userId == null) return;
+
+        boolean isAlreadyReported = reportedItems.contains(foodId);
+
+        if (isAlreadyReported) {
+            reportedItems.remove(foodId);
+        } else {
+            reportedItems.add(foodId);
+        }
+
+        if (registeredAdapter != null) {
+            registeredAdapter.setReportedItems(reportedItems);
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirestoreHelper firestoreHelper = new FirestoreHelper();
+
+        firestoreHelper.saveUserReportedItems(userId, new ArrayList<>(reportedItems));
+
+        db.runTransaction(tx -> {
+            DocumentReference ref = db.collection("food_images").document(foodId);
+            DocumentSnapshot snap = tx.get(ref);
+
+            List<String> flaggedBy = (List<String>) snap.get("flaggedBy");
+            Long flagCount = snap.getLong("flagCount");
+            if (flaggedBy == null) flaggedBy = new ArrayList<>();
+            if (flagCount == null) flagCount = 0L;
+
+            if (isAlreadyReported) {
+                // Undo report
+                if (flaggedBy.contains(userId)) {
+                    flaggedBy.remove(userId);
+                    long newCount = Math.max(0L, flagCount - 1L);
+                    tx.update(ref, "flaggedBy", flaggedBy, "flagCount", newCount);
+                }
+                return false;
+            } else {
+                // Add report
+                if (flaggedBy.contains(userId)) return false;
+
+                flaggedBy.add(userId);
+                long newCount = flagCount + 1L;
+
+                tx.update(ref, "flaggedBy", flaggedBy, "flagCount", newCount);
+                return newCount >= 5L;
+            }
+        }).addOnSuccessListener(shouldRegenerate -> {
+            if (Boolean.TRUE.equals(shouldRegenerate)) {
+                String foodName = foodId;
+                if (menu != null) {
+                    foodName = findFoodNameById(foodId);
+                }
+                String prompt = FoodMenuFragment.buildNanobananaPrompt(foodName, null);
+
+                firestoreHelper.regenerateImageForFood(foodId, prompt, registeredAdapter,
+                        new FirestoreHelper.FirestoreImageCallback() {
+                            @Override
+                            public void onSuccess(byte[] generatedBytes) {
+                                Log.d("MainActivity", "Image regenerated after 5 flags");
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.e("MainActivity", "Failed to regenerate image", e);
+                            }
+                        });
+            }
+        });
+    }
+
+
+    private String findFoodNameById(String foodId) {
+        if (controllerParentItems == null) return foodId;
+        for (ParentItem parent : controllerParentItems) {
+            if (parent == null || parent.getChildItems() == null) continue;
+            for (Object child : parent.getChildItems()) {
+                if (child instanceof edu.vassar.cmpu203.vassareats.model.FoodItem) {
+                    edu.vassar.cmpu203.vassareats.model.FoodItem fi =
+                            (edu.vassar.cmpu203.vassareats.model.FoodItem) child;
+                    if (foodId.equals(fi.getFoodId())) {
+                        return fi.getFoodItemName();
+                    }
+                }
+            }
+        }
+        return foodId;
     }
 
     @Override

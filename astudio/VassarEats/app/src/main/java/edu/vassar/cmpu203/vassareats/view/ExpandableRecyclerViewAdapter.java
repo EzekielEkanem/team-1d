@@ -44,6 +44,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private final Map<String, byte[]> imageBytesMap = new HashMap<>();
     private Set<String> likedItems;
     private Set<String> dislikedItems;
+    private Set<String> reportedItems;
     private final Set<String> loadingImageIds = ConcurrentHashMap.newKeySet();
 
     Listener listener;
@@ -55,6 +56,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         this.items = (flatItems != null) ? new ArrayList<>(flatItems) : new ArrayList<>();
         this.likedItems = (likedItems != null) ? Collections.unmodifiableSet(new HashSet<>(likedItems)) : Collections.emptySet();
         this.dislikedItems = (dislikedItems != null) ? Collections.unmodifiableSet(new HashSet<>(dislikedItems)) : Collections.emptySet();
+        this.reportedItems = (reportedItems != null) ? Collections.unmodifiableSet(new HashSet<>(reportedItems)) : Collections.emptySet();
     }
 
     @Override
@@ -96,6 +98,13 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         this.dislikedItems = (dislikedItems != null) ? Collections.unmodifiableSet(new HashSet<>(dislikedItems)) : Collections.emptySet();
         notifyDataSetChanged();
     }
+
+    @Override
+    public void setReportedItems(Set<String> reportedItems) {
+        this.reportedItems = (reportedItems != null) ? Collections.unmodifiableSet(new HashSet<>(reportedItems)) : Collections.emptySet();
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -174,9 +183,11 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             // Dynamically check if the item is liked (safe against null)
             boolean isLiked = likedItems != null && likedItems.contains(foodItem.getFoodId());
             boolean isDisliked = dislikedItems != null && dislikedItems.contains(foodItem.getFoodId());
+            boolean isReported = reportedItems != null && reportedItems.contains(foodItem.getFoodId());
 
             updateLikeButton(foodItemHolder.likeButton, isLiked);
             updateDislikeButton(foodItemHolder.dislikeButton, isDisliked);
+            updateReportButton(foodItemHolder.reportImageButton, isReported);
 
             // Click listener for the like button
             foodItemHolder.likeButton.setOnClickListener(buttonView -> {
@@ -191,11 +202,11 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 }
             });
 
-//            foodItemHolder.reportImageButton.setOnClickListener(v -> {
-//                if (listener != null) {
-//                    try { listener.onReportImageClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
-//                }
-//            });
+            foodItemHolder.reportImageButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    try { listener.onReportImageClicked(foodItem.getFoodId()); } catch (NoSuchMethodError ignored) {}
+                }
+            });
 
             foodItemHolder.likesCount.setText("");
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
@@ -238,6 +249,21 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 : context.getString(R.string.dislike));
     }
 
+    private void updateReportButton(ImageButton reportButton, boolean isReported) {
+        int drawableRes = isReported ? R.drawable.ic_flag_filled : R.drawable.ic_flag_outline;
+        reportButton.setImageResource(drawableRes);
+
+        int tintColor = isReported
+                ? ContextCompat.getColor(context, R.color.purple_700) // Or your desired color for reported items
+                : ContextCompat.getColor(context, R.color.gray);
+        reportButton.setColorFilter(tintColor, PorterDuff.Mode.SRC_IN);
+
+        reportButton.setContentDescription(isReported
+                ? context.getString(R.string.unreport) // Make sure to add this to strings.xml
+                : context.getString(R.string.report)); // Make sure to add this to strings.xml
+    }
+
+
     @Override
     public int getItemCount() {
         return (items != null) ? items.size() : 0;
@@ -269,7 +295,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             likesCount = itemView.findViewById(R.id.likesCount);
             imageViewFood = itemView.findViewById(R.id.imageViewFood);
             imageShimmer = itemView.findViewById(R.id.imageShimmer);
-//            reportImageButton = itemView.findViewById(R.id.reportImageButton);
+            reportImageButton = itemView.findViewById(R.id.reportImageButton);
         }
     }
 
@@ -318,8 +344,12 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         // Visual like/dislike state
         boolean isLiked = likedItems != null && likedItems.contains(child.getFoodId());
         boolean isDisliked = dislikedItems != null && dislikedItems.contains(child.getFoodId());
+        boolean isReported = reportedItems != null && reportedItems.contains(child.getFoodId());
+
         updateLikeButton(holder.likeButton, isLiked);
         updateDislikeButton(holder.dislikeButton, isDisliked);
+        updateReportButton(holder.reportImageButton, isReported);
+
 
         // Likes count (keep existing behavior)
         if (holder.likesCount != null) {

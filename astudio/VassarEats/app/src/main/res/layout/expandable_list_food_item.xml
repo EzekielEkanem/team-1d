@@ -62,14 +62,14 @@
             app:tint="?attr/colorOnSurface"
             android:contentDescription="@string/dislike_button" />
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/reportImageButton"
             style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="19dp"
+            android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/report_image"
-            app:icon="@drawable/ic_flag_outline"
+            app:srcCompat="@drawable/ic_flag_outline"
             app:iconTint="?attr/colorOnSurface"
             app:rippleColor="?attr/colorControlHighlight" />
 
