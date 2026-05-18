@@ -3,6 +3,8 @@ package edu.vassar.cmpu203.vassareats.view;
 import java.util.List;
 import java.util.Set;
 
+import edu.vassar.cmpu203.vassareats.model.FoodItem;
+
 public interface IExpandableRecylerViewAdapter {
     void setImageBytes(String foodId, byte[] imageBytes);
 
@@ -11,6 +13,8 @@ public interface IExpandableRecylerViewAdapter {
         void onDislikeClicked(String foodId);
         void onParentToggle(String parentId);
         void onReportImageClicked(String foodId);
+        void onNutritionButtonClicked(FoodItem foodItem);
+
     }
 
     void setFlatItems(List<Object> flatItems);

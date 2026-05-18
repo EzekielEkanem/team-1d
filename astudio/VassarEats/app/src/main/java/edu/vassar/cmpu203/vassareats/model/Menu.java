@@ -96,7 +96,7 @@ public class Menu {
                     for (FoodItem foodItem : diningStation.getFoodItems()) {
 
                         if (preferencesList.isEmpty()) {
-                            FoodItem newFoodItem = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels());
+                            FoodItem newFoodItem = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels(), foodItem.getNutritionDetails());
 
                             newDiningStation.addFoodItem(newFoodItem);
 
@@ -104,7 +104,7 @@ public class Menu {
                         } else {
                             for (String dietLabel : foodItem.getDietLabels()) {
                                 if (preferencesList.contains(dietLabel)) {
-                                    FoodItem newFoodItem = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels());
+                                    FoodItem newFoodItem = new FoodItem(foodItem.getFoodItemName(), foodItem.getFoodId(), foodItem.getDietLabels(), foodItem.getNutritionDetails());
 
                                     newDiningStation.addFoodItem(newFoodItem);
 

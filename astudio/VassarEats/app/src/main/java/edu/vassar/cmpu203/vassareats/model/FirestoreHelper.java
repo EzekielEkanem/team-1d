@@ -143,6 +143,11 @@ public class FirestoreHelper {
         void onFailure(Exception e);
     }
 
+    public interface FirestoreNutritionCallback {
+        void onSuccess(Map<String, String> nutritionDetails);
+        void onFailure(Exception e);
+    }
+
 
     public void loadUserDislikedItems(String userId, final FirestoreCallback callback) {
         if (userId == null) {
@@ -546,6 +551,112 @@ public class FirestoreHelper {
                 .addOnFailureListener(e -> {
                     Log.e("FirestoreHelper", "Failed to reset flags", e);
                     callback.onComplete(false, e);
+                });
+    }
+
+    public void generateNutritionForFood(String foodName, FirestoreNutritionCallback callback) {
+        Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
+        new Thread(() -> {
+            try {
+                String apiKey = BuildConfig.NANOBANANA_API_KEY;
+                if (apiKey == null || apiKey.trim().isEmpty()) {
+                    mainThreadHandler.post(() -> callback.onFailure(new Exception("Missing API_KEY")));
+                    return;
+                }
+
+                Client client = Client.builder().apiKey(apiKey).build();
+
+                String prompt = "Estimate the nutritional details for 1 serving of " + foodName + ". " +
+                        "Return ONLY a valid JSON object. No markdown wrappers like ```json. " +
+                        "The keys should be standard nutrients (calories, total_fat, saturated_fat, trans_fat, cholesterol, sodium, total_carbohydrate, dietary_fiber, protein, sugar). " +
+                        "The value for each key MUST be a stringified JSON object containing 'label', 'value', and 'unit'. " +
+                        "Example: {\"calories\": \"{\\\"label\\\": \\\"Calories\\\", \\\"value\\\": \\\"250\\\", \\\"unit\\\": \\\"\\\"}\", \"total_fat\": \"{\\\"label\\\": \\\"Total Fat\\\", \\\"value\\\": \\\"10\\\", \\\"unit\\\": \\\"g\\\"}\"}";
+
+                List<Content> contents = ImmutableList.of(
+                        Content.builder()
+                                .role("user")
+                                .parts(ImmutableList.of(Part.fromText(prompt)))
+                                .build()
+                );
+
+                GenerateContentConfig config = GenerateContentConfig.builder()
+                        .responseModalities(ImmutableList.of("TEXT"))
+                        .build();
+
+                GenerateContentResponse response = client.models.generateContent(
+                        "gemini-2.5-flash",
+                        contents,
+                        config
+                );
+
+                String textResult = response.text();
+
+                // Parse the response into the Map<String, String>
+                Map<String, String> generatedNutrition = new HashMap<>();
+                if (textResult != null && !textResult.isEmpty()) {
+                    // Clean up markdown just in case the model ignored instructions
+                    textResult = textResult.replace("```json", "").replace("```", "").trim();
+                    org.json.JSONObject root = new org.json.JSONObject(textResult);
+                    java.util.Iterator<String> keys = root.keys();
+                    while(keys.hasNext()) {
+                        String key = keys.next();
+                        generatedNutrition.put(key, root.getString(key));
+                    }
+
+                    // Inject the AI Generated flag here
+                    generatedNutrition.put("isAiGenerated", "true");
+                }
+
+                mainThreadHandler.post(() -> callback.onSuccess(generatedNutrition));
+
+            } catch (Exception e) {
+                Log.e("FirestoreHelper", "generateNutritionForFood failed", e);
+                mainThreadHandler.post(() -> callback.onFailure(e));
+            }
+        }).start();
+    }
+
+    public void saveNutritionForFood(String foodId, Map<String, String> nutritionMap) {
+        if (foodId == null || nutritionMap == null) return;
+
+        db.collection("food_nutrition")
+                .document(foodId)
+                .set(nutritionMap, SetOptions.merge())
+                .addOnSuccessListener(aVoid ->
+                        Log.d("FirestoreHelper", "Saved nutrition details for " + foodId))
+                .addOnFailureListener(e ->
+                        Log.e("FirestoreHelper", "Failed to save nutrition details for " + foodId, e));
+    }
+
+    public void loadNutritionForFood(String foodId, FirestoreNutritionCallback callback) {
+        if (foodId == null) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        db.collection("food_nutrition")
+                .document(foodId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.getData() != null) {
+                        Map<String, Object> rawData = documentSnapshot.getData();
+                        Map<String, String> nutritionMap = new HashMap<>();
+
+                        // Safely cast Firestore data to Map<String, String>
+                        for (Map.Entry<String, Object> entry : rawData.entrySet()) {
+                            if (entry.getValue() instanceof String) {
+                                nutritionMap.put(entry.getKey(), (String) entry.getValue());
+                            }
+                        }
+                        callback.onSuccess(nutritionMap);
+                    } else {
+                        callback.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreHelper", "Error loading nutrition details for " + foodId, e);
+                    callback.onFailure(e);
                 });
     }
 

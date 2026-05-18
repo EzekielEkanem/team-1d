@@ -1,12 +1,14 @@
 package edu.vassar.cmpu203.vassareats.model;
 
-
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class FoodItem {
     private String id;
     private String name;
     private HashSet<String> dietLabels;
+    private HashMap<String, String> nutritionDetails;
 
     /**
      * FoodItem constructor instantiates id, name, and dietLabels field variables.
@@ -14,10 +16,11 @@ public class FoodItem {
      * @param id: the id of the food item
      * @param dietLabels: an hashset containing the dietlabels of the food item
      */
-    public FoodItem(String name, String id, HashSet<String> dietLabels){
+    public FoodItem(String name, String id, HashSet<String> dietLabels, HashMap<String, String> nutritionDetails){
         this.name = name;
         this.id = id;
         this.dietLabels = dietLabels;
+        this.nutritionDetails = nutritionDetails;
     }
 
     /**
@@ -44,11 +47,19 @@ public class FoodItem {
         return dietLabels;
     }
 
+    public HashMap<String, String> getNutritionDetails() {
+        return nutritionDetails;
+    }
+
+    public void setNutritionDetails(Map<String, String> generatedDetails) {
+        this.nutritionDetails = (HashMap<String, String>) generatedDetails;
+    }
+
     /**
      * toString method returns a string representation of food item
      * @return String: a string representation of food item
      */
     public String toString(){
-        return "Food id: " + this.id + "\n" + "Food name: " + this.name + "\n" + "Dietary labels: " + this.dietLabels;
+        return "Food id: " + this.id + "\n" + "Food name: " + this.name + "\n" + "Dietary labels: " + this.dietLabels + "\nNutrition: " + this.nutritionDetails;
     }
 }

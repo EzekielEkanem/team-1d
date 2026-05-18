@@ -208,6 +208,12 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 }
             });
 
+            foodItemHolder.nutritionButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    try { listener.onNutritionButtonClicked(foodItem); } catch (NoSuchMethodError ignored) {}
+                }
+            });
+
             foodItemHolder.likesCount.setText("");
         } else if (getItemViewType(position) == TYPE_MEAL_TYPE_SECTION) {
             MealTypeSection mealTypeSection = (MealTypeSection) items.get(position);
@@ -286,6 +292,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         TextView likesCount;
         ShimmerFrameLayout imageShimmer;
         ImageButton reportImageButton;
+        ImageButton nutritionButton;
 
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -296,6 +303,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             imageViewFood = itemView.findViewById(R.id.imageViewFood);
             imageShimmer = itemView.findViewById(R.id.imageShimmer);
             reportImageButton = itemView.findViewById(R.id.reportImageButton);
+            nutritionButton = itemView.findViewById(R.id.nutritionButton);
         }
     }
 

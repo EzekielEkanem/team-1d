@@ -6,7 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -18,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -35,6 +40,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import edu.vassar.cmpu203.vassareats.model.FirestoreHelper;
+import edu.vassar.cmpu203.vassareats.model.FoodItem;
 import edu.vassar.cmpu203.vassareats.model.Menu;
 import edu.vassar.cmpu203.vassareats.view.FoodMenuFragment;
 import edu.vassar.cmpu203.vassareats.model.ParentItem;
@@ -379,6 +385,177 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
             }
         });
     }
+
+    @Override
+    public void onNutritionButtonClicked(FoodItem foodItem) {
+        if (foodItem == null) return;
+
+        Map<String, String> nutritionDetails = foodItem.getNutritionDetails();
+
+        // Check if the current map actually contains nutritional data (like calories)
+        boolean hasValidNutrition = false;
+        if (nutritionDetails != null) {
+            for (String key : nutritionDetails.keySet()) {
+                if (key.toLowerCase().contains("calories")) {
+                    hasValidNutrition = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasValidNutrition) {
+            // Already has valid nutrition details, show normally
+            boolean isAiGenerated = Boolean.parseBoolean(nutritionDetails.get("isAiGenerated"));
+            buildAndShowNutritionDialog(foodItem.getFoodItemName(), nutritionDetails, isAiGenerated);
+        } else {
+            androidx.appcompat.app.AlertDialog loadingDialog = new MaterialAlertDialogBuilder(this)
+                    .setTitle("Loading...")
+                    .setMessage("Fetching nutrition details for " + foodItem.getFoodItemName())
+                    .setCancelable(false)
+                    .show();
+
+            FirestoreHelper firestoreHelper = new FirestoreHelper();
+
+            // Check Firestore first
+            firestoreHelper.loadNutritionForFood(foodItem.getFoodId(), new FirestoreHelper.FirestoreNutritionCallback() {
+                @Override
+                public void onSuccess(Map<String, String> cachedDetails) {
+
+                    boolean cacheHasNutrition = false;
+                    if (cachedDetails != null) {
+                        for (String key : cachedDetails.keySet()) {
+                            if (key.toLowerCase().contains("calories")) {
+                                cacheHasNutrition = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (cacheHasNutrition) {
+                        loadingDialog.dismiss();
+                        foodItem.setNutritionDetails(cachedDetails);
+
+                        boolean isAiGenerated = Boolean.parseBoolean(cachedDetails.get("isAiGenerated"));
+                        buildAndShowNutritionDialog(foodItem.getFoodItemName(), cachedDetails, isAiGenerated);
+                    } else {
+                        // Not in Firestore (or lacks calories), generate them via AI
+                        loadingDialog.setMessage("Using AI to estimate nutrition details...");
+
+                        firestoreHelper.generateNutritionForFood(foodItem.getFoodItemName(), new FirestoreHelper.FirestoreNutritionCallback() {
+                            @Override
+                            public void onSuccess(Map<String, String> generatedDetails) {
+                                loadingDialog.dismiss();
+                                if (generatedDetails != null && !generatedDetails.isEmpty()) {
+                                    // Update model
+                                    foodItem.setNutritionDetails(generatedDetails);
+
+                                    // Save permanently to Firestore
+                                    firestoreHelper.saveNutritionForFood(foodItem.getFoodId(), generatedDetails);
+
+                                    boolean isAiGenerated = Boolean.parseBoolean(generatedDetails.get("isAiGenerated"));
+                                    buildAndShowNutritionDialog(foodItem.getFoodItemName(), generatedDetails, isAiGenerated);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                loadingDialog.dismiss();
+                                Log.e("MainActivity", "Failed to generate nutrition", e);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    loadingDialog.dismiss();
+                    Log.e("MainActivity", "Failed to load nutrition from Firestore", e);
+                }
+            });
+        }
+    }
+
+    private void buildAndShowNutritionDialog(String foodName, Map<String, String> nutritionDetails, boolean isAiGenerated) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_nutrition, null);
+        LinearLayout container = dialogView.findViewById(R.id.nutritionListContainer);
+
+        String caloriesKey = null;
+        for (String key : nutritionDetails.keySet()) {
+            if (key.toLowerCase().contains("calories")) {
+                caloriesKey = key;
+                break;
+            }
+        }
+
+        if (caloriesKey != null) {
+            addNutritionRow(inflater, container, nutritionDetails.get(caloriesKey));
+        }
+
+        for (Map.Entry<String, String> entry : nutritionDetails.entrySet()) {
+            if (caloriesKey != null && entry.getKey().equals(caloriesKey)) {
+                continue;
+            }
+            addNutritionRow(inflater, container, entry.getValue());
+        }
+
+        // Add the nutrition source disclaimer
+        TextView aiDisclaimer = new TextView(this);
+        if (isAiGenerated) {
+            aiDisclaimer.setText("This nutrition estimation was generated by AI.");
+        } else {
+            aiDisclaimer.setText("This nutrition estimation was taken from the dining website.");
+        }
+        aiDisclaimer.setTypeface(null, android.graphics.Typeface.ITALIC);
+        aiDisclaimer.setTextSize(12f);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 32, 0, 0); // Adding top margin to separate from the items
+        aiDisclaimer.setLayoutParams(params);
+
+        container.addView(aiDisclaimer);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(foodName + " Nutrition")
+                .setView(dialogView)
+                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void addNutritionRow(LayoutInflater inflater, LinearLayout container, String jsonString) {
+        try {
+            org.json.JSONObject obj = new org.json.JSONObject(jsonString);
+            String label = obj.optString("label", "Detail");
+            String value = obj.optString("value", "");
+            String unit = obj.optString("unit", "");
+
+            View rowView = inflater.inflate(R.layout.item_nutrition_row, container, false);
+
+            TextView labelText = rowView.findViewById(R.id.nutritionLabelText);
+            TextView valueText = rowView.findViewById(R.id.nutritionValueText);
+
+            labelText.setText(label);
+
+            // Format value and unit closely (e.g., "8g" or "30")
+            String displayValue = unit.isEmpty() ? value : value + unit;
+            valueText.setText(displayValue);
+
+            container.addView(rowView);
+        } catch (org.json.JSONException e) {
+            // Fallback just in case the string is not formatted as JSON
+            View rowView = inflater.inflate(R.layout.item_nutrition_row, container, false);
+            TextView labelText = rowView.findViewById(R.id.nutritionLabelText);
+            TextView valueText = rowView.findViewById(R.id.nutritionValueText);
+
+            labelText.setText("Info");
+            valueText.setText(jsonString);
+            container.addView(rowView);
+        }
+    }
+
 
 
     private String findFoodNameById(String foodId) {

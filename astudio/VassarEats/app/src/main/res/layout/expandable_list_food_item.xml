@@ -82,5 +82,15 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
+        <ImageButton
+            android:id="@+id/nutritionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@android:drawable/ic_dialog_info"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="View Nutrition Info" />
+
+
     </LinearLayout>
 </LinearLayout>

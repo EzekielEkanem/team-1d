@@ -164,22 +164,41 @@ public class Request {
 
                         for (HashMap<String, JSONObject> anotherMap : diningSectionHashMap.get(stationName)) {
                             for (String keyName : anotherMap.keySet()) {
-                                // The new FoodItem object is created here
-
                                 HashSet<String> dietLabels = new HashSet<String>();
+                                JSONObject foodJsonObject = anotherMap.get(keyName);
 
-                                if (anotherMap.get(keyName).get("cor_icon") instanceof JSONObject) {
-                                    JSONObject icons = (JSONObject) anotherMap.get(keyName).get("cor_icon");
+                                if (foodJsonObject.has("cor_icon") && foodJsonObject.get("cor_icon") instanceof JSONObject) {
+                                    JSONObject icons = foodJsonObject.getJSONObject("cor_icon");
 
                                     for (Iterator<String> it = icons.keys(); it.hasNext();) {
                                         Object dietLabel = it.next();
-
                                         dietLabels.add((String) icons.get((String) dietLabel));
                                     }
                                 }
 
-                                // The new FoodItem object is created here
-                                FoodItem newFood = new FoodItem((String) anotherMap.get(keyName).get("label"), keyName, dietLabels);
+                                // Extract nutrition details
+                                HashMap<String, String> nutritionDetailsMap = new HashMap<>();
+                                if (foodJsonObject.has("nutrition_details") && !foodJsonObject.isNull("nutrition_details")) {
+                                    JSONObject nutritionJson = foodJsonObject.getJSONObject("nutrition_details");
+
+                                    java.util.Iterator<String> keys = nutritionJson.keys();
+                                    while (keys.hasNext()) {
+                                        String nutritionKey = keys.next();
+                                        String nutritionValue = nutritionJson.optString(nutritionKey, "");
+                                        nutritionDetailsMap.put(nutritionKey, nutritionValue);
+                                    }
+
+                                    // Inject the flag indicating this came from the website
+                                    nutritionDetailsMap.put("isAiGenerated", "false");
+                                }
+
+                                // The new FoodItem object is created here, now passing nutritionDetailsMap
+                                FoodItem newFood = new FoodItem(
+                                        (String) foodJsonObject.get("label"),
+                                        keyName,
+                                        dietLabels,
+                                        nutritionDetailsMap
+                                );
 
                                 diningStation.addFoodItem(newFood);
                             }

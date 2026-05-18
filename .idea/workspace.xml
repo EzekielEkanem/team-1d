@@ -85,6 +85,11 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/dialog_nutrition.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/expandable_list_dining_station.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
@@ -120,6 +125,11 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/item_nutrition_row.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/nav_header.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
@@ -142,11 +152,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f194f4bd-6a11-42ca-9fbd-ab386a91c7e8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/astudio/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/astudio/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/astudio/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/astudio/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,9 +191,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
         <option value="resourceFile" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -548,12 +554,12 @@
       <map>
         <entry key="edu.vassar.cmpu203.vassareats">
           <value>
-            <CheckInfo lastCheckTimestamp="1778868713815" />
+            <CheckInfo lastCheckTimestamp="1779058813923" />
           </value>
         </entry>
         <entry key="edu.vassar.cmpu203.vassareats.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1778868713816" />
+            <CheckInfo lastCheckTimestamp="1779058813923" />
           </value>
         </entry>
       </map>
