@@ -20,13 +20,33 @@ Gordon Commons as the default food menu. You can choose your dietary preferences
 and the food menu will be adjusted accordingly.
 
 ## Functionality
-We have a prototype that displays all the food menu in an expandable recycler view format. The food menu displayed includes
-mealType (e.g. Breakfast, Lunch, etc.), mealTypeSection (e.g. Specials, additional favorites, etc.) and diningSection (e.g.
-Stocks, Root, etc.). More so, the food menu can be filtered based on dietary preferences (e.g. vegan, vegetarian, etc.). 
-A user can also view food items up to seven days from the current day. Moreover, different dining locations (e.g., Express,
-Street Eats) can be selected to view the food menu for that day in those dining locations. We've enabled users
-to like/dislike each food item. Another cool functionality we've added is the ability to view images of each
-food items.
+
+Vassar Eats is a feature-rich Android application designed to overhaul the student dining experience. Below is a breakdown of the core functionalities currently supported by the platform:
+
+### Menu Exploration & Smooth UI
+* **Dynamic Menu Layout:** Displays daily menus using a highly responsive, expandable `RecyclerView` format. Menus are categorized cleanly by **Meal Type** (Breakfast, Lunch, Dinner), **Meal Section** (Specials, Additional Favorites), and **Dining Section** (Stocks, Root, etc.).
+* **Location & Date Toggling:** Users can view menus across multiple campus dining locations (e.g., Express, Street Eats) up to seven days in advance.
+* **Enhanced Navigation Gestures:** Date navigation is incredibly fluid, utilizing full-body swipe responsiveness across the entire screen instead of being limited to the top bar.
+* **Dietary Filtering:** Menus can be dynamically filtered in real-time based on individual dietary preferences and restrictions (e.g., Vegan, Vegetarian, Made without Gluten).
+
+### AI-Powered Food Imagery (Nanobanana)
+* **Automated Image Generation:** Leveraging the `gemini-2.5-flash` AI model, the app dynamically generates realistic images for scheduled menu items to give students a visual preview of their meals.
+* **Low-Latency Performance:** Images are fetched and displayed asynchronously alongside a smooth **shimmering effect** while the AI processes, minimizing user perceived wait times.
+* **Optimized Image Pipeline:** Integrates **Glide** for lightning-fast local disk and RAM caching. Images are stored and streamed efficiently utilizing **Firebase Storage** rather than standard Firestore.
+* **Community-Driven Moderation:** Features a "Report Image" flag system. If a poorly generated image receives 5 flags from the student community, the app automatically prompts the AI to regenerate a brand-new image for that dish.
+
+### Conversational Nutrition Chatbot
+* **Interactive Assistant:** Includes an in-app chatbot powered by `gemini-2.5-flash` capable of answering student questions regarding food ingredients, nutritional advice, and overall dining insights.
+* *(In Development)* Future updates will utilize **RAG (Retrieval-Augmented Generation)** to deeply couple the chatbot with the official Vassar Wellness documentation for hyper-localized, campus-specific inquiries.
+
+### Smart Calorie & Nutrition Tracking
+* **Nutrition Dialogs:** Tapping on a food item brings up a detailed pop-up dialog displaying calorie content and macronutrient breakdowns.
+* **Hybrid Data Sourcing:** The tracker pulls verified nutrition data directly from the Vassar dining website whenever available. For items missing official data, `gemini-2.5-flash` is used to generate highly precise caloric estimates.
+* **Data Transparency:** A clear visual tag is appended to the bottom of the nutrition pop-up to explicitly inform users whether the information was pulled from the official Vassar website or estimated by AI.
+
+### Predictive Recommendations *(Beta)*
+* **Social Engagement:** Students can "Like" or "Dislike" any food item on the menu.
+* **Smart Notifications:** Implements a background recommendation algorithm designed to automatically notify users the moment a dining hall begins serving an item they have previously liked. *(Note: This feature is currently in active testing).*
 
 ## Authors and acknowledgment
 Special acknowledgment to Aly Camara and Ezekiel Ekanem, authors of the project.
