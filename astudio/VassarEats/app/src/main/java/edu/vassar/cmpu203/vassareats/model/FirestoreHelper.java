@@ -72,31 +72,36 @@ public class FirestoreHelper {
     }
 
     public void updateLikesCount(String foodId, long change, final CompletionCallback callback) {
-        DocumentReference foodDocRef = db.collection("foods").document(foodId);
+        DocumentReference foodDocRef = db.collection("foodItems").document(foodId);
 
         db.runTransaction(transaction -> {
             DocumentSnapshot snapshot = transaction.get(foodDocRef);
             long newLikes = 0;
-            if (snapshot.exists() && snapshot.getLong("likes") != null) {
-                newLikes = snapshot.getLong("likes") + change;
+            if (snapshot.exists() && snapshot.getLong("likesCount") != null) {
+                newLikes = snapshot.getLong("likesCount") + change;
             } else {
-                // If the document or field doesn't exist, start the count
                 newLikes = (change > 0) ? 1 : 0;
             }
-            // Ensure likes don't go below zero
+
             if (newLikes < 0) {
                 newLikes = 0;
             }
-            transaction.update(foodDocRef, "likes", newLikes);
-            return null; // A transaction must return something, null is fine here
+
+            // Use set with merge to create the document if it doesn't exist yet
+            Map<String, Object> data = new HashMap<>();
+            data.put("likesCount", newLikes);
+            transaction.set(foodDocRef, data, SetOptions.merge());
+
+            return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("FirestoreHelper", "Likes count transaction successful for " + foodId);
-            callback.onComplete(true, null); // Call onComplete with success
+            callback.onComplete(true, null);
         }).addOnFailureListener(e -> {
             Log.e("FirestoreHelper", "Likes count transaction failed for " + foodId, e);
-            callback.onComplete(false, e); // Call onComplete with failure
+            callback.onComplete(false, e);
         });
     }
+
 
 
     public void getLikeCount(String foodId, FirestoreCallback2 callback) {
@@ -658,6 +663,55 @@ public class FirestoreHelper {
                     Log.e("FirestoreHelper", "Error loading nutrition details for " + foodId, e);
                     callback.onFailure(e);
                 });
+    }
+
+    public interface ChatbotCallback {
+        void onSuccess(String response);
+        void onFailure(Exception e);
+    }
+
+    public void askChatbot(String question, ChatbotCallback callback) {
+        Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
+        new Thread(() -> {
+            try {
+                String apiKey = BuildConfig.NANOBANANA_API_KEY;
+                if (apiKey == null || apiKey.trim().isEmpty()) {
+                    mainThreadHandler.post(() -> callback.onFailure(new Exception("Missing API_KEY")));
+                    return;
+                }
+
+                Client client = Client.builder().apiKey(apiKey).build();
+
+                // Add context to shape the bot's persona
+                String systemPrompt = "You are a helpful dining assistant for the Vassar Eats app. Answer the user's questions about food, dining, and nutrition accurately and concisely.";
+                String fullPrompt = systemPrompt + "\nUser: " + question;
+
+                List<Content> contents = ImmutableList.of(
+                        Content.builder()
+                                .role("user")
+                                .parts(ImmutableList.of(Part.fromText(fullPrompt)))
+                                .build()
+                );
+
+                GenerateContentConfig config = GenerateContentConfig.builder()
+                        .responseModalities(ImmutableList.of("TEXT"))
+                        .build();
+
+                GenerateContentResponse response = client.models.generateContent(
+                        "gemini-2.5-flash",
+                        contents,
+                        config
+                );
+
+                String textResult = response.text();
+                mainThreadHandler.post(() -> callback.onSuccess(textResult));
+
+            } catch (Exception e) {
+                Log.e("FirestoreHelper", "askChatbot failed", e);
+                mainThreadHandler.post(() -> callback.onFailure(e));
+            }
+        }).start();
     }
 
 }

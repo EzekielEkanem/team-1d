@@ -48,6 +48,7 @@ import edu.vassar.cmpu203.vassareats.view.HomeFragment;
 import edu.vassar.cmpu203.vassareats.view.LoginActivity;
 import edu.vassar.cmpu203.vassareats.view.NavigationDrawer;
 import edu.vassar.cmpu203.vassareats.view.ExpandableRecyclerViewAdapter;
+import edu.vassar.cmpu203.vassareats.view.NotificationHelper;
 
 public class MainActivity extends AppCompatActivity implements ExpandableRecyclerViewAdapter.Listener {
 
@@ -137,6 +138,9 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
                     if (items != null) {
                         likedItems.addAll(items);
                         if (registeredAdapter != null) registeredAdapter.setLikedItems(likedItems);
+
+                        // Check for daily recommendations after loading liked items
+                        checkForDailyRecommendation(items);
                     }
                 }
                 @Override
@@ -172,6 +176,68 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
                     Log.e("MainActivity", "Failed to load reported items", e);
                 }
             });
+        }
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getMenu().resetFilters();
+                replaceFragment(new HomeFragment(), false);
+                topAppBar.setTitle("Vassar Eats");
+            } else if (itemId == R.id.nav_chat) {
+                replaceFragment(new edu.vassar.cmpu203.vassareats.view.ChatFragment(), true);
+                topAppBar.setTitle("Dining Assistant");
+            } else if (itemId == R.id.nav_logout) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+    }
+
+    private void checkForDailyRecommendation(List<String> userLikedItems) {
+        if (userLikedItems == null || userLikedItems.isEmpty()) return;
+
+        SharedPreferences prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+
+        // Get today's date string to prevent duplicate notifications on the same day
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+        String todayString = sdf.format(new java.util.Date());
+        String lastNotifiedDate = prefs.getString("last_recommendation_date", "");
+
+        if (todayString.equals(lastNotifiedDate)) {
+            return; // Already notified today
+        }
+
+        // Search the menu model for the liked items
+        for (String likedFoodId : userLikedItems) {
+            String foodName = findFoodNameById(likedFoodId);
+
+            // If the name is different from the ID, it means it was found in today's active UI/Menu
+            if (!foodName.equals(likedFoodId)) {
+
+                // Prompt for notification permission on Android 13+ if not granted
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+                        return; // Wait for permission result before showing (can be retried next launch)
+                    }
+                }
+
+                // Command the View to show the notification
+                NotificationHelper.showRecommendationNotification(this, foodName);
+
+                // Update SharedPreferences so we only notify once per day
+                prefs.edit().putString("last_recommendation_date", todayString).apply();
+
+                // Break out to only recommend one item per day rather than spamming
+                break;
+            }
         }
     }
 
@@ -223,27 +289,38 @@ public class MainActivity extends AppCompatActivity implements ExpandableRecycle
     @Override
     public void onLikeClicked(String foodId) {
         if (foodId == null) return;
+
         String userId = FirebaseAuth.getInstance().getCurrentUser() != null ?
                 FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         if (userId == null) return;
 
-        boolean nowLiked = !likedItems.contains(foodId);
-        if (nowLiked) {
-            likedItems.add(foodId);
-            dislikedItems.remove(foodId);
-        } else {
+        FirestoreHelper firestoreHelper = new FirestoreHelper();
+        boolean isLiked = likedItems.contains(foodId);
+
+        if (isLiked) {
             likedItems.remove(foodId);
+            firestoreHelper.updateLikesCount(foodId, -1, (success, e) -> {});
+        } else {
+            likedItems.add(foodId);
+            firestoreHelper.updateLikesCount(foodId, 1, (success, e) -> {});
+
+            // Optional: If a user likes an item, remove it from dislikes
+            if (dislikedItems.contains(foodId)) {
+                dislikedItems.remove(foodId);
+                firestoreHelper.saveUserDislikedItems(this, userId, new ArrayList<>(dislikedItems));
+            }
         }
 
+        // Save to the user profile
+        firestoreHelper.saveUserLikedItems(userId, new ArrayList<>(likedItems));
+
+        // Update the view
         if (registeredAdapter != null) {
             registeredAdapter.setLikedItems(likedItems);
             registeredAdapter.setDislikedItems(dislikedItems);
         }
-
-        FirestoreHelper firestoreHelper = new FirestoreHelper();
-        firestoreHelper.saveUserLikedItems(userId, new ArrayList<>(likedItems));
-        firestoreHelper.saveUserDislikedItems(this, userId, new ArrayList<>(dislikedItems));
     }
+
 
     @Override
     public void onDislikeClicked(String foodId) {

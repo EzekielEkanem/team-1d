@@ -110,12 +110,22 @@
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/fragment_chat.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/fragment_food_menu.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/fragment_home.xml">
+        <config>
+          <theme>@style/Theme.VassarEats</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/astudio/VassarEats/app/src/main/res/layout/item_chat_message.xml">
         <config>
           <theme>@style/Theme.VassarEats</theme>
         </config>
@@ -191,9 +201,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="resourceFile" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -554,12 +564,12 @@
       <map>
         <entry key="edu.vassar.cmpu203.vassareats">
           <value>
-            <CheckInfo lastCheckTimestamp="1779058813923" />
+            <CheckInfo lastCheckTimestamp="1779200703017" />
           </value>
         </entry>
         <entry key="edu.vassar.cmpu203.vassareats.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779058813923" />
+            <CheckInfo lastCheckTimestamp="1779200703019" />
           </value>
         </entry>
       </map>
